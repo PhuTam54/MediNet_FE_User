@@ -247,38 +247,12 @@ function Header() {
                       <span className="number-cart">0</span>
                     </a>
                   </span>
-                  <div className="ttm-header-icon ttm-header-search-link">
-                    <a href="#">
-                      <i className="ti ti-search" />
+                  <div className="ttm-header-icon ttm-header-search-link" style={{paddingRight:'10px'}}>
+                    <a href="/login">
+                      
+                     Login
                     </a>
-                    <div className="ttm-search-overlay">
-                      <div className="ttm-search-outer">
-                        <div className="ttm-form-title">
-                          Hi, How Can We Help You?
-                        </div>
-                        <form
-                          method="get"
-                          className="ttm-site-searchform"
-                          action="#"
-                        >
-                          <div className="w-search-form-h">
-                            <div className="w-search-form-row">
-                              <div className="w-search-input">
-                                <input
-                                  type="search"
-                                  className="field searchform-s"
-                                  name="s"
-                                  placeholder="Type Word Then Enter..."
-                                />
-                                <button type="submit">
-                                  <i className="ti ti-search" />
-                                </button>
-                              </div>
-                            </div>
-                          </div>
-                        </form>
-                      </div>
-                    </div>
+                   
                   </div>
                 </div>
                 {/* header-icons end */}

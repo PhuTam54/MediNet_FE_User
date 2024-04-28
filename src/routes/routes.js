@@ -7,9 +7,11 @@ import Checkout from '~/pages/Checkout';
 
 // Pages
 import Home from '~/pages/Home';
+import Login from '~/pages/Login';
 import ProductDetail from '~/pages/ProductDetail';
 import Products from '~/pages/Products';
 import Shop from '~/pages/Shop';
+import SignUp from '~/pages/Signup';
 
 
 
@@ -23,7 +25,11 @@ export const publicRoutes = [
     { path: config.routes.products, component: Products },
     { path: config.routes.productdetail, component: ProductDetail},
     { path: config.routes.cart, component: Cart},
-    { path: config.routes.checkout, component: Checkout }
+    { path: config.routes.checkout, component: Checkout },
+    { path: config.routes.login, component: Login, layout: LayoutOnly},
+    { path: config.routes.signup, component: SignUp, layout: LayoutOnly}
+
+
    
 
 ];

@@ -1,3 +1,15 @@
 .container {
-    width: 100%;
+  // Your existing styles for .container
+  position: fixed;
+  top: 40%;
+  left: 50%;
+  right: 50%;
+  transform: translate(-50%, -40%);
+  width: 40%; // This makes the container take up 50% of the width of its parent
+  background-color: #fff;
+ 
+  border-radius: 10px; // This rounds the corners of the border
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.5); // This adds a shadow to the border
+  min-height: 600px; // This sets the minimum height of the container
+  overflow-y: auto; // This allows the container to scroll vertically if the content is taller than the container
 }
