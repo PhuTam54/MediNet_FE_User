@@ -1,10 +1,25 @@
-
 import logo from "~/assets/images/logo-img.png";
-
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faUser, faShoppingCart } from '@fortawesome/free-solid-svg-icons';
+import { useNavigate } from 'react-router-dom';
+import { toast } from 'react-toastify';
+import React, { useState } from 'react';
+import { useContext } from "react";
+import { UserContext } from "~/context/UserContext";
 
 
 function Header() {
+  const [isLoggedIn] = useState(!!localStorage.getItem('token'));
+  const { logout, user } = useContext(UserContext);
+  const navigate = useNavigate();
+  const handleLogout = ()=> {
+   logout();
+    navigate("/");
+    toast.success("Logout succsess!");
+    console.log("Log out succsess!");                                     
+   
   
+  }
     return (
       <>
       
@@ -222,7 +237,7 @@ function Header() {
               <div className="site-branding">
                 <a
                   className="home-link"
-                  href="index-2.html"
+                  href="/"
                   title="Delmont"
                   rel="home"
                 >
@@ -242,18 +257,45 @@ function Header() {
                 {/* header-icons */}
                 <div className="ttm-header-icons ">
                   <span className="ttm-header-icon ttm-header-cart-link">
-                    <a href="#">
+                    <a href="/cart">
                       <i className="fa fa-shopping-cart" />
                       <span className="number-cart">0</span>
                     </a>
                   </span>
-                  <div className="ttm-header-icon ttm-header-search-link" style={{paddingRight:'10px'}}>
-                    <a href="/login">
-                      
-                     Login
+                
+                  {/* <div className="ttm-header-icon ttm-header-search-link">
+                    <a href="#">
+                      <i className="ti ti-search" />
                     </a>
-                   
-                  </div>
+                    <div className="ttm-search-overlay">
+                      <div className="ttm-search-outer">
+                        <div className="ttm-form-title">
+                          Hi, How Can We Help You?
+                        </div>
+                        <form
+                          method="get"
+                          className="ttm-site-searchform"
+                          action="#"
+                        >
+                          <div className="w-search-form-h">
+                            <div className="w-search-form-row">
+                              <div className="w-search-input">
+                                <input
+                                  type="search"
+                                  className="field searchform-s"
+                                  name="s"
+                                  placeholder="Type Word Then Enter..."
+                                />
+                                <button type="submit">
+                                  <i className="ti ti-search" />
+                                </button>
+                              </div>
+                            </div>
+                          </div>
+                        </form>
+                      </div>
+                    </div>
+                  </div> */}
                 </div>
                 {/* header-icons end */}
                 <div className="ttm-menu-toggle">
@@ -429,6 +471,40 @@ function Header() {
                         </li>
                       </ul>
                     </li>
+                    <li className="header-button pr-0">
+  <div className="container" style={{ textAlign: 'center' }}>
+    {/* Hiển thị biểu tượng người dùng nếu đã đăng nhập */}
+    {isLoggedIn ? (
+       <a href="#">
+       <FontAwesomeIcon style={{color: "#01d6a3"}} icon={faUser} />
+     </a>
+    ) : (
+      // Hiển thị "Join Us" nếu chưa đăng nhập
+      <a href="#0" style={{ margin: '0' }}><strong>Join Us</strong></a>
+    )}
+    <br />
+  </div>
+  <ul className="submenu">
+    {/* Check if user is logged in, if yes, display logout option */}
+    {isLoggedIn ? (
+      <li>
+        <a href="#0" style={{fontSize: 15, color: "black"}} onClick={() => handleLogout()}>Log Out</a>
+        <div style={{ display: 'flex', justifyContent: 'center' }}>
+          {user && user.email && (
+            <span style={{ margin: 20, color: 'black' }}>
+              {user.email}
+            </span>
+          )}
+        </div>
+      </li>
+    ) : (
+      // If user is not logged in, display login option
+      <li>
+        <a style={{fontSize: 15}} href="/login">Log In</a>
+      </li>
+    )}
+  </ul>
+</li>
                   </ul>
                 </nav>
               </div>
