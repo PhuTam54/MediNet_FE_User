@@ -1,10 +1,53 @@
+import React, {  useState } from 'react';
+import axios from 'axios';
+import { toast } from 'react-toastify';
 
+import { useNavigate } from 'react-router-dom';
+import { useContext } from "react";
+import { UserContext } from "~/context/UserContext";
 
 function Login() {
-    return ( 
-        <>
-        {/* ==========Sign-In-Section========== */}
-        <section
+  const { loginContext } = useContext(UserContext);
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [ setError] = useState('');
+  const [loadingAPI, setLoadingAPI] = useState(false);
+  const navigate = useNavigate();
+
+
+  // useEffect(() => {
+  //   let token  = localStorage.getItem("token");
+  //   if(token) {
+  //     navigate("/");
+  //   }
+  // })
+
+
+  const handleLogin = async (e) => {
+    setLoadingAPI(true);
+    e.preventDefault();
+    try {
+      const response = await axios.post('https://localhost:7121/api/v1/LoginRegister/Login', {
+        email,
+        password
+      });
+      loginContext(email,response.data.token);
+      // localStorage.setItem('token', response.data.token);
+      console.log('Login successful!', response.data.token);
+      navigate("/");
+      toast.success("Login successful!");
+    } catch (error) {
+      setError('Invalid email or password');
+      toast.error("Login error!!");
+      console.error('Login error:', error);
+    }
+    setLoadingAPI(false);
+  };
+
+  return (
+    
+    <>
+     <section
           className="account-section bg_img"
           style={{ 
             backgroundImage: ``,
@@ -22,7 +65,7 @@ function Login() {
               <span className="cate" style={{ fontSize: '40px', color:'#01d6a3' }}>hello</span>
               <h2 className="title" style={{ fontSize: '50px' }}>welcome back</h2>
               </div>
-                <form className="account-form" style={{ width: '70%', margin: '0 auto',  }}>
+                <form onSubmit={handleLogin} className="account-form" style={{ width: '70%', margin: '0 auto',  }}>
                   <div className="form-group">
                     <label htmlFor="email2">
                       Email<span style={{color:'red'}}>*</span>
@@ -34,6 +77,8 @@ function Login() {
                       required=""
                       className="form-control"
                       style={{ height: '45px' ,border: '1px solid #01d6a3'}}
+                      value={email}
+                      onChange={(e) => setEmail(e.target.value)}
                     />
                   </div>
                   <div className="form-group">
@@ -47,22 +92,28 @@ function Login() {
                       required=""
                       className="form-control"
                       style={{ height: '45px' , border: '1px solid #01d6a3'}}
+                      value={password}
+                      onChange={(e) => setPassword(e.target.value)}
                     />
                   </div>
                   <div className="form-group checkgroup" style={{ display: 'flex', justifyContent: 'space-between' }}>
-  <div>
-    <input type="checkbox" id="bal2" required="" defaultChecked="" />
-    <label htmlFor="bal2" style={{color: "black"}}>remember password</label>
-  </div>
-  <div>
-    <a href="#0" className="forget-pass">
-      Forget Password
-    </a>
-  </div>
-</div>
-<div className="form-group text-center">
-  <input type="submit" defaultValue="log in" style={{ width: '100%', margin: '0 auto', backgroundColor: '#01d6a3', display: 'flex', justifyContent: 'center', alignItems: 'center', fontSize: '20px' }}/>
-</div>
+                    <div>
+                      <input type="checkbox" id="bal2" required="" defaultChecked="" />
+                      <label htmlFor="bal2" style={{color: "black"}}>remember password</label>
+                    </div>
+                    <div>
+                      <a href="#0" className="forget-pass">
+                        Forget Password
+                      </a>
+                    </div>
+                  </div>
+                 
+                  <div className="form-group text-center">
+                  <button type="submit" style={{ width: '100%', margin: '0 auto', backgroundColor: '#01d6a3', display: 'flex', justifyContent: 'center', alignItems: 'center', fontSize: '20px' }}> 
+                  {loadingAPI && <i className="fa-solid fa-sync fa-spin"></i>}
+                   &nbsp; Login
+                  </button>
+                </div>
                 </form>
                 <div className="option" style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
                   <div style={{ display: 'flex', flexDirection: 'row', color:'black' }}>
@@ -71,7 +122,7 @@ function Login() {
                 </div>
 
 <div className="or" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', position: 'relative',paddingTop:'15px' }}>
-  
+
   <div style={{ position: 'absolute', left: '70px', right: '70px', height: '1px', borderTop: '1px solid rgba(1, 214, 163, 0.5)', top: '50%', }}></div>
 </div>
 <ul className="social-icons" style={{ display: 'flex', flexDirection: 'row', justifyContent: 'center', alignItems: 'center', paddingTop:'10px' }}>
@@ -95,8 +146,8 @@ function Login() {
             </div>
           </div>
         </section>
-        </>
-    );
+    </>
+  );
 }
 
 export default Login;
