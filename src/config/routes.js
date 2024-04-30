@@ -9,6 +9,8 @@ const routes = {
     checkout: '/checkout',
     login: '/login',
     signup: '/signup',
+    thankyou: 'thankyou',
+    emailthankyou: '/emailthankyou'
     
     
 
