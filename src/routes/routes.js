@@ -2,6 +2,7 @@ import config from '~/config';
 import LayoutOnly from '~/layouts/LayoutOnly/LayoutOnly';
 import Cart from '~/pages/Cart';
 import Checkout from '~/pages/Checkout';
+import EmailThankyou from '~/pages/EmailThankyou';
 
 // Layouts
 
@@ -12,6 +13,7 @@ import ProductDetail from '~/pages/ProductDetail';
 import Products from '~/pages/Products';
 import Shop from '~/pages/Shop';
 import SignUp from '~/pages/Signup';
+import Thankyou from '~/pages/Thankyou';
 
 
 
@@ -26,6 +28,9 @@ export const publicRoutes = [
     { path: config.routes.productdetail, component: ProductDetail},
     { path: config.routes.cart, component: Cart},
     { path: config.routes.checkout, component: Checkout },
+    { path: config.routes.thankyou, component: Thankyou },
+    { path: config.routes.emailthankyou, component: EmailThankyou,layout: LayoutOnly },
+
     { path: config.routes.login, component: Login, layout: LayoutOnly},
     { path: config.routes.signup, component: SignUp, layout: LayoutOnly}
 

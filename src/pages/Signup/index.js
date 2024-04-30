@@ -75,8 +75,8 @@ function SignUp() {
                 </div>
                 <div className="or" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', position: 'relative',paddingTop:'15px' }}>
   
-  <div style={{ position: 'absolute', left: '70px', right: '70px', height: '1px', borderTop: '1px solid rgba(1, 214, 163, 0.5)', top: '50%', }}></div>
-</div>
+              <div style={{ position: 'absolute', left: '70px', right: '70px', height: '1px', borderTop: '1px solid rgba(1, 214, 163, 0.5)', top: '50%', }}></div>
+              </div>
 <ul className="social-icons" style={{ display: 'flex', flexDirection: 'row', justifyContent: 'center', alignItems: 'center', paddingTop:'10px' }}>
   <li style={{ margin: '0 10px' }}>
     <a href="#0">

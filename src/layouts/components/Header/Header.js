@@ -318,6 +318,9 @@ function Header() {
                             <li>
                               <a href="/checkout">Checkout</a>
                             </li>
+                            <li>
+                              <a href="/thankyou">Thankyou</a>
+                            </li>
                           </ul>
                         </li>
                         <li>
@@ -372,6 +375,9 @@ function Header() {
                             </li>
                             <li>
                               <a href="/checkout">Checkout</a>
+                            </li>
+                            <li>
+                              <a href="/thankyou">Thankyou</a>
                             </li>
                           </ul>
                         </li>
