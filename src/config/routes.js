@@ -10,7 +10,9 @@ const routes = {
     login: '/login',
     signup: '/signup',
     
-
+    thankyou: 'thankyou',
+    emailthankyou: '/emailthankyou',
+    myOrder: '/myOrder'
 
     
 
