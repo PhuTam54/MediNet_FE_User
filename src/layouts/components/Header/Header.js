@@ -14,9 +14,9 @@ function Header() {
   const navigate = useNavigate();
   const handleLogout = ()=> {
    logout();
-    navigate("/");
+    navigate('/');
     toast.success("Logout succsess!");
-    console.log("Log out succsess!");                                     
+                                  
    
   
   }
@@ -323,20 +323,16 @@ function Header() {
                       <a href="#">Pages</a>
                       <ul>
                         <li>
-                          <a href="aboutus-1.html">About Us</a>
+                          <a href="/myOrder">My Order</a>
                         </li>
-                        <li>
-                          <a href="aboutus-2.html">About Us 2</a>
-                        </li>
+                       
                         <li>
                           <a href="services.html">Services</a>
                         </li>
                         <li>
                           <a href="contact-us.html">Contact Us</a>
                         </li>
-                        <li>
-                          <a href="contact-us-2.html">Contact Us 2</a>
-                        </li>
+                       
                         <li>
                           <a href="our-team.html">Our Doctors</a>
                         </li>

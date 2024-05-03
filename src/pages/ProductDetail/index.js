@@ -1,4 +1,5 @@
 
+
 // import product1 from "~/assets/images/product/product-one.jpg"
 // import product2 from "~/assets/images/product/product-two.jpg"
 // import product3 from "~/assets/images/product/product-three.jpg"
@@ -39,18 +40,27 @@
 //         return null;
 //     };
 //   // Save userId to localStorage
-//     localStorage.setItem('userId', id);
+//   const userId = getTokenData();
+//   if (userId) {
+//     localStorage.setItem('userId', userId);
+//   }
 //   // add to cart
-//   const addToCart = async () => {
-//     try {
-//       const userId = localStorage.getItem('userId');
-//       await axios.post(`https://localhost:7121/api/v1/Carts?productId=${product.id}&userId=${userId}&buy_qty=${quantity}`);
-//       toast.success('Product added to cart');
-//     } catch (error) {
-//       console.error(error);
-//       toast.error('Failed to add product to cart');
-//     }
-//   };
+
+
+//   const addToCart = () => {
+//     const cartItem = {
+//       qtyCart: quantity,
+//       productID: product.id,
+//       customerID: userId,
+//       clinicID: 1,
+//     };
+
+   
+//     axios.post('https://localhost:7121/api/v1/Carts', cartItem)
+//     .then( )
+//     .catch(error => console.error(error));
+//     toast.success('Product added to cart');
+// };
 
 //     return ( 
 //         <>
@@ -659,11 +669,7 @@
 
 // export default ProductDetail;
 
-
-
-
-
-import product1 from "~/assets/images/product/product-one.jpg"
+import product1 from "~/assets/images/product/product-five.jpg"
 import product2 from "~/assets/images/product/product-two.jpg"
 import product3 from "~/assets/images/product/product-three.jpg"
 import product4 from "~/assets/images/product/product-four.jpg"
@@ -703,17 +709,23 @@ const getTokenData = () => {
         return null;
     };
   // Save userId to localStorage
-    localStorage.setItem('userId', id);
+  const userId = getTokenData();
+  if (userId) {
+    localStorage.setItem('userId', userId);
+  }
   // add to cart
-  const userId = localStorage.getItem('userId');
+
+
   const addToCart = () => {
     const cartItem = {
       qtyCart: quantity,
       productID: product.id,
       userID: userId,
     };
+
+   
     axios.post('https://localhost:7121/api/v1/Carts', cartItem)
-    .then(response => console.log(response))
+    .then( )
     .catch(error => console.error(error));
     toast.success('Product added to cart');
 };

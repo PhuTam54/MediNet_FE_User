@@ -36,8 +36,8 @@ function Login() {
       console.log('Login successful!', response.data.token);
       navigate("/");
       toast.success("Login successful!");
+      
     } catch (error) {
-      setError('Invalid email or password');
       toast.error("Login error!!");
       console.error('Login error:', error);
     }

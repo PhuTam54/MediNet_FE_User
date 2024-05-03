@@ -10,10 +10,11 @@ import EmailThankyou from '~/pages/EmailThankyou';
 import Home from '~/pages/Home';
 import Login from '~/pages/Login';
 import ProductDetail from '~/pages/ProductDetail';
+import MyOrder from '~/pages/MyOrder';
 import Products from '~/pages/Products';
 import Shop from '~/pages/Shop';
 import SignUp from '~/pages/Signup';
-
+import Thankyou from '~/pages/Thankyou';
 
 
 
@@ -25,6 +26,7 @@ export const publicRoutes = [
     { path: config.routes.shop, component: Shop },
     { path: config.routes.products, component: Products },
     { path: config.routes.productdetail, component: ProductDetail},
+    { path: config.routes.myOrder, component: MyOrder},
     { path: config.routes.cart, component: Cart},
     { path: config.routes.checkout, component: Checkout },
 
@@ -33,7 +35,8 @@ export const publicRoutes = [
     { path: config.routes.login, component: Login, layout: LayoutOnly},
     { path: config.routes.signup, component: SignUp, layout: LayoutOnly},
 
-
+    { path: config.routes.thankyou, component: Thankyou },
+   
 ];
 
 // Private routes
