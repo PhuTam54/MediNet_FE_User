@@ -112,7 +112,7 @@ const getTokenData = () => {
                     <div className="product-gallery__image">
                       <img
                         className="img-fluid"
-                        src={product1}
+                        src={product.imageSrc}
                         alt="product-img"
                       />
                     </div>

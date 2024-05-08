@@ -80,7 +80,7 @@ function Thankyou() {
               <tr key={index}>
                 <td style={{padding: '0.75rem', verticalAlign: 'top', borderTop: '1px solid #dee2e6'}}>{orderId}</td>
                 <td style={{padding: '0.75rem', verticalAlign: 'top', borderTop: '1px solid #dee2e6'}}>{product.name}</td>
-                <td style={{padding: '0.75rem', verticalAlign: 'top', borderTop: '1px solid #dee2e6'}}><img src={product.image} alt={product.name} style={{width: '50px', height: '50px'}} /></td>
+                <td style={{padding: '0.75rem', verticalAlign: 'top', borderTop: '1px solid #dee2e6'}}><img src={product.imageSrc} alt={product.name} style={{width: '50px', height: '50px'}} /></td>
                 <td style={{padding: '0.75rem', verticalAlign: 'top', borderTop: '1px solid #dee2e6'}}>{product.qtyCart}</td>
                 <td style={{padding: '0.75rem', verticalAlign: 'top', borderTop: '1px solid #dee2e6'}}>${product.price}</td>
                 <td style={{padding: '0.75rem', verticalAlign: 'top', borderTop: '1px solid #dee2e6'}}>${product.subTotal}</td>

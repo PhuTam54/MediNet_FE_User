@@ -9,6 +9,8 @@ function MyOrder() {
     const [selectedOrder, setSelectedOrder] = useState(null);
     const [modalOpen, setModalOpen] = useState(false);
     const [isLoggedIn, setIsLoggedIn] = useState(false);
+    const [currentPage, setCurrentPage] = useState(1);
+    const [ordersPerPage] = useState(5);
 
     useEffect(() => {
         const token = localStorage.getItem('token');
@@ -70,6 +72,17 @@ function MyOrder() {
         setModalOpen(false);
     };
 
+    const indexOfLastOrder = currentPage * ordersPerPage;
+    const indexOfFirstOrder = indexOfLastOrder - ordersPerPage;
+    const currentOrders = orders.slice(indexOfFirstOrder, indexOfLastOrder);
+
+    const paginate = (pageNumber) => setCurrentPage(pageNumber);
+
+    const handlePaginationClick = (pageNumber, e) => {
+        e.preventDefault();
+        setCurrentPage(pageNumber);
+    };
+
     if (!isLoggedIn) {
         return (
             <div style={{ margin: "50px auto", fontSize: 20, textAlign: "center", border: "1px solid #01d6a3", color: "white", backgroundColor: "#01d6a3", padding: 20, maxWidth: 500 }}>
@@ -124,7 +137,7 @@ function MyOrder() {
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    {orders.map(order => (
+                                    {currentOrders.map(order => (
                                         <tr key={order.id}>
                                             <td style={{ padding: '0.75rem', verticalAlign: 'top', borderTop: '1px solid #dee2e6', textAlign: "center" }}>{order.id}</td>
                                             <td style={{ padding: '0.75rem', verticalAlign: 'top', borderTop: '1px solid #dee2e6', textAlign: "center" }}>{order.name}</td>
@@ -140,19 +153,32 @@ function MyOrder() {
                                     ))}
                                 </tbody>
                             </table>
+                            {/* Pagination */}
+                            <div className="ttm-pagination text-center" style={{ display: "flex", justifyContent: "center" }}>
+                                <ul style={{ listStyle: "none", padding: 0, display: "flex" }}>
+                                    {Array.from({ length: Math.ceil(orders.length / ordersPerPage) }).map((_, index) => (
+                                        <li key={index} style={{ margin: "0 2px" }}>
+                                            <a href="#!" className={index + 1 === currentPage ? 'page-numbers current' : 'page-numbers'} onClick={(e) => handlePaginationClick(index + 1, e)} style={{ textDecoration: "none", color: "#000", padding: "5px 10px", border: "1px solid #ccc" }}>
+                                                {index + 1}
+                                            </a>
+                                        </li>
+                                    ))}
+                                </ul>
+                            </div>
+
                         </div>
                     </div>
                 </div>
             </div>
 
             {selectedOrder && (
-                 <div className={`modal ${modalOpen ? 'show' : ''}`} tabIndex="-1" role="dialog" style={{ display: modalOpen ? 'block' : 'none', backgroundColor: 'rgba(0, 0, 0, 0.5)', position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, zIndex: 999, display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+                <div className={`modal ${modalOpen ? 'show' : ''}`} tabIndex="-1" role="dialog" style={{ display: modalOpen ? 'block' : 'none', backgroundColor: 'rgba(0, 0, 0, 0.5)', position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, zIndex: 999, display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
                     <div style={{width: 800, height: 500,padding: 30, paddingLeft: 70, paddingRight: 70, }} className="modal-content" onClick={(e) => e.stopPropagation()}>
                     <button className="close-button" onClick={closeModal} style={{ position: 'absolute', top: 10, right: 10, background: 'none', border: 'none', cursor: 'pointer', color: "black", padding: 10 }}><i style={{ fontSize: 18}} className="fa-solid fa-xmark"></i></button>
                         <h3 style={{marginTop: 30, textAlign: "center", color: "#01d6a3"}} className="select_you_seats">My Order </h3>
                         <div style={{marginTop: 30}}>
                             <h5 style={{color: "black",marginBottom: 10}}>Order details</h5>
-                            <table class="table">
+                            <table className="table">
                                 <thead>
                                 <tr>
                                     <th style={{textAlign: "center"}}>ID</th>
@@ -164,10 +190,10 @@ function MyOrder() {
                                 </thead>
                                 <tbody>
                                     {selectedOrder.orderProducts.map(product => (
-                                        <tr>
+                                        <tr key={product.id}>
                                             <td style={{textAlign: "center"}}>{product.id}</td>
                                             <td style={{textAlign: "center"}}>{product.product.name}</td>
-                                            <td style={{textAlign: "center"}}><img style={{width: 50}} src={product.product.image} alt={product.product.name} /></td>
+                                            <td style={{textAlign: "center"}}><img style={{width: 50}} src={product.product.image}/></td>
                                             <td style={{textAlign: "center"}}>{product.quantity}</td>
                                             <td style={{textAlign: "center"}}>{product.subtotal}.00</td>
                                         </tr>
