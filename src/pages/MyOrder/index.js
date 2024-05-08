@@ -89,7 +89,13 @@ function MyOrder() {
                 You need to log in to view my order!
             </div>
         );
-    }
+    } else if (orders.length === 0) {
+        return (
+            <div style={{ margin: "50px auto", fontSize: 20, textAlign: "center", border: "1px solid #01d6a3", color: "white", backgroundColor: "#01d6a3", padding: 20, maxWidth: 500 }}>
+               You haven't placed an order yet!
+            </div>
+        );
+    } else {
 
     return (
         <>
@@ -211,5 +217,5 @@ function MyOrder() {
         </>
     );
 }
-
+}
 export default MyOrder;

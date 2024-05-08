@@ -62,8 +62,17 @@ function Checkout() {
 
   const handleCheckout = async () => {
     const { billingFirstName, billingEmail, billingPhone, billingAddress1, billingCity, billingPostcode } = billingInfo;
-    if (!billingFirstName || !billingEmail || !billingPhone || !billingAddress1 || !billingCity || !billingPostcode) {
-      toast.error("Please fill in all required fields!", { position: toast.POSITION.TOP_CENTER });
+    if (
+      !billingFirstName.trim() ||
+      !billingEmail.trim() ||
+      !billingPhone.trim() ||
+      !billingAddress1.trim() ||
+      !billingCity.trim() ||
+      !billingPostcode.trim() ||
+      !validateEmail(billingEmail.trim()) || // Kiểm tra định dạng email
+      !validatePhone(billingPhone.trim()) // Kiểm tra định dạng số điện thoại
+    ) {
+      toast.error("Please fill in all required fields correctly!", { position: toast.POSITION.TOP_CENTER });
       return;
     }
 
@@ -130,6 +139,16 @@ function Checkout() {
       toast.error("Failed to checkout!", { position: toast.POSITION.TOP_CENTER });
     }
   };
+  const validateEmail = (email) => {
+  const re = /\S+@\S+\.\S+/;
+  return re.test(email);
+};
+
+// Hàm kiểm tra định dạng số điện thoại
+const validatePhone = (phone) => {
+  const re = /^\d{10,}$/;
+  return re.test(phone);
+};
 
   return (
     <>
