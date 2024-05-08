@@ -13,6 +13,18 @@ import axios from "axios"
 import { Link } from 'react-router-dom';
 function Products() {
   const [products, setProducts] = useState([]);
+  const [categoryChilds, setCategoryChilds] = useState([]);
+  const [search, setSearch] = useState('');
+  const [displayedProducts, setDisplayedProducts] = useState([]);
+  const ProductsPerPage = 9;
+  const [currentPage, setCurrentPage] = useState(1);
+ 
+  
+  // Now you can use these variables in your code
+  
+
+  
+
   useEffect(() => {
     axios.get('https://localhost:7121/api/v1/Products')
     .then(res => {
@@ -20,13 +32,60 @@ function Products() {
     })
     .catch(err => {
         console.log(err)
+    });
+    axios.get('https://localhost:7121/api/v1/CategoryChilds')
+    .then(res => {
+      setCategoryChilds(res.data)
     })
-}, []) ;
-const [search, setSearch] = useState('');
+    .catch(err => {
+        console.log(err)
+    });
 
+}, []) ;
+const filterByCategory = (categoryId) => {
+  axios
+    .get(`https://localhost:7121/api/v1/Products/categorychild?categorychildId=${categoryId}`)
+    .then((response) => {
+      setProducts(response.data);
+    })
+    .catch((error) => {
+      console.error('Error fetching products by category:', error);
+    });
+};
+
+
+
+
+useEffect(() => {
   const filteredProducts = products.filter(product =>
     product.name.toLowerCase().includes(search.toLowerCase())
   );
+  setDisplayedProducts(filteredProducts);
+}, [products, search]);
+
+const handleSortChange = (event) => {
+  const sortValue = event.target.value;
+  let sortedProducts;
+
+  if (sortValue === 'price') {
+    sortedProducts = [...displayedProducts].sort((a, b) => a.price - b.price);
+  } else if (sortValue === 'price-desc') {
+    sortedProducts = [...displayedProducts].sort((a, b) => b.price - a.price);
+  } else {
+    sortedProducts = [...displayedProducts];
+  }
+
+  setDisplayedProducts(sortedProducts);
+};
+
+const indexOfFirstItem = (currentPage - 1) * ProductsPerPage;
+const indexOfLastItem = indexOfFirstItem + ProductsPerPage;
+
+const productsToShow = displayedProducts.slice(indexOfFirstItem, indexOfLastItem);
+const handleClick = (pageNumber) => {
+  setCurrentPage(pageNumber);
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+};
     return (  
         <>
   {/* page-title */}
@@ -72,22 +131,20 @@ const [search, setSearch] = useState('');
             <p className="products-result-count">Showing 1–9 of 23 results</p>
             <form className="products-ordering" method="get">
               <div className="orderby">
-                <select name="orderby" className="select2-hidden-accessible">
-                  <option value="menu_order" selected="selected">
-                    Default sorting
-                  </option>
-                  <option value="popularity">Sort by popularity</option>
-                  <option value="rating">Sort by average rating</option>
-                  <option value="date">Sort by newness</option>
-                  <option value="price">Sort by price: low to high</option>
-                  <option value="price-desc">Sort by price: high to low</option>
-                </select>
+              <select name="orderby" className="select2-hidden-accessible" onChange={handleSortChange}>
+  <option value="menu_order" selected="selected">
+    Default sorting
+  </option>
+  
+  <option value="price">Sort by price: low to high</option>
+  <option value="price-desc">Sort by price: high to low</option>
+</select>
               </div>
             </form>
             <div className="products row">
               {/* product */}
-              {products.map((product, index) => (
-                <div key={index} className="product col-md-3 col-sm-6 col-xs-12">
+              {productsToShow.map((product, index) => (
+                <div key={index} className="product col-md-4 col-sm-6 col-xs-12">
                   
                     <div className="ttm-product-box">
                       {/* ttm-product-box-inner */}
@@ -166,18 +223,28 @@ const [search, setSearch] = useState('');
               ))}
             </div>
             <div className="col-lg-12">
-              <div className="ttm-pagination text-center">
-                <span aria-current="page" className="page-numbers current">
-                  1
-                </span>
-                <a className="page-numbers" href="#">
-                  2
-                </a>
-                <a className="next page-numbers" href="#">
-                  <i className="ti ti-arrow-right" />
-                </a>
-              </div>
-            </div>
+      <div className="ttm-pagination text-center">
+      <a className="next page-numbers" href="#" onClick={() => handleClick(currentPage - 1)}>
+          <i className="ti ti-arrow-left " />
+        </a>
+        {[...Array(Math.ceil(products.length / ProductsPerPage))].map((_, index) => {
+          const pageNumber = index + 1;
+          return (
+            <span
+              key={pageNumber}
+              aria-current="page"
+              className={`page-numbers ${currentPage === pageNumber ? 'current' : ''}`}
+              onClick={() => handleClick(pageNumber)}
+            >
+              {pageNumber}
+            </span>
+          );
+        })}
+        <a className="next page-numbers" href="#" onClick={() => handleClick(currentPage + 1)}>
+          <i className="ti ti-arrow-right" />
+        </a>
+      </div>
+    </div>
           </div>
           <div className="col-lg-3 widget-area sidebar-right ttm-col-bgcolor-yes ttm-bg ttm-right-span ttm-bgcolor-grey">
             <div className="ttm-col-wrapper-bg-layer ttm-bg-layer" />
@@ -210,67 +277,65 @@ const [search, setSearch] = useState('');
             <aside className="widget products top-rated-products">
               <h3 className="widget-title">Featured Products</h3>
               <ul className="product-list-widget">
-              {filteredProducts.map(product => (
-                <li>
-                  <a>
-                    <Link to={`/productdetail/${product.id}`}>
-                      <img src={product.image} alt="" />
-                      <span className="product-title">{product.name}</span>
-                    </Link>
-                  </a>
-                  <div className="star-ratings">
-                    <ul className="rating">
-                      <li>
-                        <i className="fa fa-star" />
-                      </li>
-                      <li>
-                        <i className="fa fa-star" />
-                      </li>
-                      <li>
-                        <i className="fa fa-star" />
-                      </li>
-                      <li>
-                        <i className="fa fa-star" />
-                      </li>
-                      <li>
-                        <i className="fa fa-star" />
-                      </li>
-                    </ul>
-                  </div>
-                  <span className="product-Price-amount amount">
-                    <span className="product-Price-currencySymbol">$</span>{product.price}.00
-                  </span>
-                </li>
-              ))}
+              {products
+  .sort((a, b) => b.price - a.price)
+  .slice(0, 3)
+  .map(product => (
+    <li>
+      <a>
+        <Link to={`/productdetail/${product.id}`}>
+          <img src={product.image} alt="" />
+          <span className="product-title">{product.name}</span>
+        </Link>
+      </a>
+      <div className="star-ratings">
+        <ul className="rating">
+          <li>
+            <i className="fa fa-star" />
+          </li>
+          <li>
+            <i className="fa fa-star" />
+          </li>
+          <li>
+            <i className="fa fa-star" />
+          </li>
+          <li>
+            <i className="fa fa-star" />
+          </li>
+          <li>
+            <i className="fa fa-star" />
+          </li>
+        </ul>
+      </div>
+      <span className="product-Price-amount amount">
+        <span className="product-Price-currencySymbol">$</span>{product.price}.00
+      </span>
+    </li>
+))}
               </ul>
             </aside>
             <aside className="widget widget-categories">
               <h3 className="widget-title">Product Categories</h3>
               <ul>
-                <li>
-                  <a href="#">Cardiac Care</a>
-                </li>
-                <li>
-                  <a href="#">Medical Devices</a>
-                </li>
-                <li>
-                  <a href="#">Skin Care</a>
-                </li>
-                <li>
-                  <a href="#">Stomach Care</a>
-                </li>
-                <li>
-                  <a href="#">Thermometer &amp; Mask</a>
-                </li>
-                <li>
-                  <a href="#">Uncategorized</a>
-                </li>
-                <li>
-                  <a href="#">Weight Loss</a>
-                </li>
-                <li>
-                  <a href="#">Women's Care</a>
-                </li>
+                <li><a
+                href="#0"
+                className="clear-check"
+                onClick={(e) => {
+                  e.preventDefault();
+                  axios
+                    .get('https://localhost:7121/api/v1/Products')
+                    .then((response) => {
+                      setProducts(response.data);
+                    })
+                    .catch((error) => {
+                      console.error('Error fetching data:', error);
+                    });
+                }}>All</a></li>
+            {categoryChilds.map((categoryChild, index) => (
+                <li onClick={() => filterByCategory(categoryChild.id)}>
+                <a href="#0">{categoryChild.name}</a>
+              </li>
+              ))}
               </ul>
             </aside>
             <aside className="widget widget-text">
