@@ -114,7 +114,7 @@ function Thankyou() {
               </tr>
               <tr>
                 <th style={{padding: '0.75rem', verticalAlign: 'top', borderTop: '1px solid #dee2e6'}}>Address</th>
-                <td style={{padding: '0.75rem', verticalAlign: 'top', borderTop: '1px solid #dee2e6'}}>{checkoutInfo.orderInfo.address}</td>
+                <td style={{padding: '0.75rem', verticalAlign: 'top', borderTop: '1px solid #dee2e6'}}>{checkoutInfo.orderInfo.address}, {checkoutInfo.orderInfo.country}</td>
               </tr>
             </tbody>
           </table>

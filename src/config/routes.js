@@ -12,7 +12,8 @@ const routes = {
     
     thankyou: 'thankyou',
     emailthankyou: '/emailthankyou',
-    myOrder: '/myOrder'
+    myOrder: '/myOrder',
+    profile: '/profile',
 
     
 
