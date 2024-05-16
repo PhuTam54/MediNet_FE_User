@@ -15,6 +15,7 @@ import Products from '~/pages/Products';
 import Shop from '~/pages/Shop';
 import SignUp from '~/pages/Signup';
 import Thankyou from '~/pages/Thankyou';
+import Profile from '~/pages/Profile';
 
 
 
@@ -36,6 +37,7 @@ export const publicRoutes = [
     { path: config.routes.signup, component: SignUp, layout: LayoutOnly},
 
     { path: config.routes.thankyou, component: Thankyou },
+    { path: config.routes.profile, component: Profile}
    
 ];
 

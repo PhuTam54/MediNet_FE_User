@@ -14,7 +14,9 @@ function Checkout() {
     billingPhone: '',
     billingAddress1: '',
     billingCity: '',
-    billingPostcode: ''
+    billingPostcode: '',
+    billingCountry: '',
+    billingDistrict: '',
   });
 
   const getTokenData = () => {
@@ -61,7 +63,7 @@ function Checkout() {
   };
 
   const handleCheckout = async () => {
-    const { billingFirstName, billingEmail, billingPhone, billingAddress1, billingCity, billingPostcode } = billingInfo;
+    const {billingCountry,billingDistrict, billingFirstName, billingEmail, billingPhone, billingAddress1, billingCity, billingPostcode } = billingInfo;
     if (
       !billingFirstName.trim() ||
       !billingEmail.trim() ||
@@ -69,6 +71,8 @@ function Checkout() {
       !billingAddress1.trim() ||
       !billingCity.trim() ||
       !billingPostcode.trim() ||
+      !billingCountry.trim() ||
+      !billingDistrict.trim() ||
       !validateEmail(billingEmail.trim()) || // Kiểm tra định dạng email
       !validatePhone(billingPhone.trim()) // Kiểm tra định dạng số điện thoại
     ) {
@@ -89,6 +93,10 @@ function Checkout() {
         tel: billingPhone,
         address: billingAddress1,
         totalAmount: totalPrice.toFixed(2),
+        zip_Code:billingPostcode,
+        district:billingCity,
+        city:billingCity,
+        country: "Vietnam",
         description: "order product success",
         shipping_method: "Standard", // or any other shipping method
         payment_method: "PayPal",
@@ -246,14 +254,42 @@ const validatePhone = (phone) => {
                       </p>
                       <div style={{ display: "flex" }}>
                         <span className="form-row">
-                          <label>Town / City&nbsp;<abbr className="required" title="required">*</abbr></label>
+                          <label>District&nbsp;<abbr className="required" title="required">*</abbr></label>
+                          <input
+                            type="text"
+                            className="input-text"
+                            name="billingDistrict"
+                            value={billingInfo.billingDistrict}
+                            onChange={handleBillingChange}
+                            placeholder="Nam Tu Liem..."
+                            style={{ border: "1px solid #999", borderRadius: 5, width: "100%" }}
+                          />
+                        </span>
+                        <span className="form-row">
+                          <label>City&nbsp;<abbr className="required" title="required">*</abbr></label>
                           <input
                             type="text"
                             className="input-text"
                             name="billingCity"
                             value={billingInfo.billingCity}
                             onChange={handleBillingChange}
-                            placeholder="Ha Noi..."
+                            placeholder="HaNoi..."
+                            style={{ border: "1px solid #999", borderRadius: 5, width: "100%" }}
+                          />
+                        </span>
+                      </div>
+
+                      <div style={{ display: "flex" }}>
+                       
+                        <span className="form-row">
+                          <label>Country&nbsp;<abbr className="required" title="required">*</abbr></label>
+                          <input
+                            type="text"
+                            className="input-text"
+                            name="billingCountry"
+                            value={billingInfo.billingCountry}
+                            onChange={handleBillingChange}
+                            placeholder="Vietnam..."
                             style={{ border: "1px solid #999", borderRadius: 5, width: "100%" }}
                           />
                         </span>
@@ -270,6 +306,7 @@ const validatePhone = (phone) => {
                           />
                         </span>
                       </div>
+                      
                     </div>
                   </div>
                   <div className="col-lg-6">

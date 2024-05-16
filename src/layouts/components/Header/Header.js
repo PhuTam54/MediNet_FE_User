@@ -502,113 +502,116 @@ function Header() {
                         </li>
                       </ul>
                     </li>
-                    <li className="header-button pr-0">
-  <div className="container" style={{ textAlign: 'center' }}>
-    {/* Hiển thị biểu tượng người dùng nếu đã đăng nhập */}
-    {isLoggedIn ? (
-       <a href="#">
-       <FontAwesomeIcon style={{color: "#01d6a3"}} icon={faUser} />
-     </a>
-    ) : (
-      // Hiển thị "Join Us" nếu chưa đăng nhập
-      <a href="#0" style={{ margin: '0' }}><strong>Join Us</strong></a>
-    )}
-    <br />
-  </div>
-  <ul className="submenu">
-    {/* Check if user is logged in, if yes, display logout option */}
-    
-    {isLoggedIn ? (
-      
-      <li>
-          <div className="vanh_hover">
-            <a style={{fontSize: 15, color: "black"}} href="/myOrder">My Order</a>
-          </div>
-          <div className="vanh_hover">
-            <a href="#0" style={{fontSize: 15, color: "black"}} onClick={() => handleLogout()}>Log Out</a>
-            
-          </div>
-          <div style={{ display: 'flex', justifyContent: 'center' }}>
-              {user && user.email && (
-                <span style={{ margin: 20, color: 'black' }}>
-                  {user.email}
-                </span>
-              )}
-            </div>
-      </li>
-    ) : (
-      // If user is not logged in, display login option
-      <li>
-        <a style={{fontSize: 15}} href="/login">Log In</a>
-      </li>
-    )}
-  </ul>
-</li>
-                  </ul>
-                </nav>
-              </div>
-              {/* site-navigation end*/}
-            </div>
-          </div>
-        </div>
-      </div>
-      {/* ttm-stickable-header-w end*/}
-    </div>
-    {/*ttm-header-wrap end */}
-    <div className="ttm-content-wrapper">
-      <div className="container">
-        <div className="row">
-          <div className="col-lg-12">
-            {/* ttm-info-widget*/}
-            <div className="ttm-info-widget">
-              <div className="header-widget">
-                <div className="header-icon">
-                  <i className="fa fa-hospital-o" />
-                </div>
-                <div className="header-content">
-                  <h3>Number 1 Hospital</h3>
-                  <p>In United States</p>
-                </div>
-              </div>
-              <div className="header-widget">
-                <div className="header-icon">
-                  <i className="fa fa-user-md" />
-                </div>
-                <div className="header-content">
-                  <h3>Personal Cabinet</h3>
-                  <p>Qualified Staff</p>
-                </div>
-              </div>
-              <div className="header-widget">
-                <div className="header-icon">
-                  <i className="fa fa-thumbs-o-up" />
-                </div>
-                <div className="header-content">
-                  <h3>Get Result Online</h3>
-                  <p>Satisfied Patients</p>
-                </div>
-              </div>
-            </div>
-            {/* ttm-info-widget end */}
-            <div className="ttm-contact">
-              <span className="icon">
-                <i className="fa fa-phone" />
-              </span>
-              Toll Free : 1 123 456 78910
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </header>
-  {/*header end*/}
-</>
+                                        <li className="header-button pr-0">
+                      <div className="container" style={{ textAlign: 'center' }}>
 
-    
+                        {isLoggedIn ? (
+                          <a href="#">
+                          <FontAwesomeIcon style={{color: "#01d6a3"}} icon={faUser} />
+                        </a>
+                        ) : (
+                         
+                          <a href="#0" style={{ margin: '0' }}><strong>Join Us</strong></a>
+                        )}
+                        <br />
+                      </div>
+                      <ul className="submenu">
 
-    
-      
-    );
-}
+                        
+                        {isLoggedIn ? (
+                          
+                          <li>
+                              <div className="vanh_hover">
+                                <a style={{fontSize: 15, color: "black"}} href="/profile">My Profile</a>
+                              </div>
+                              <div className="vanh_hover">
+                                <a style={{fontSize: 15, color: "black"}} href="/myOrder">My Order</a>
+                              </div>
+                              <div className="vanh_hover">
+                                <a href="#0" style={{fontSize: 15, color: "black"}} onClick={() => handleLogout()}>Log Out</a>
+                                
+                              </div>
+                              <div style={{ display: 'flex', justifyContent: 'center' }}>
+                                  {user && user.email && (
+                                    <span style={{ margin: 20, color: 'black' }}>
+                                      {user.email}
+                                    </span>
+                                  )}
+                                </div>
+                          </li>
+                        ) : (
+                          // If user is not logged in, display login option
+                          <li>
+                            <a style={{fontSize: 15}} href="/login">Log In</a>
+                          </li>
+                        )}
+                      </ul>
+                    </li>
+                                      </ul>
+                                    </nav>
+                                  </div>
+                                  {/* site-navigation end*/}
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                          {/* ttm-stickable-header-w end*/}
+                        </div>
+                        {/*ttm-header-wrap end */}
+                        <div className="ttm-content-wrapper">
+                          <div className="container">
+                            <div className="row">
+                              <div className="col-lg-12">
+                                {/* ttm-info-widget*/}
+                                <div className="ttm-info-widget">
+                                  <div className="header-widget">
+                                    <div className="header-icon">
+                                      <i className="fa fa-hospital-o" />
+                                    </div>
+                                    <div className="header-content">
+                                      <h3>Number 1 Hospital</h3>
+                                      <p>In United States</p>
+                                    </div>
+                                  </div>
+                                  <div className="header-widget">
+                                    <div className="header-icon">
+                                      <i className="fa fa-user-md" />
+                                    </div>
+                                    <div className="header-content">
+                                      <h3>Personal Cabinet</h3>
+                                      <p>Qualified Staff</p>
+                                    </div>
+                                  </div>
+                                  <div className="header-widget">
+                                    <div className="header-icon">
+                                      <i className="fa fa-thumbs-o-up" />
+                                    </div>
+                                    <div className="header-content">
+                                      <h3>Get Result Online</h3>
+                                      <p>Satisfied Patients</p>
+                                    </div>
+                                  </div>
+                                </div>
+                                {/* ttm-info-widget end */}
+                                <div className="ttm-contact">
+                                  <span className="icon">
+                                    <i className="fa fa-phone" />
+                                  </span>
+                                  Toll Free : 1 123 456 78910
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </header>
+                      {/*header end*/}
+                    </>
 
-export default Header;
+                        
+
+                        
+                          
+                        );
+                    }
+
+                    export default Header;
