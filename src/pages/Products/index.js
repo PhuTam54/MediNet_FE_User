@@ -10,41 +10,103 @@ import product9 from "~/assets/images/product/product-nine.jpg"
 import product10 from "~/assets/images/product/product-ten.jpg"
 import React, { useState, useEffect } from 'react';
 import axios from "axios"
-import { Link } from 'react-router-dom';
+import { Link ,useLocation} from 'react-router-dom';
+function useQuery() {
+  return new URLSearchParams(useLocation().search);
+}
 function Products() {
   const [products, setProducts] = useState([]);
-  const [categoryChilds, setCategoryChilds] = useState([]);
+  const [categoryParents, setCategoryParents] = useState([]);
+  const [manufacturers, setManufacturers] = useState([]);
   const [search, setSearch] = useState('');
   const [displayedProducts, setDisplayedProducts] = useState([]);
   const ProductsPerPage = 9;
   const [currentPage, setCurrentPage] = useState(1);
- 
+  const [selectedManufacturer, setSelectedManufacturer] = useState(null);
+const [selectedCategory, setSelectedCategory] = useState(null);
+
   
+ 
+const query = useQuery();
+
+
+useEffect(() => {
+  const categoryChildId = query.get("categoryChild");
+  axios.get(`https://localhost:7121/api/v1/Products/categoryChildId?categoryChildId=${categoryChildId}`)
+    .then(response => {
+      setProducts(response.data);
+    })
+    .catch(error => {
+      console.error('There was an error!', error);
+    });
+}, []);
+
+useEffect(() => {
+  let filteredProducts = products;
+
+  if (selectedManufacturer) {
+    filteredProducts = filteredProducts.filter(product => product.manufacturer === selectedManufacturer);
+  }
+
+  if (selectedCategory) {
+    filteredProducts = filteredProducts.filter(product => product.category === selectedCategory);
+  }
+
+  // Thêm lọc sản phẩm dựa trên giá trị tìm kiếm
+  if (search) {
+    filteredProducts = filteredProducts.filter(product => product.name.toLowerCase().includes(search.toLowerCase()));
+  }
+
+  setDisplayedProducts(filteredProducts);
+}, [products, selectedManufacturer, selectedCategory, search]); // Thêm search vào mảng dependencies
   // Now you can use these variables in your code
   
 
   
 
   useEffect(() => {
-    axios.get('https://localhost:7121/api/v1/Products')
+    axios
+  .get('https://localhost:7121/api/v1/Products')
+  .then((response) => {
+    setProducts(response.data);
+    const manufacturers = [...new Set(response.data.map(product => product.manufacturer))];
+    setManufacturers(manufacturers);
+  })
+  .catch((error) => {
+    console.error('Error fetching data:', error);
+  });
+    axios.get('https://localhost:7121/api/v1/CategoryParents')
     .then(res => {
-      setProducts(res.data)
-    })
-    .catch(err => {
-        console.log(err)
-    });
-    axios.get('https://localhost:7121/api/v1/CategoryChilds')
-    .then(res => {
-      setCategoryChilds(res.data)
+      setCategoryParents(res.data)
     })
     .catch(err => {
         console.log(err)
     });
 
 }, []) ;
+const filterByCategoryParent = (categoryParentId) => {
+  axios
+    .get(`https://localhost:7121/api/v1/Products/categoryParentId?categoryParentId=${categoryParentId}`)
+    .then((response) => {
+      setProducts(response.data);
+    })
+    .catch((error) => {
+      console.error('Error fetching products by category:', error);
+    });
+};
 const filterByCategory = (categoryId) => {
   axios
-    .get(`https://localhost:7121/api/v1/Products/categorychild?categorychildId=${categoryId}`)
+    .get(`https://localhost:7121/api/v1/Products/categoryId?categoryId=${categoryId}`)
+    .then((response) => {
+      setProducts(response.data);
+    })
+    .catch((error) => {
+      console.error('Error fetching products by category:', error);
+    });
+};
+const filterByCategoryChild = (categoryChildId) => {
+  axios
+    .get(`https://localhost:7121/api/v1/Products/categoryChildId?categoryChildId=${categoryChildId}`)
     .then((response) => {
       setProducts(response.data);
     })
@@ -56,12 +118,7 @@ const filterByCategory = (categoryId) => {
 
 
 
-useEffect(() => {
-  const filteredProducts = products.filter(product =>
-    product.name.toLowerCase().includes(search.toLowerCase())
-  );
-  setDisplayedProducts(filteredProducts);
-}, [products, search]);
+
 
 const handleSortChange = (event) => {
   const sortValue = event.target.value;
@@ -78,6 +135,14 @@ const handleSortChange = (event) => {
   setDisplayedProducts(sortedProducts);
 };
 
+//giới hạn kí tự of tên
+function truncate(str, num) {
+  if (str.length <= num) {
+    return str;
+  }
+  return str.slice(0, num) + '...';
+}
+
 const indexOfFirstItem = (currentPage - 1) * ProductsPerPage;
 const indexOfLastItem = indexOfFirstItem + ProductsPerPage;
 
@@ -86,6 +151,12 @@ const handleClick = (pageNumber) => {
   setCurrentPage(pageNumber);
   window.scrollTo({ top: 0, behavior: 'smooth' });
 };
+//hover dropdown
+const [isHovered, setIsHovered] = useState(Array(categoryParents.length).fill(false));
+const [isHoveredCategory, setIsHoveredCategory] = useState(null);
+//
+
+
     return (  
         <>
   {/* page-title */}
@@ -120,15 +191,150 @@ const handleClick = (pageNumber) => {
     {/* /.container */}
   </div>
   {/* page-title end*/}
+  {/* dropdowncategoryparent */}
+  
   {/*site-main start*/}
-  <div className="site-main">
+  <div className="site-main" >
+    
     {/* sidebar */}
     <div className="sidebar ttm-sidebar-right ttm-bgcolor-white clearfix">
       <div className="container">
         {/* row */}
         <div className="row">
-          <div className="col-lg-9 content-area">
-            <p className="products-result-count">Showing 1–9 of 23 results</p>
+        <div className="col-lg-9 content-area" style={{ position: 'relative' }}>
+  <nav style={{ position: 'absolute', top: '0', zIndex: 9999 }}>
+  <ul className="dropdown" style={{ 
+      margin: 0, 
+      padding: 0, 
+      overflow: 'hidden', 
+      display: 'flex',
+      position: 'relative',
+      zIndex:1000
+    }}>
+
+      
+      <li 
+    style={{ 
+      float: 'left', 
+      listStyleType: 'none' 
+    }} 
+    
+  >
+    <a href="#0" style={{ 
+      display: 'block', 
+      textAlign: 'center', 
+      padding: '14px 16px', 
+      textDecoration: 'none' 
+    }}
+    onClick={(e) => {
+      e.preventDefault();
+      axios
+        .get('https://localhost:7121/api/v1/Products')
+        .then((response) => {
+          setProducts(response.data);
+        })
+        .catch((error) => {
+          console.error('Error fetching data:', error);
+        });
+    }}
+    
+    >
+      All
+    </a>
+    
+    
+  </li>
+      {categoryParents.map((categoryParent, index) => (
+        <li 
+          style={{ 
+            float: 'left', 
+            listStyleType: 'none' 
+          }} 
+          onMouseEnter={() => setIsHovered(prevState => {
+            const newState = [...prevState];
+            newState[index] = true;
+            return newState;
+          })} 
+          onMouseLeave={() => setIsHovered(prevState => {
+            const newState = [...prevState];
+            newState[index] = false;
+            return newState;
+          })}
+          onClick={(e) => {
+            e.preventDefault();
+           
+            
+          }}
+        >
+          <a href="#0" style={{ 
+            display: 'block', 
+            
+            textAlign: 'center', 
+            padding: '14px 16px', 
+            textDecoration: 'none' 
+          }}
+          onClick={(e) => {
+            e.preventDefault();
+            filterByCategoryParent(categoryParent.id);
+          }}
+          
+          >
+            {categoryParent.name}
+          </a>
+          <ul style={{ 
+  display: isHovered[index] ? 'block' : 'none',
+  backgroundColor: 'white' 
+}}>
+  {categoryParent.categories.map((category) => (
+    <li 
+    style={{ 
+      listStyleType: 'none' // Apply to <li> instead of <ul>
+    }}
+    onMouseEnter={() => setIsHoveredCategory(category.id)}
+    onMouseLeave={() => setIsHoveredCategory(null)}
+    
+  >
+    <a href="#"
+    onClick={(e) => {
+      e.preventDefault();
+      filterByCategory(category.id);
+    }}
+    >{category.name}</a>
+    {isHoveredCategory === category.id && (
+      <ul style={{ 
+        display: 'block',
+        backgroundColor: 'white' 
+      }}>
+        {category.categoryChilds.map((child) => (
+          <li style={{ 
+            listStyleType: 'none' // Apply to <li> instead of <ul>
+            
+          }}
+          
+          >
+            <a href="#"
+            onClick={(e) => {
+              e.preventDefault();
+              filterByCategoryChild(child.id);
+            }}
+            >{child.name}</a>
+          </li>
+          
+        ))}
+      </ul>
+    )}
+  </li>
+  ))}
+</ul>
+        </li>
+        
+        
+      ))}
+      
+    </ul>
+</nav>
+<p className="products-result-count"></p>
+
             <form className="products-ordering" method="get">
               <div className="orderby">
               <select name="orderby" className="select2-hidden-accessible" onChange={handleSortChange}>
@@ -170,7 +376,7 @@ const handleClick = (pageNumber) => {
                           <div className="onsale">Sale!</div>
                           <img
                             className="img-fluid"
-                            src={product.image}
+                            src={product.imageSrc}
                             alt=""
                           />
                         </div>
@@ -179,7 +385,7 @@ const handleClick = (pageNumber) => {
                       <div className="ttm-product-content">
                         <a className="ttm-product-title" href="">
                           <Link to={`/productdetail/${product.id}`}>
-                            <h2>{product.name}</h2>
+                          <h2>{truncate(product.name, 20)}</h2>
                           </Link>
                         </a>
                         <div className="star-ratings">
@@ -284,7 +490,7 @@ const handleClick = (pageNumber) => {
     <li>
       <a>
         <Link to={`/productdetail/${product.id}`}>
-          <img src={product.image} alt="" />
+          <img src={product.imageSrc} alt="" />
           <span className="product-title">{product.name}</span>
         </Link>
       </a>
@@ -314,28 +520,37 @@ const handleClick = (pageNumber) => {
 ))}
               </ul>
             </aside>
+            
             <aside className="widget widget-categories">
-              <h3 className="widget-title">Product Categories</h3>
+              <h3 className="widget-title">Manufacturers</h3>
               <ul>
-                <li><a
-                href="#0"
-                className="clear-check"
-                onClick={(e) => {
-                  e.preventDefault();
-                  axios
-                    .get('https://localhost:7121/api/v1/Products')
-                    .then((response) => {
-                      setProducts(response.data);
-                    })
-                    .catch((error) => {
-                      console.error('Error fetching data:', error);
-                    });
-                }}>All</a></li>
-            {categoryChilds.map((categoryChild, index) => (
-                <li onClick={() => filterByCategory(categoryChild.id)}>
-                <a href="#0">{categoryChild.name}</a>
-              </li>
-              ))}
+              <li>
+  <a
+    href="#0"
+    className="clear-check"
+    onClick={(e) => {
+      e.preventDefault();
+      setSelectedManufacturer(null); // Reset the selected manufacturer
+    }}
+  >
+    All
+  </a>
+</li>
+              {manufacturers.map((manufacturer, index) => (
+
+  <li key={index}>
+    <a
+      href="#0"
+      onClick={(e) => {
+        e.preventDefault();
+        setSelectedManufacturer(manufacturer);
+      }}
+    >
+      {manufacturer}
+    </a>
+  </li>
+))}
+            
               </ul>
             </aside>
             <aside className="widget widget-text">
