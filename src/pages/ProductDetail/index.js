@@ -1,17 +1,10 @@
-
-
-import product1 from "~/assets/images/product/product-one.jpg"
-import product2 from "~/assets/images/product/product-two.jpg"
-import product3 from "~/assets/images/product/product-three.jpg"
-import product4 from "~/assets/images/product/product-four.jpg"
-import product7 from "~/assets/images/product/product-seven.jpg"
-import product8 from "~/assets/images/product/product-eight.jpg"
 import comment1 from "~/assets/images/blog/blog-comment-01.jpg"
 import { Link, useLocation } from 'react-router-dom';
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useParams } from 'react-router-dom';
 import { toast } from "react-toastify"
+import { post, del } from '~/utils/httpRequest'; 
 function ProductDetail({  }) {
   const [products, setProducts] = useState([]);
   const [product, setProduct] = useState({});
@@ -23,7 +16,6 @@ function ProductDetail({  }) {
   const [feedback, setFeedback] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [feedbackPerPage] = useState(2);
-
   useEffect(() => {
     axios.get('https://localhost:7121/api/v1/Products')
     .then(res => {
@@ -40,6 +32,21 @@ function ProductDetail({  }) {
     fetchProduct();
   }, [id]);
   const currentProductCategoryChildId = product.categoryChildId;
+  //feedback
+  useEffect(() => {
+    const fetchFeedback = async () => {
+      try {
+        const response = await axios.get(`https://localhost:7121/api/v1/Feedbacks/productId?productId=${id}`);
+        setFeedback(response.data);
+      } catch (error) {
+
+        console.error('Failed to fetch feedback', error);
+      }
+    };
+
+    fetchFeedback();
+  }, [id]);
+  
 // get token from local storage
 const getTokenData = () => {
         const token = localStorage.getItem('token');
@@ -52,26 +59,13 @@ const getTokenData = () => {
         }
         return null;
     };
-
-    fetchFeedback();
-  }, [id]);
-  
-  const getTokenData = () => {
-    const token = localStorage.getItem('token');
-    if (token) {
-      const tokenData = token.split('.')[1];
-      const decodedToken = atob(tokenData);
-      const tokenObject = JSON.parse(decodedToken);
-      const userId = tokenObject.userId; // Lấy userId từ token
-      return userId;
-    }
-    return null;
-  };
-
+  // Save userId to localStorage
   const userId = getTokenData();
   if (userId) {
     localStorage.setItem('userId', userId);
   }
+  // add to cart
+
 
   const addToCart = () => {
     const cartItem = {
@@ -82,17 +76,83 @@ const getTokenData = () => {
     };
 
     axios.post('https://localhost:7121/api/v1/Carts', cartItem)
-    .then( )
-    .catch(error => console.error(error));
-    toast.success('Product added to cart');
-};
+      .then(() => {
+        toast.success('Product added to cart');
+      })
+      .catch(error => console.error(error));
+  };
+
+  // Hàm xử lý khi người dùng chọn hình ảnh
+  const handleImageChange = (event) => {
+    const selectedFile = event.target.files[0];
+    setImageFile(selectedFile);
+  };
+
+  const handleVoteChange = (event) => {
+    setVote(parseInt(event.target.value));
+  };
+  // const deleteFeedback = async (feedbackId) => {
+  //   try {
+  //     await del(`https://localhost:7121/api/v1/Feedbacks/id?id=${feedbackId}`);
+//     toast.success('Feedback deleted successfully');
+  //     window.location.reload();
+  //   } catch (error) {
+  //     console.error('Failed to delete feedback', error);
+  //     toast.error('Failed to delete feedback');
+  //   }
+  // };
+
+  // Hàm xử lý khi người dùng thay đổi description
+  const handleDescriptionChange = (event) => {
+    setDescription(event.target.value);
+  };
+
+  // Hàm xử lý khi người dùng gửi feedback
+  const submitFeedback = async () => {
+    const feedbackData = {
+      Vote: vote,
+      Description: description,
+      CustomerId: userId,
+      ProductId: product.id,
+      ImagesFeedbackFile: imageFile // Hình ảnh feedback
+    };
+
+    try {
+      await post('https://localhost:7121/api/v1/Feedbacks', feedbackData, {
+        headers: {
+          'Content-Type': 'multipart/form-data' // Đảm bảo đúng loại nội dung cho việc tải lên tệp
+        }
+      });
+      toast.success('Feedback submitted successfully');
+      window.location.reload();
+    } catch (error) {
+      console.error('Failed to submit feedback', error);
+      toast.error('Failed to submit feedback');
+    }
+  };
+  const renderStars = (rating) => {
+    const stars = [];
+    for (let i = 1; i <= 5; i++) {
+      if (i <= rating) {
+        stars.push(<i key={i} className="fa fa-star" style={{ color: 'gold' }} />);
+      } else {
+        stars.push(<i key={i} className="fa fa-star" style={{ color: 'lightgray' }} />);
+      }
+    }
+    return stars;
+  };
+
+
+  const indexOfLastFeedback = currentPage * feedbackPerPage;
+  const indexOfFirstFeedback = indexOfLastFeedback - feedbackPerPage;
+  const currentFeedback = feedback.slice(indexOfFirstFeedback, indexOfLastFeedback);
+
+  const paginate = (pageNumber) => setCurrentPage(pageNumber);
 // tab thong tin
 const [activeTab, setActiveTab] = useState('Description');
 
     return ( 
         <>
-
-
   {/* page-title */}
   <div className="ttm-page-title-row">
     <div className="ttm-page-title-row-bg-layer ttm-bg-layer" />
@@ -127,7 +187,7 @@ const [activeTab, setActiveTab] = useState('Description');
   {/* page-title end*/}
   {/*site-main start*/}
   <div className="site-main single">
-    {/* sidebar */}
+{/* sidebar */}
     <div className="sidebar ttm-sidebar-right products ttm-bgcolor-white break-991-colum clearfix">
       <div className="container">
         {/* row */}
@@ -194,7 +254,7 @@ const [activeTab, setActiveTab] = useState('Description');
         <td style={{ border: '1px solid transparent', verticalAlign: 'top' }}>{product.description}</td>
       </tr>
       <tr style={{ border: '1px solid transparent' }}>
-        <th style={{ border: '1px solid transparent', verticalAlign: 'top' }}>Category:</th>
+<th style={{ border: '1px solid transparent', verticalAlign: 'top' }}>Category:</th>
         <td style={{ border: '1px solid transparent', verticalAlign: 'top' }}>
         {product.categoryChild && product.categoryChild.name && (
   <a href={`/Products?categoryChild=${product.categoryChild.id}`} rel="tag">
@@ -268,7 +328,7 @@ const [activeTab, setActiveTab] = useState('Description');
       </ul>
       <div className="content-tab ttm-bgcolor-white">
         {activeTab === 'Description' && (
-          <div className="content-inner">
+<div className="content-inner">
           {product && Array.isArray(product.productDetails) && product.productDetails.map((detail, index) => (
             <div key={index}>
               <h2>Description</h2>
@@ -299,8 +359,107 @@ const [activeTab, setActiveTab] = useState('Description');
 )}
         {activeTab === 'Reviews' && (
           <div className="content-inner">
-            {/* Reviews content goes here */}
+          <div id="reviews" className="woocommerce-Reviews">
+
+            <div id="comments">
+              <h2 className="woocommerce-Reviews-title">
+                Review for <span>{product.name}</span>
+              </h2>
+              <ol className="commentlist">
+                {currentFeedback.map((item, index) => (
+                  <li  key={index} className="review">
+                    <div className="comment_container">
+                      {/* You can use product image here */}
+                      <img
+                        className="avatar"
+                        src={comment1}
+                        alt="comment-img"
+                      />
+                      <div className="comment-text">
+                        <div className="star-rating">
+                          <span>
+                           {renderStars(item.vote)}
+
+                          </span>
+                        </div>
+                        <p className="meta">
+                          <strong className="eview__author">
+                            {item.customer.username}
+                          </strong>
+                          <span style={{margin:"0 7px"}} className="review__dash">–</span>
+                          <time style={{fontSize: 13}}
+                            className="woocommerce-review__published-date"
+                            dateTime={new Date().toISOString()}
+                          >
+                            {/* You can format date as needed */}
+                            {new Date().toDateString()}
+                          </time>
+                        </p>
+                        <div className="description">
+                          <p>
+                            {item.description}
+                          </p>
+                        </div>
+
+                          <img style={{width: "100px"}}
+                            src={item.imagesSrc}
+                            alt="feedback-img"
+/>
+
+                      </div>
+                    </div>
+                     {/* <button onClick={() => deleteFeedback(item.id)}>Delete Feedback</button> */}
+                  </li>
+                ))}
+              </ol>
+            </div>
+            <div className="ttm-pagination text-center" style={{ display: "flex", justifyContent: "center" }}>
+
+              <ul style={{ listStyle: "none", padding: 0, display: "flex" }}>
+                {Array.from({length: Math.ceil(feedback.length / feedbackPerPage)}, (_, i) => i + 1).map((number) => (
+                  <li key={number} className="page-item">
+                    <a onClick={() => paginate(number)} href="#!" className="page-link" style={{ textDecoration: "none", color: "#000", padding: "5px 10px", border: "1px solid #ccc" }}>
+                      {number}
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            </div>
+            <div id="review_form_wrapper">
+              <div className="comment-respond">
+                <span style={{fontSize: 25}} className="comment-reply-title">
+                  Add a review
+
+                </span>
+                <form encType="multipart/form-data" style={{  margin: "auto" }}>
+                  <div style={{ display: "flex", alignItems: "center", marginBottom: "20px" }}>
+                    <div style={{ flex: "1", marginRight: "20px" }}>
+                      <label htmlFor="vote" style={{ display: "block" }}>Vote:</label>
+                      <select id="vote" value={vote} onChange={handleVoteChange} style={{ padding: "11px 10px", borderRadius: "5px", border: "1px solid #ccc", width: "100%" }}>
+                        <option value="">Rate…</option>
+                        <option value={5}>Perfect</option>
+                        <option value={4}>Good</option>
+                        <option value={3}>Average</option>
+                        <option value={2}>Not that bad</option>
+                        <option value={1}>Very poor</option>
+                      </select>
+                    </div>
+                    <div style={{ flex: "1" }}>
+                      <label htmlFor="image" style={{ display: "block" }}>Image:</label>
+                      <input type="file" id="image" onChange={handleImageChange} style={{ padding: "5px 10px", borderRadius: "5px", border: "1px solid #ccc", width: "calc(100%)" }} />
+                    </div>
+                  </div>
+                  <div style={{ marginBottom: "20px" }}>
+                    <label htmlFor="description">Description:</label>
+                    <textarea type="text" id="description" value={description} onChange={handleDescriptionChange} style={{ padding: "5px 10px", borderRadius: "5px", border: "1px solid #ccc", width: "100%" }} />
+                  </div>
+<button type="button" onClick={submitFeedback} style={{ padding: "10px 20px", backgroundColor: "#007bff", color: "#fff", border: "none", borderRadius: "5px", cursor: "pointer" }}>Submit Feedback</button>
+                </form>
+
+              </div>
+            </div>
           </div>
+        </div>
         )}
       </div>
     </div>
