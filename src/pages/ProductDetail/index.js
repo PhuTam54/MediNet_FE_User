@@ -4,12 +4,8 @@ import product1 from "~/assets/images/product/product-one.jpg"
 import product2 from "~/assets/images/product/product-two.jpg"
 import product3 from "~/assets/images/product/product-three.jpg"
 import product4 from "~/assets/images/product/product-four.jpg"
-import product5 from "~/assets/images/product/product-five.jpg"
-import product6 from "~/assets/images/product/product-six.jpg"
 import product7 from "~/assets/images/product/product-seven.jpg"
 import product8 from "~/assets/images/product/product-eight.jpg"
-import product9 from "~/assets/images/product/product-nine.jpg"
-import product10 from "~/assets/images/product/product-ten.jpg"
 import comment1 from "~/assets/images/blog/blog-comment-01.jpg"
 import { Link, useLocation } from 'react-router-dom';
 import React, { useState, useEffect } from 'react';
@@ -21,6 +17,13 @@ function ProductDetail({  }) {
   const [product, setProduct] = useState({});
   const { id } = useParams();
   const [quantity, setQuantity] = useState(1);
+  const [imageFile, setImageFile] = useState(null); 
+  const [vote, setVote] = useState(0);
+  const [description, setDescription] = useState('');
+  const [feedback, setFeedback] = useState([]);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [feedbackPerPage] = useState(2);
+
   useEffect(() => {
     axios.get('https://localhost:7121/api/v1/Products')
     .then(res => {
@@ -49,13 +52,26 @@ const getTokenData = () => {
         }
         return null;
     };
-  // Save userId to localStorage
+
+    fetchFeedback();
+  }, [id]);
+  
+  const getTokenData = () => {
+    const token = localStorage.getItem('token');
+    if (token) {
+      const tokenData = token.split('.')[1];
+      const decodedToken = atob(tokenData);
+      const tokenObject = JSON.parse(decodedToken);
+      const userId = tokenObject.userId; // Lấy userId từ token
+      return userId;
+    }
+    return null;
+  };
+
   const userId = getTokenData();
   if (userId) {
     localStorage.setItem('userId', userId);
   }
-  // add to cart
-
 
   const addToCart = () => {
     const cartItem = {
@@ -65,7 +81,6 @@ const getTokenData = () => {
       clinicID: 1
     };
 
-   
     axios.post('https://localhost:7121/api/v1/Carts', cartItem)
     .then( )
     .catch(error => console.error(error));
@@ -76,6 +91,8 @@ const [activeTab, setActiveTab] = useState('Description');
 
     return ( 
         <>
+
+
   {/* page-title */}
   <div className="ttm-page-title-row">
     <div className="ttm-page-title-row-bg-layer ttm-bg-layer" />

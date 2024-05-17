@@ -202,7 +202,7 @@ function Shop() {
                     <div className="onsale">Sale!</div>
                     <img
                       className="img-fluid"
-                      src={product.image}
+                      src={product.imageSrc}
                       alt=""
                     />
                   </div>

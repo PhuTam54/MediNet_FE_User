@@ -374,7 +374,7 @@ const [isHoveredCategory, setIsHoveredCategory] = useState(null);
                         </div>
                         <div className="ttm-product-image-box">
                           <div className="onsale">Sale!</div>
-                          <img
+                          <img style={ {width: 190}}
                             className="img-fluid"
                             src={product.imageSrc}
                             alt=""
