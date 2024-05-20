@@ -28,10 +28,15 @@ function Checkout() {
       const decodedToken = atob(tokenData);
       const tokenObject = JSON.parse(decodedToken);
       const userId = tokenObject.userId; // Lấy userId từ token
+      const orderId = tokenObject.orderId;
       return userId;
     }
     return null;
   };
+  const orderId = getTokenData();
+  localStorage.setItem('orderId', orderId);
+  
+  const [paymentMethod, setPaymentMethod] = useState(""); 
 
   const [paymentMethod, setPaymentMethod] = useState(""); 
 
@@ -81,7 +86,7 @@ function Checkout() {
       !billingPostcode.trim() ||
       !billingCountry.trim() ||
       !billingDistrict.trim() ||
-      !validateEmail(billingEmail.trim()) || // Kiểm tra định dạng email
+!validateEmail(billingEmail.trim()) || // Kiểm tra định dạng email
       !validatePhone(billingPhone.trim()) // Kiểm tra định dạng số điện thoại
     ) {
       toast.error("Please fill in all required fields correctly!", { position: toast.POSITION.TOP_CENTER });
@@ -114,6 +119,7 @@ function Checkout() {
         cartIds: [...cartIds]
       };
 
+      
       const checkoutInfo = {
         orderInfo: orderPayload,
         productsInfo: data.map((item, index) => ({
@@ -156,8 +162,8 @@ function Checkout() {
         orderDescription: 'Order movie ticket',
         name: billingFirstName,
         amount: totalAmount,
-   
       };
+      console.log(orderId)
 
       // Gửi dữ liệu thanh toán PayPal
       const paymentResponse = await axios.post('https://localhost:7121/api/v1/Payments/PayPal', paymentPayload);
@@ -223,8 +229,6 @@ function Checkout() {
     }
   };
 
-
-
   const validateEmail = (email) => {
     const re = /\S+@\S+\.\S+/;
     return re.test(email);
@@ -238,7 +242,7 @@ function Checkout() {
   return (
     <>
       <div className="ttm-page-title-row">
-        <div className="container">
+<div className="container">
           <div className="row">
             <div className="col-md-12">
               <div className="title-box ttm-textcolor-white">
@@ -305,7 +309,7 @@ function Checkout() {
                           />
                         </span>
                         <span className="form-row">
-                          <label>Phone number&nbsp;<abbr className="required" title="required">*</abbr></label>
+<label>Phone number&nbsp;<abbr className="required" title="required">*</abbr></label>
                           <input
                             type="tel"
                             className="input-text"
@@ -361,7 +365,7 @@ function Checkout() {
                         <span className="form-row">
                           <label>Country&nbsp;<abbr className="required" title="required">*</abbr></label>
                           <input
-                            type="text"
+type="text"
                             className="input-text"
                             name="billingCountry"
                             value={billingInfo.billingCountry}
@@ -421,7 +425,7 @@ function Checkout() {
                       </thead>
                       <tbody>
                         {data && data.map((item, index) => (
-                          <tr className="cart_item" key={index}>
+<tr className="cart_item" key={index}>
                             <td className="product-thumbnail">
                               <a href="#">
                                 <img
