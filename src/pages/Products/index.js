@@ -214,7 +214,7 @@ const [search, setSearch] = useState('');
                 <li>
                   <a>
                     <Link to={`/productdetail/${product.id}`}>
-                      <img src={product.image} alt="" />
+                      <img src={product.imageSrc} alt="" />
                       <span className="product-title">{product.name}</span>
                     </Link>
                   </a>
