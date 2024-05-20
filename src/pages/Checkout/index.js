@@ -38,6 +38,8 @@ function Checkout() {
   
   const [paymentMethod, setPaymentMethod] = useState(""); 
 
+  const [paymentMethod, setPaymentMethod] = useState(""); 
+
   useEffect(() => {
     fetchData();
   }, []);
@@ -133,21 +135,18 @@ function Checkout() {
 
       // Gửi yêu cầu POST đến API để lưu đơn hàng
       const orderResponse = await axios.post('https://localhost:7121/api/v1/Orders', orderPayload);
-
-      console.log("Order Response:", orderResponse); // Kiểm tra toàn bộ phản hồi của API
-      const orderId = orderResponse.data.id;
-
-      // Tính tổng số tiền và cập nhật dữ liệu cho thanh toán
+      const orderId = orderResponse.data + ''; // Lấy mã đơn hàng
+      localStorage.setItem('orderId', orderId);
       const totalAmount = totalPrice; // Chuyển đổi số tiền sang USD
       localStorage.setItem('totalAmount', totalAmount);
 
       // Gọi API dựa vào phương thức thanh toán được chọn
       if (paymentMethod === "PayPal") {
-        await payWithPayPal( billingFirstName, totalAmount);
+        await payWithPayPal(orderId, billingFirstName, totalAmount);
       } else if (paymentMethod === "VNPay") {
-        await payWithVNPay( billingFirstName, totalAmount);
+        await payWithVNPay(orderId, billingFirstName, totalAmount);
       } else if (paymentMethod === "Momo") {
-        await payWithMoMo( billingFirstName, totalAmount);
+        await payWithMoMo(orderId, billingFirstName, totalAmount);
       }
     } catch (error) {
       console.error("Error during checkout:", error);
@@ -155,16 +154,14 @@ function Checkout() {
     }
   };
 
-  const payWithPayPal = async ( billingFirstName, totalAmount) => {
+  const payWithPayPal = async (orderId, billingFirstName, totalAmount) => {
     try {
-      const orderId = getTokenData();
       const paymentPayload = {
         orderId: orderId,
         orderType: 'Sandbox',
         orderDescription: 'Order movie ticket',
         name: billingFirstName,
-amount: totalAmount *23000,
-        
+        amount: totalAmount,
       };
       console.log(orderId)
 
@@ -180,9 +177,8 @@ amount: totalAmount *23000,
     }
   };
 
-  const payWithVNPay = async (billingFirstName, totalAmount) => {
+  const payWithVNPay = async (orderId, billingFirstName, totalAmount) => {
     try {
-      const orderId = getTokenData();
       // Tạo payload cho VNPay
       const vnpayPayload = {
         // Thông tin đơn hàng
@@ -207,13 +203,13 @@ amount: totalAmount *23000,
     }
   };
 
-  const payWithMoMo = async ( billingFirstName, totalAmount) => {
+  const payWithMoMo = async (orderId, billingFirstName, totalAmount) => {
     try {
-      const orderId = getTokenData();
       // Tạo payload cho MoMo
       const momoPayload = {
         // Thông tin đơn hàng
         orderId: orderId,
+     
         orderInfo: 'Order movie ticket',
         fullName: billingFirstName,
         amount: totalAmount * 23000,
@@ -232,8 +228,6 @@ amount: totalAmount *23000,
       toast.error("Failed to checkout with MoMo!", { position: toast.POSITION.TOP_CENTER });
     }
   };
-
-
 
   const validateEmail = (email) => {
     const re = /\S+@\S+\.\S+/;
@@ -482,7 +476,7 @@ type="text"
           <strong> PayPal</strong> <img src={paypal} alt="PayPal" style={{ marginLeft: "10px", width: 70, height: 65, borderRadius: 10 }} />
       </label>
        {/* MoMo */}
-<label style={{ display: "flex", alignItems: "center", cursor: "pointer", color: "#01d6a3", fontSize: 18  }}>
+       <label style={{ display: "flex", alignItems: "center", cursor: "pointer", color: "#01d6a3", fontSize: 18  }}>
       
       <input style={{width: "20px", height: "20px", marginRight: "10px"}}
         type="radio"

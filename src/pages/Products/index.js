@@ -483,41 +483,38 @@ const [isHoveredCategory, setIsHoveredCategory] = useState(null);
             <aside className="widget products top-rated-products">
               <h3 className="widget-title">Featured Products</h3>
               <ul className="product-list-widget">
-              {products
-  .sort((a, b) => b.price - a.price)
-  .slice(0, 3)
-  .map(product => (
-    <li>
-      <a>
-        <Link to={`/productdetail/${product.id}`}>
-          <img src={product.imageSrc} alt="" />
-          <span className="product-title">{product.name}</span>
-        </Link>
-      </a>
-      <div className="star-ratings">
-        <ul className="rating">
-          <li>
-            <i className="fa fa-star" />
-          </li>
-          <li>
-            <i className="fa fa-star" />
-          </li>
-          <li>
-            <i className="fa fa-star" />
-          </li>
-          <li>
-            <i className="fa fa-star" />
-          </li>
-          <li>
-            <i className="fa fa-star" />
-          </li>
-        </ul>
-      </div>
-      <span className="product-Price-amount amount">
-        <span className="product-Price-currencySymbol">$</span>{product.price}.00
-      </span>
-    </li>
-))}
+              {filteredProducts.map(product => (
+                <li>
+                  <a>
+                    <Link to={`/productdetail/${product.id}`}>
+                      <img src={product.imageSrc} alt="" />
+                      <span className="product-title">{product.name}</span>
+                    </Link>
+                  </a>
+                  <div className="star-ratings">
+                    <ul className="rating">
+                      <li>
+                        <i className="fa fa-star" />
+                      </li>
+                      <li>
+                        <i className="fa fa-star" />
+                      </li>
+                      <li>
+                        <i className="fa fa-star" />
+                      </li>
+                      <li>
+                        <i className="fa fa-star" />
+                      </li>
+                      <li>
+                        <i className="fa fa-star" />
+                      </li>
+                    </ul>
+                  </div>
+                  <span className="product-Price-amount amount">
+                    <span className="product-Price-currencySymbol">$</span>{product.price}.00
+                  </span>
+                </li>
+              ))}
               </ul>
             </aside>
             

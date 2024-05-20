@@ -15,7 +15,8 @@ function Header() {
 
   const [cartItemCount, setCartItemCount] = useState(0);
   const [uniqueProductCount, setUniqueProductCount] = useState(0); // Đếm số sản phẩm khác nhau
-
+  const [userId, setUserId] = useState('');
+  const [userRole, setUserRole] = useState('');
   useEffect(() => {
     const token = localStorage.getItem('token');
     if (token) {
@@ -23,9 +24,13 @@ function Header() {
       const decodedToken = atob(tokenData);
       const tokenObject = JSON.parse(decodedToken);
       const userId = tokenObject.userId;
+      const userRole = tokenObject.userRole;
 
       localStorage.setItem('userId', userId); // Lưu userId vào localStorage
-
+      localStorage.setItem('userRole', userRole);
+     // Lưu userRole vào localStorage
+      setUserId(userId);
+      setUserRole(userRole);
       fetch(`https://localhost:7121/api/v1/Carts/userid?userid=${userId}`)
         .then(response => response.json())
         .then(data => {
@@ -350,16 +355,25 @@ function Header() {
                       <a href="/">Home</a>
                       <ul>
                         
-                        
-                        
                       </ul>
                     </li>
+                    {userRole === "Employee" && (
+                      <li>
+                        <a href="#">Course</a>
+                          <ul>
+                            <li>
+                              <a href="/courses">Courses</a>
+                            </li>
+                            <li>
+                              <a href="/mycourses">My Courses</a>
+                            </li>
+                          </ul>
+                    </li>
+                    )}
                     <li>
                       <a href="#">Pages</a>
                       <ul>
-                        <li>
-                          <a href="/myOrder">My Order</a>
-                        </li>
+                      
                        
                         <li>
                           <a href="services.html">Services</a>
