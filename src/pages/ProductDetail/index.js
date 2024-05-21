@@ -81,6 +81,30 @@ const getTokenData = () => {
       })
       .catch(error => console.error(error));
   };
+  const addToFavorites = async (product) => {
+    try {
+      const favoriteProduct = {
+        
+        customerId: userId, // Assuming userId is defined in your component
+        productId: product.id
+      };
+      
+  
+      // Fetch the token from local storage
+      const token = localStorage.getItem('token');
+  
+      const response = await axios.post('https://localhost:7121/api/v1/FavoriteProducts', favoriteProduct, {
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      });
+      toast.success('Product added to favorites');
+      console.log(response.data);
+    } catch (error) {
+      console.error(error);
+      toast.error('Failed to add product to favorites');
+    }
+  };
 
   // Hàm xử lý khi người dùng chọn hình ảnh
   const handleImageChange = (event) => {
@@ -311,7 +335,25 @@ const [activeTab, setActiveTab] = useState('Description');
                     >
                       Add to cart
                     </button>
+                    
                   </form>
+                  <form
+  className="cart"
+  action="#"
+  method="post"
+  encType="multipart/form-data"
+  onSubmit={(e) => {
+    e.preventDefault();
+    addToFavorites(product);
+  }}
+>
+  <button
+    type="submit"
+    className="cart_button"
+  >
+    Add to favorites
+  </button>
+</form>
                 </div>
               </div>
               <div className="ttm-tabs tabs-for-single-products" data-effect="fadeIn">

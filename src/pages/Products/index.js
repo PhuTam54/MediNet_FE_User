@@ -15,6 +15,7 @@ function useQuery() {
   return new URLSearchParams(useLocation().search);
 }
 function Products() {
+  const [productsBuyQty, setProductsBuyQty] = useState(0);
   const [products, setProducts] = useState([]);
   const [categoryParents, setCategoryParents] = useState([]);
   const [manufacturers, setManufacturers] = useState([]);
@@ -52,13 +53,8 @@ useEffect(() => {
     filteredProducts = filteredProducts.filter(product => product.category === selectedCategory);
   }
 
-  // Thêm lọc sản phẩm dựa trên giá trị tìm kiếm
-  if (search) {
-    filteredProducts = filteredProducts.filter(product => product.name.toLowerCase().includes(search.toLowerCase()));
-  }
-
   setDisplayedProducts(filteredProducts);
-}, [products, selectedManufacturer, selectedCategory, search]); // Thêm search vào mảng dependencies
+}, [products, selectedManufacturer, selectedCategory]);
   // Now you can use these variables in your code
   
 
@@ -71,6 +67,16 @@ useEffect(() => {
     setProducts(response.data);
     const manufacturers = [...new Set(response.data.map(product => product.manufacturer))];
     setManufacturers(manufacturers);
+  })
+  .catch((error) => {
+    console.error('Error fetching data:', error);
+  });
+  axios
+  .get('https://localhost:7121/api/v1/Products/buyQty')
+  .then((response) => {
+    setProductsBuyQty(response.data);
+    
+    
   })
   .catch((error) => {
     console.error('Error fetching data:', error);
@@ -117,7 +123,24 @@ const filterByCategoryChild = (categoryChildId) => {
 
 
 
+useEffect(() => {
+  let filteredProducts = products;
 
+  if (selectedManufacturer) {
+    filteredProducts = filteredProducts.filter(product => product.manufacturer === selectedManufacturer);
+  }
+
+  if (selectedCategory) {
+    filteredProducts = filteredProducts.filter(product => product.category === selectedCategory);
+  }
+
+  // Thêm lọc sản phẩm dựa trên giá trị tìm kiếm
+  if (search) {
+    filteredProducts = filteredProducts.filter(product => product.name.toLowerCase().includes(search.toLowerCase()));
+  }
+
+  setDisplayedProducts(filteredProducts);
+}, [products, selectedManufacturer, selectedCategory, search]); // Thêm search vào mảng dependencies
 
 
 const handleSortChange = (event) => {
@@ -128,13 +151,18 @@ const handleSortChange = (event) => {
     sortedProducts = [...displayedProducts].sort((a, b) => a.price - b.price);
   } else if (sortValue === 'price-desc') {
     sortedProducts = [...displayedProducts].sort((a, b) => b.price - a.price);
+  } else if (sortValue === 'default') {
+    sortedProducts = getDefaultList(); // This function should return the default list
   } else {
     sortedProducts = [...displayedProducts];
   }
 
   setDisplayedProducts(sortedProducts);
 };
-
+function getDefaultList() {
+  
+  return [...products];
+}
 //giới hạn kí tự of tên
 function truncate(str, num) {
   if (str.length <= num) {
@@ -338,10 +366,8 @@ const [isHoveredCategory, setIsHoveredCategory] = useState(null);
             <form className="products-ordering" method="get">
               <div className="orderby">
               <select name="orderby" className="select2-hidden-accessible" onChange={handleSortChange}>
-  <option value="menu_order" selected="selected">
-    Default sorting
-  </option>
   
+              <option value="default">Default</option>
   <option value="price">Sort by price: low to high</option>
   <option value="price-desc">Sort by price: high to low</option>
 </select>
@@ -373,8 +399,8 @@ const [isHoveredCategory, setIsHoveredCategory] = useState(null);
                           </div>
                         </div>
                         <div className="ttm-product-image-box">
-                          <div className="onsale">Sale!</div>
-                          <img style={ {width: 190}}
+                          
+                          <img
                             className="img-fluid"
                             src={product.imageSrc}
                             alt=""
@@ -483,38 +509,38 @@ const [isHoveredCategory, setIsHoveredCategory] = useState(null);
             <aside className="widget products top-rated-products">
               <h3 className="widget-title">Featured Products</h3>
               <ul className="product-list-widget">
-              {filteredProducts.map(product => (
-                <li>
-                  <a>
-                    <Link to={`/productdetail/${product.id}`}>
-                      <img src={product.imageSrc} alt="" />
-                      <span className="product-title">{product.name}</span>
-                    </Link>
-                  </a>
-                  <div className="star-ratings">
-                    <ul className="rating">
-                      <li>
-                        <i className="fa fa-star" />
-                      </li>
-                      <li>
-                        <i className="fa fa-star" />
-                      </li>
-                      <li>
-                        <i className="fa fa-star" />
-                      </li>
-                      <li>
-                        <i className="fa fa-star" />
-                      </li>
-                      <li>
-                        <i className="fa fa-star" />
-                      </li>
-                    </ul>
-                  </div>
-                  <span className="product-Price-amount amount">
-                    <span className="product-Price-currencySymbol">$</span>{product.price}.00
-                  </span>
-                </li>
-              ))}
+              {Array.isArray(productsBuyQty) && productsBuyQty.slice(0,3).map(productbuyqty  => (
+    <li>
+      <a>
+        <Link to={`/productdetail/${productbuyqty.id}`}>
+          <img src={productbuyqty.imageSrc} alt="" />
+          <span className="product-title">{productbuyqty.name}</span>
+        </Link>
+      </a>
+      <div className="star-ratings">
+        <ul className="rating">
+          <li>
+            <i className="fa fa-star" />
+          </li>
+          <li>
+            <i className="fa fa-star" />
+          </li>
+          <li>
+            <i className="fa fa-star" />
+          </li>
+          <li>
+            <i className="fa fa-star" />
+          </li>
+          <li>
+            <i className="fa fa-star" />
+          </li>
+        </ul>
+      </div>
+      <span className="product-Price-amount amount">
+        <span className="product-Price-currencySymbol">$</span>{productbuyqty.price}.00
+      </span>
+    </li>
+))}
               </ul>
             </aside>
             
