@@ -38,7 +38,7 @@ function Checkout() {
   
   const [paymentMethod, setPaymentMethod] = useState(""); 
 
-  const [paymentMethod, setPaymentMethod] = useState(""); 
+ 
 
   useEffect(() => {
     fetchData();

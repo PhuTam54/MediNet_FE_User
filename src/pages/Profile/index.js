@@ -121,6 +121,29 @@ function MyProfile() {
                   </div>
                 </div>
               </div>
+              <div style={{ marginTop: 50 }}>
+                            <h2>Favorite Products</h2>
+              <table style={{ width: '100%', marginBottom: '1rem', color: '#212529' }}>
+    <thead>
+        <tr>
+            <th style={{ padding: '0.75rem', verticalAlign: 'top', borderTop: '1px solid #dee2e6', textAlign: "center" }}>Product ID</th>
+            <th style={{ padding: '0.75rem', verticalAlign: 'top', borderTop: '1px solid #dee2e6', textAlign: "center" }}>Name</th>
+            <th style={{ padding: '0.75rem', verticalAlign: 'top', borderTop: '1px solid #dee2e6', textAlign: "center" }}>Description</th>
+            <th style={{ padding: '0.75rem', verticalAlign: 'top', borderTop: '1px solid #dee2e6', textAlign: "center" }}>Price</th>
+        </tr>
+    </thead>
+    {/* <tbody>
+        {favoriteProducts.map(product => (
+            <tr key={product.id}>
+                <td style={{ padding: '0.75rem', verticalAlign: 'top', borderTop: '1px solid #dee2e6', textAlign: "center" }}>{product.id}</td>
+                <td style={{ padding: '0.75rem', verticalAlign: 'top', borderTop: '1px solid #dee2e6', textAlign: "center" }}>{product.name}</td>
+                <td style={{ padding: '0.75rem', verticalAlign: 'top', borderTop: '1px solid #dee2e6', textAlign: "center" }}>{product.description}</td>
+                <td style={{ padding: '0.75rem', verticalAlign: 'top', borderTop: '1px solid #dee2e6', textAlign: "center" }}>{product.price}</td>
+            </tr>
+        ))}
+    </tbody> */}
+</table>
+</div>
             </div>
           </div>
         </section>
