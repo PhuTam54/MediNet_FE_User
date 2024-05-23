@@ -137,6 +137,7 @@ function Checkout() {
       const orderResponse = await axios.post('https://localhost:7121/api/v1/Orders', orderPayload);
       const orderId = orderResponse.data + ''; // Lấy mã đơn hàng
       localStorage.setItem('orderId', orderId);
+      
       const totalAmount = totalPrice; // Chuyển đổi số tiền sang USD
       localStorage.setItem('totalAmount', totalAmount);
 
@@ -425,18 +426,18 @@ type="text"
                       </thead>
                       <tbody>
                         {data && data.map((item, index) => (
-<tr className="cart_item" key={index}>
+                          <tr className="cart_item" key={index}>
                             <td className="product-thumbnail">
                               <a href="#">
                                 <img
                                   className="img-fluid"
                                   src={productsInfo[index] ? productsInfo[index].imageSrc : ''}
-                                  alt={productsInfo[index] ? productsInfo[index].name : ''}
+                                
                                 />
                               </a>
                             </td>
                             <td className="product-name" data-title="Product">
-                              <Link to={`/productdetail/${item.productId}`}>{productsInfo[index] ? productsInfo[index].name : 'Unknown'}</Link>
+                              <span>{productsInfo[index] ? productsInfo[index].name : ''}</span>
                             </td>
                             <td className="product-price" data-title="Price">
                               <span className="Price-amount">
@@ -485,7 +486,7 @@ type="text"
         checked={paymentMethod === "Momo"}
         onChange={() => handlePaymentMethodChange("Momo")}
       />
-      <strong> MoMo</strong> <img src={momo} alt="PayPal" style={{ marginLeft: "10px", width: 70 }} />
+      <strong> MoMo</strong> <img src={momo} alt="PayPal" style={{ marginLeft: "10px", width: 70, borderRadius: 10 }} />
       </label>
       {/* VNPay */}
       <label style={{ display: "flex", alignItems: "center", cursor: "pointer", color: "#01d6a3", fontSize: 18  }}>
@@ -497,7 +498,7 @@ type="text"
           checked={paymentMethod === "VNPay"}
           onChange={() => handlePaymentMethodChange("VNPay")}
         />
-        <strong> VNPay</strong> <img src={vnpay} alt="PayPal" style={{ marginLeft: "10px", width: 70 }} />
+        <strong> VNPay</strong> <img src={vnpay} alt="PayPal" style={{ marginLeft: "10px", width: 70, borderRadius: 10 }} />
       </label>
      
     </li>

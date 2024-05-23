@@ -148,6 +148,14 @@ function MyOrder() {
         setCancelConfirmation(false);
         // window.location.reload(); cho load lại trang sau khi hủy đơn hàng cảm thấy cần thiết thì dùng nhưng không nên dùng
     };
+    const handleModalClick = (e) => {
+        // Kiểm tra xem phần tử được nhấn có phải là modal content hay không
+        if (e.target.classList.contains('modal-content')) {
+            return; // Nếu là modal content, không làm gì cả
+        } else {
+            closeModal(); // Nếu không phải, đóng modal
+        }
+    };
 
     return (
         <>
@@ -252,7 +260,7 @@ function MyOrder() {
             </div>
 
             {selectedOrder && (
-                <div className={`modal ${modalOpen ? 'show' : ''}`} tabIndex="-1" role="dialog" style={{ display: modalOpen ? 'block' : 'none', backgroundColor: 'rgba(0, 0, 0, 0.5)', position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, zIndex: 999, display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+                <div onClick={handleModalClick} className={`modal ${modalOpen ? 'show' : ''}`} tabIndex="-1" role="dialog" style={{ display: modalOpen ? 'block' : 'none', backgroundColor: 'rgba(0, 0, 0, 0.5)', position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, zIndex: 999, display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
                     <div style={{width: 800, height: 500,padding: 30, paddingLeft: 70, paddingRight: 70, }} className="modal-content" onClick={(e) => e.stopPropagation()}>
                         <button className="close-button" onClick={closeModal} style={{ position: 'absolute', top: 10, right: 10, background: 'none', border: 'none', cursor: 'pointer', color: "black", padding: 10 }}><i style={{ fontSize: 18}} className="fa-solid fa-xmark"></i></button>
                         <h3 style={{marginTop: 30, textAlign: "center", color: "#01d6a3"}} className="select_you_seats">My Order </h3>
@@ -273,7 +281,7 @@ function MyOrder() {
                                         <tr key={product.id}>
                                             <td style={{textAlign: "center"}}>{product.id}</td>
                                             <td style={{textAlign: "center"}}>{product.product.name}</td>
-                                            <td style={{textAlign: "center"}}><img style={{width: 50}} src={product.product.image} alt={product.product.name}/></td>
+                                            <td style={{textAlign: "center"}}><img style={{width: 50}} src={product.product.imageSrc} alt={product.product.name}/></td>
                                             <td style={{textAlign: "center"}}>{product.quantity}</td>
                                             <td style={{textAlign: "center"}}>{product.subtotal}.00</td>
                                         </tr>
