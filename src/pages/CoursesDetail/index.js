@@ -197,7 +197,8 @@ function CoursesDetail({ products }) {
                     <div className="product-gallery__image">
                       <img
                         className="img-fluid"
-                        src={product.imageSrc}
+                        // src={product.imageSrc}
+                        src="https://localhost:7121/images/courses/fb6e6f4e-fd93-42c6-aeef-7370d426c2d7.jpg"
                         alt="product-img"
                       />
                     </div>

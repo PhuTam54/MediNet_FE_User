@@ -136,6 +136,7 @@ function Cart() {
                         <th className="product-price">Price</th>
                         <th className="product-quantity">Quantity</th>
                         <th className="product-subtotal">Total</th>
+                        {/* <th className="product-subtotal">Clinic</th> */}
                       </tr>
                     </thead>
                     <tbody>
@@ -179,6 +180,11 @@ function Cart() {
                               <span className="Price-currencySymbol">$</span>{item.subTotal}
                             </span>
                           </td>
+                          {/* <td className="product-subtotal" data-title="Total">
+                            <span className="Price-amount">
+                              <span className="Price-currencySymbol"></span>{item.clinic.name}
+                            </span>
+                          </td> */}
                         </tr>
                       ))}
                     </tbody>
