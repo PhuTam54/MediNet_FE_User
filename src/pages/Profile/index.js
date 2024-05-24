@@ -1,11 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import blog3 from '~/assets/images/blog/03.jpg';
-
+import axios from 'axios';
+import { Link } from 'react-router-dom';
 const getTokenData = () => {
   const token = localStorage.getItem('token');
   if (token) {
     const tokenData = token.split('.')[1];
     const decodedToken = atob(tokenData);
+   
     const tokenObject = JSON.parse(decodedToken);
     const userId = tokenObject.userId; // Lấy userId từ token
     return userId;
@@ -15,6 +17,7 @@ const getTokenData = () => {
 
 function MyProfile() {
   const [user, setUser] = useState(null);
+  const [favoriteProducts, setFavoriteProducts] = useState([]);
 
   useEffect(() => {
     const userId = getTokenData();
@@ -26,10 +29,28 @@ function MyProfile() {
         }
       })
         .then(response => response.json())
-        .then(data => setUser(data))
+        .then(data => {
+          setUser(data);
+          // After setting the user, fetch the favorite products
+          return fetch(`https://localhost:7121/api/v1/FavoriteProducts/customerId?customerId=${userId}`, {
+            headers: {
+              'Authorization': `Bearer ${token}`
+            }
+          });
+        })
+        .then(response => response.json())
+        .then(data => setFavoriteProducts(data))
         .catch(error => console.error(error));
     }
   }, []);
+  const removeFavoriteProduct = async (id) => {
+    try {
+      await axios.delete(`https://localhost:7121/api/v1/FavoriteProducts/id?id=${id}`);
+      setFavoriteProducts(prevProducts => prevProducts.filter(product => product.id !== id));
+    } catch (error) {
+      console.error("Error removing item:", error);
+    }
+  };
 
   if (!user) {
     return <div>Loading...</div>;
@@ -127,21 +148,28 @@ function MyProfile() {
     <thead>
         <tr>
             <th style={{ padding: '0.75rem', verticalAlign: 'top', borderTop: '1px solid #dee2e6', textAlign: "center" }}>Product ID</th>
+            <th style={{ padding: '0.75rem', verticalAlign: 'top', borderTop: '1px solid #dee2e6', textAlign: "center" }}>Image</th>
+
             <th style={{ padding: '0.75rem', verticalAlign: 'top', borderTop: '1px solid #dee2e6', textAlign: "center" }}>Name</th>
             <th style={{ padding: '0.75rem', verticalAlign: 'top', borderTop: '1px solid #dee2e6', textAlign: "center" }}>Description</th>
             <th style={{ padding: '0.75rem', verticalAlign: 'top', borderTop: '1px solid #dee2e6', textAlign: "center" }}>Price</th>
+            
         </tr>
     </thead>
-    {/* <tbody>
+    <tbody>
         {favoriteProducts.map(product => (
             <tr key={product.id}>
-                <td style={{ padding: '0.75rem', verticalAlign: 'top', borderTop: '1px solid #dee2e6', textAlign: "center" }}>{product.id}</td>
-                <td style={{ padding: '0.75rem', verticalAlign: 'top', borderTop: '1px solid #dee2e6', textAlign: "center" }}>{product.name}</td>
-                <td style={{ padding: '0.75rem', verticalAlign: 'top', borderTop: '1px solid #dee2e6', textAlign: "center" }}>{product.description}</td>
-                <td style={{ padding: '0.75rem', verticalAlign: 'top', borderTop: '1px solid #dee2e6', textAlign: "center" }}>{product.price}</td>
+                <td style={{ padding: '0.75rem', verticalAlign: 'top', borderTop: '1px solid #dee2e6', textAlign: "center" }}>{product.product.id}</td>
+                <td style={{ padding: '0.75rem', verticalAlign: 'top', borderTop: '1px solid #dee2e6', textAlign: "center" }}><img src={`https://localhost:7121/${product.product.image}`} alt={product.product.name}  style={{ width: '100px', height: '100px' }} /></td>
+                <td style={{ padding: '0.75rem', verticalAlign: 'top', borderTop: '1px solid #dee2e6', textAlign: "center" }}><Link to={`/productdetail/${product.id}`}>{product.product.name}</Link></td>                
+                <td style={{ padding: '0.75rem', verticalAlign: 'top', borderTop: '1px solid #dee2e6', textAlign: "center" }}>{product.product.description}</td>
+                <td style={{ padding: '0.75rem', verticalAlign: 'top', borderTop: '1px solid #dee2e6', textAlign: "center" }}>{product.product.price}.00$</td>
+                <td style={{ padding: '0.75rem', verticalAlign: 'top', borderTop: '1px solid #dee2e6', textAlign: "center" }}>
+  <button onClick={() => removeFavoriteProduct(product.id)} className="cart_button" style={{backgroundColor: '#01d6a3'}}>Remove</button>
+</td>
             </tr>
         ))}
-    </tbody> */}
+    </tbody>
 </table>
 </div>
             </div>

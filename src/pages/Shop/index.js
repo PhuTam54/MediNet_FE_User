@@ -21,6 +21,8 @@ import axios from "axios"
 import { Link } from 'react-router-dom';
 function Shop() {
   const [products, setProducts] = useState([]);
+  const [productsBuyQty, setProductsBuyQty] = useState([]);
+
   useEffect(() => {
     axios.get('https://localhost:7121/api/v1/Products')
     .then(res => {
@@ -29,7 +31,24 @@ function Shop() {
     .catch(err => {
         console.log(err)
     })
+    axios
+  .get('https://localhost:7121/api/v1/Products/buyQty')
+  .then((response) => {
+    setProductsBuyQty(response.data);
+    
+    
+  })
+  .catch((error) => {
+    console.error('Error fetching data:', error);
+  });
 }, []) ;
+//giới hạn kí tự of tên
+function truncate(str, num) {
+  if (str.length <= num) {
+    return str;
+  }
+  return str.slice(0, num) + '...';
+}
     return ( 
         <>
   
@@ -175,7 +194,7 @@ function Shop() {
       <div className="container">
         <div className="products row">
        
-        {products.slice(0,8).map((product, index) => (
+        {products.sort((a, b) => b.id - a.id).slice(0,8).map((product, index) => (
           <div key={index} className="product col-md-3 col-sm-6 col-xs-12">
             
               <div className="ttm-product-box">
@@ -210,9 +229,9 @@ function Shop() {
                 {/* ttm-product-box-inner end */}
                 <div className="ttm-product-content">
                   <a className="ttm-product-title" href="">
-                    <Link to={`/productdetail/${product.id}`}>
-                      <h2>{product.name}</h2>
-                    </Link>
+                  <Link to={`/productdetail/${product.id}`}>
+                          <h2>{truncate(product.name, 20)}</h2>
+                          </Link>
                   </a>
                   <div className="star-ratings">
                     <ul className="rating">
@@ -371,8 +390,10 @@ function Shop() {
         </div>
         {/* row end */}
         <div className="mb-5 products row">
-          {/* product */}
+        {productsBuyQty.slice(0,4).map((product, index) => (
+          
           <div className="product col-md-3 col-sm-6 col-xs-12">
+            
             <div className="ttm-product-box">
               {/* ttm-product-box-inner */}
               <div className="ttm-product-box-inner">
@@ -394,10 +415,10 @@ function Shop() {
                   </div>
                 </div>
                 <div className="ttm-product-image-box">
-                  <div className="onsale">Sale!</div>
+                  
                   <img
                     className="img-fluid"
-                    src={product1}
+                    src={product.imageSrc}
                     alt=""
                   />
                 </div>
@@ -405,7 +426,9 @@ function Shop() {
               {/* ttm-product-box-inner end */}
               <div className="ttm-product-content">
                 <a className="ttm-product-title" href="product-details.html">
-                  <h2>Stethoscope</h2>
+                <Link to={`/productdetail/${product.id}`}>
+                          <h2>{truncate(product.name, 20)}</h2>
+                          </Link>
                 </a>
                 <div className="star-ratings">
                   <ul className="rating">
@@ -436,213 +459,16 @@ function Shop() {
                   <ins>
                     <span className="product-Price-amount">
                       <span className="product-Price-currencySymbol">$</span>
-                      18.00
+                      {product.price}.00
                     </span>
                   </ins>
                 </span>
               </div>
             </div>
+           
           </div>
-          {/* product end*/}
-          {/* product */}
-          <div className="product col-md-3 col-sm-6 col-xs-12">
-            <div className="ttm-product-box">
-              {/* ttm-product-box-inner */}
-              <div className="ttm-product-box-inner">
-                <div className="ttm-shop-icon">
-                  <div className="product-btn">
-                    <a href="#" className="add-to-cart-btn">
-                      <i className="ti ti-shopping-cart" />
-                    </a>
-                  </div>
-                  <div className="product-btn">
-                    <a href="#" className="search-btn">
-                      <i className="ti ti-search" />
-                    </a>
-                  </div>
-                  <div className="product-btn">
-                    <a href="#" className="wishlist-btn">
-                      <i className="ti ti-heart" />
-                    </a>
-                  </div>
-                </div>
-                <div className="ttm-product-image-box">
-                  <img
-                    className="img-fluid"
-                    src={product2}
-                    alt=""
-                  />
-                </div>
-              </div>
-              {/* ttm-product-box-inner end */}
-              <div className="ttm-product-content">
-                <a className="ttm-product-title" href="product-details.html">
-                  <h2>Panthenol</h2>
-                </a>
-                <div className="star-ratings">
-                  <ul className="rating">
-                    <li>
-                      <i className="fa fa-star" />
-                    </li>
-                    <li>
-                      <i className="fa fa-star" />
-                    </li>
-                    <li>
-                      <i className="fa fa-star" />
-                    </li>
-                    <li>
-                      <i className="fa fa-star" />
-                    </li>
-                    <li>
-                      <i className="fa fa-star" />
-                    </li>
-                  </ul>
-                </div>
-                <span className="price">
-                  <span className="product-Price-amount">
-                    <span className="product-Price-currencySymbol">$</span>18.00
-                  </span>
-                </span>
-              </div>
-            </div>
-          </div>
-          {/* product end */}
-          {/* product */}
-          <div className="product col-md-3 col-sm-6 col-xs-12">
-            <div className="ttm-product-box">
-              {/* ttm-product-box-inner */}
-              <div className="ttm-product-box-inner">
-                <div className="ttm-shop-icon">
-                  <div className="product-btn">
-                    <a href="#" className="add-to-cart-btn">
-                      <i className="ti ti-shopping-cart" />
-                    </a>
-                  </div>
-                  <div className="product-btn">
-                    <a href="#" className="search-btn">
-                      <i className="ti ti-search" />
-                    </a>
-                  </div>
-                  <div className="product-btn">
-                    <a href="#" className="wishlist-btn">
-                      <i className="ti ti-heart" />
-                    </a>
-                  </div>
-                </div>
-                <div className="ttm-product-image-box">
-                  <div className="onsale">Sale!</div>
-                  <img
-                    className="img-fluid"
-                    src={product3}
-                    alt=""
-                  />
-                </div>
-              </div>
-              {/* ttm-product-box-inner end */}
-              <div className="ttm-product-content">
-                <a className="ttm-product-title" href="product-details.html">
-                  <h2>Syringe 5ml</h2>
-                </a>
-                <div className="star-ratings">
-                  <ul className="rating">
-                    <li>
-                      <i className="fa fa-star" />
-                    </li>
-                    <li>
-                      <i className="fa fa-star" />
-                    </li>
-                    <li>
-                      <i className="fa fa-star" />
-                    </li>
-                    <li>
-                      <i className="fa fa-star" />
-                    </li>
-                    <li>
-                      <i className="fa fa-star" />
-                    </li>
-                  </ul>
-                </div>
-                <span className="price">
-                  <del>
-                    <span className="product-Price-amount">
-                      <span className="product-Price-currencySymbol">$</span>
-                      3.00
-                    </span>
-                  </del>
-                  <ins>
-                    <span className="product-Price-amount">
-                      <span className="product-Price-currencySymbol">$</span>
-                      2.00
-                    </span>
-                  </ins>
-                </span>
-              </div>
-            </div>
-          </div>
-          {/* product end */}
-          {/* product */}
-          <div className="product col-md-3 col-sm-6 col-xs-12">
-            <div className="ttm-product-box">
-              {/* ttm-product-box-inner */}
-              <div className="ttm-product-box-inner">
-                <div className="ttm-shop-icon">
-                  <div className="product-btn">
-                    <a href="#" className="add-to-cart-btn">
-                      <i className="ti ti-shopping-cart" />
-                    </a>
-                  </div>
-                  <div className="product-btn">
-                    <a href="#" className="search-btn">
-                      <i className="ti ti-search" />
-                    </a>
-                  </div>
-                  <div className="product-btn">
-                    <a href="#" className="wishlist-btn">
-                      <i className="ti ti-heart" />
-                    </a>
-                  </div>
-                </div>
-                <div className="ttm-product-image-box">
-                  <img
-                    className="img-fluid"
-                    src={product4}
-                    alt=""
-                  />
-                </div>
-              </div>
-              {/* ttm-product-box-inner end */}
-              <div className="ttm-product-content">
-                <a className="ttm-product-title" href="product-details.html">
-                  <h2>ECG Machine</h2>
-                </a>
-                <div className="star-ratings">
-                  <ul className="rating">
-                    <li>
-                      <i className="fa fa-star" />
-                    </li>
-                    <li>
-                      <i className="fa fa-star" />
-                    </li>
-                    <li>
-                      <i className="fa fa-star" />
-                    </li>
-                    <li>
-                      <i className="fa fa-star" />
-                    </li>
-                    <li>
-                      <i className="fa fa-star" />
-                    </li>
-                  </ul>
-                </div>
-                <span className="price">
-                  <span className="product-Price-amount">
-                    <span className="product-Price-currencySymbol">$</span>15.00
-                  </span>
-                </span>
-              </div>
-            </div>
-          </div>
-          {/* product end */}
+         
+        ))}
         </div>
       </div>
     </div>

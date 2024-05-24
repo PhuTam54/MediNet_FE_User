@@ -5,9 +5,11 @@ import axios from 'axios';
 import { useParams } from 'react-router-dom';
 import { toast } from "react-toastify"
 import { post, del } from '~/utils/httpRequest'; 
+import Modal from 'react-modal';
 function ProductDetail({  }) {
   const [products, setProducts] = useState([]);
   const [product, setProduct] = useState({});
+  const [productDetail, setProductDetail] = useState([]);
   const { id } = useParams();
   const [quantity, setQuantity] = useState(1);
   const [imageFile, setImageFile] = useState(null); 
@@ -16,21 +18,33 @@ function ProductDetail({  }) {
   const [feedback, setFeedback] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [feedbackPerPage] = useState(2);
-  useEffect(() => {
-    axios.get('https://localhost:7121/api/v1/Products')
-    .then(res => {
-      setProducts(res.data)
-    })
-    .catch(err => {
-        console.log(err)
-    });
-    const fetchProduct = async () => {
-      const response = await axios.get(`https://localhost:7121/api/v1/Products/id?id=${id}`);
-      setProduct(response.data);
-    };
+  const [modalIsOpen, setModalIsOpen] = useState(false);
+const [selectedImage, setSelectedImage] = useState(null);
+const [currentImageIndex, setCurrentImageIndex] = useState(0);
 
-    fetchProduct();
-  }, [id]);
+useEffect(() => {
+  axios.get('https://localhost:7121/api/v1/Products')
+  .then(res => {
+    setProducts(res.data)
+  })
+  .catch(err => {
+      console.log(err)
+  });
+
+  const fetchProduct = async () => {
+    const response = await axios.get(`https://localhost:7121/api/v1/Products/id?id=${id}`);
+    setProduct(response.data);
+  };
+
+  const fetchProductDetails = async () => {
+    const response = await axios.get(`https://localhost:7121/api/v1/ProductDetails/productId?productId=${id}`);
+    setProductDetail(response.data);
+  };
+
+  fetchProduct();
+  fetchProductDetails();
+}, [id]);
+  
   const currentProductCategoryChildId = product.categoryChildId;
   //feedback
   useEffect(() => {
@@ -83,23 +97,36 @@ const getTokenData = () => {
   };
   const addToFavorites = async (product) => {
     try {
+      // Fetch the token from local storage
+      const token = localStorage.getItem('token');
+  
+      // Get the current list of favorite products
+      const favoritesResponse = await axios.get(`https://localhost:7121/api/v1/FavoriteProducts/customerId?customerId=${userId}`, {
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      });
+  
+      // Check if the product is already in the favorites
+      const isAlreadyFavorited = favoritesResponse.data.some(favProduct => favProduct.productId === product.id);
+  
+      if (isAlreadyFavorited) {
+        toast.error('This product is already in your favorites!');
+        return;
+      }
+  
       const favoriteProduct = {
-        
         customerId: userId, // Assuming userId is defined in your component
         productId: product.id
       };
-      
-  
-      // Fetch the token from local storage
-      const token = localStorage.getItem('token');
   
       const response = await axios.post('https://localhost:7121/api/v1/FavoriteProducts', favoriteProduct, {
         headers: {
           'Authorization': `Bearer ${token}`
         }
       });
+  
       toast.success('Product added to favorites');
-      console.log(response.data);
     } catch (error) {
       console.error(error);
       toast.error('Failed to add product to favorites');
@@ -174,7 +201,25 @@ const getTokenData = () => {
   const paginate = (pageNumber) => setCurrentPage(pageNumber);
 // tab thong tin
 const [activeTab, setActiveTab] = useState('Description');
+// open modal image
+const openModal = (imageSrc) => {
+  setSelectedImage(imageSrc);
+  setModalIsOpen(true);
+};
 
+const closeModal = () => {
+  setModalIsOpen(false);
+};
+//modal image
+const nextImage = () => {
+  setCurrentImageIndex((currentImageIndex + 1) % productDetail[0].imagesSrc.length);
+};
+
+const prevImage = () => {
+  setCurrentImageIndex((currentImageIndex - 1 + productDetail[0].imagesSrc.length) % productDetail[0].imagesSrc.length);
+};
+console.log('productDetail:', productDetail);
+console.log('imagesSrc:', productDetail && productDetail.imagesSrc);
     return ( 
         <>
   {/* page-title */}
@@ -231,6 +276,34 @@ const [activeTab, setActiveTab] = useState('Description');
                     </div>
                    
                   </figure>
+                  
+                  <div className="product-gallery" style={{marginBottom:'200px'}}>
+                  <div className="product-gallery__image" style={{ display: 'flex', justifyContent: 'space-between' }} >
+    {productDetail && productDetail[0] && productDetail[0].imagesSrc && productDetail[0].imagesSrc.slice(0, 3).map((image, index) => (
+        <div style={{ position: 'relative', flex: 1, margin: '3px' }}>
+            <img
+                className="img-fluid"
+                src={image}
+                alt={`product-img-${index + 1}`}
+                style={{ border: '2px solid #01d6a3', width: '100%', height: '120px', objectFit: 'cover', borderRadius: '10px'}}
+                onClick={() => openModal(image)}
+                key={index}
+            />
+            {index === 2 && productDetail[0].imagesSrc.length > 3 && (
+                <div 
+                    style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', backgroundColor: 'rgba(0,0,0,0.5)', color: 'white', display: 'flex', justifyContent: 'center', alignItems: 'center',borderRadius: '10px' }}
+                    onClick={() => openModal(image)}
+                >
+                    Xem thêm ảnh
+                </div>
+            )}
+        </div>
+    ))}
+</div>
+
+</div>
+
+
                 </div>
                 <div className="summary entry-summary">
                   <h1 className="product_title entry-title">{product.name}</h1>
@@ -300,83 +373,89 @@ const [activeTab, setActiveTab] = useState('Description');
                       
                     </div>
                   </div>
-                  <form
-                    className="cart"
-                    action="#"
-                    method="post"
-                    encType="multipart/form-data"
-                    onSubmit={(e) => {
-                      e.preventDefault();
-                      addToCart(product, quantity);
-                    }}
-                  >
-                    <div className="quantity">
-                      <label className="screen-reader-text">Quantity</label>
-                      <input
-                        type="number"
-                        id="quantity_5c357ca137d75"
-                        className="input-text qty text"
-                        step={1}
-                        min={1}
-                        max={50}
-                        name="quantity"
-                        defaultValue={1}
-                        title="Qty"
-                        size={4}
-                        value={quantity} onChange={(e) => setQuantity(e.target.value)}
-                      />
-                    </div>
-                    <button
-                      id="submit"
-                      name="add-to-cart"
-                      type="submit"
-                      className="cart_button"
-                      title="Submit now"
+                  <div style={{display: "flex"}}>
+
+                    <form
+                      className="cart"
+                      action="#"
+                      method="post"
+                      encType="multipart/form-data"
+                      onSubmit={(e) => {
+                        e.preventDefault();
+                        addToCart(product, quantity);
+                      }}
                     >
-                      Add to cart
-                    </button>
+                      <div className="quantity">
+                        <label className="screen-reader-text">Quantity</label>
+                        <input
+                          type="number"
+                          id="quantity_5c357ca137d75"
+                          className="input-text qty text"
+                          step={1}
+                          min={1}
+                          max={50}
+                          name="quantity"
+                          defaultValue={1}
+                          title="Qty"
+                          size={4}
+                          value={quantity} onChange={(e) => setQuantity(e.target.value)}
+                        />
+                      </div>
                     
-                  </form>
-                  <form
-  className="cart"
-  action="#"
-  method="post"
-  encType="multipart/form-data"
-  onSubmit={(e) => {
-    e.preventDefault();
-    addToFavorites(product);
-  }}
->
-  <button
-    type="submit"
-    className="cart_button"
-  >
-    Add to favorites
-  </button>
-</form>
+                      <button
+                        id="submit"
+                        name="add-to-cart"
+                        type="submit"
+                        className="cart_button"
+                        title="Submit now"
+                      >
+                        Add to cart
+                      </button>
+                      
+                    </form>
+                    <form style={{marginLeft: "10px"}}
+                      className="cart"
+                      action="#"
+                      method="post"
+                      encType="multipart/form-data"
+                      onSubmit={(e) => {
+                        e.preventDefault();
+                        addToFavorites(product);
+                      }}
+                    >
+                      <button
+                        type="submit"
+                        className="cart_button"
+                      >
+                        <i class="fa-solid fa-heart"></i>
+                      </button>
+                    </form>
+                  </div>
                 </div>
               </div>
               <div className="ttm-tabs tabs-for-single-products" data-effect="fadeIn">
       <ul className="tabs clearfix">
-      <li className="tab" onClick={(event) => {event.preventDefault(); setActiveTab('Description');}}>
+      <li className="tab" onClick={(event) => {event.preventDefault(); setActiveTab('Description')}}>
   <a href="#">Description</a>
 </li>
-<li className="tab" onClick={(event) => {event.preventDefault(); setActiveTab('Additional information');}}>
+<li className="tab" onClick={(event) => {event.preventDefault(); setActiveTab('Additional information')}}>
   <a href="#">Additional information</a>
 </li>
-<li className="tab" onClick={(event) => {event.preventDefault(); setActiveTab('Reviews');}}>
+<li className="tab" onClick={(event) => {event.preventDefault(); setActiveTab('Reviews')}}>
   <a href="#">Reviews (1)</a>
 </li>
       </ul>
       <div className="content-tab ttm-bgcolor-white">
         {activeTab === 'Description' && (
 <div className="content-inner">
-          {product && Array.isArray(product.productDetails) && product.productDetails.map((detail, index) => (
+          
+{product && Array.isArray(product.productDetails) && product.productDetails.map((detail, index) => (
             <div key={index}>
               <h2>Description</h2>
               <p> {detail.description}</p>
             </div>
           ))}
+          
         </div>
         )}
         {activeTab === 'Additional information' && (
@@ -564,6 +643,27 @@ const [activeTab, setActiveTab] = useState('Description');
     {/* sidebar end */}
   </div>
   {/*site-main end*/}
+  {modalIsOpen && (
+  <div className="modal" tabIndex="-1" role="dialog" style={{ display: modalIsOpen ? 'block' : 'none', backgroundColor: 'rgba(0, 0, 0, 0.5)', position: 'fixed', top: '0px', left: 0, right: 0, bottom: '', zIndex: 1000000, display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+
+    <div style={{width: '45%', height: '85%', padding: 30, paddingLeft: 70, paddingRight: 70, display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center',border: '2px solid #01d6a3'}} className="modal-content" onClick={(e) => e.stopPropagation()}>
+      <button className="close-button" onClick={closeModal} style={{ position: 'absolute', top: 10, right: 10, background: 'none', border: 'none', cursor: 'pointer', color: "black", padding: 10 }}>
+        <i style={{ fontSize: 18}} className="fa-solid fa-xmark"></i>
+      </button>
+
+      <h5 style={{paddingBottom:'50px'}}>{product.name}</h5>
+     
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+  <span style={{fontSize: '15px'}}><button onClick={prevImage} style={{backgroundColor:"#01d6a3", borderRadius: '50%'}}><i className="ti ti-arrow-left" /></button></span>
+  <img src={productDetail[0].imagesSrc[currentImageIndex]} alt="Selected" style={{ maxWidth: '100%', maxHeight: '100%', objectFit: 'contain', border: '2px solid #01d6a3',borderRadius: '10px',margin: '3px'  }} />
+  <button onClick={nextImage} style={{backgroundColor:"#01d6a3", borderRadius: '50%'}}><i className="ti ti-arrow-right" /></button>
+</div>
+    </div>
+    
+
+  </div>
+)}
+  
 </>
 
      );

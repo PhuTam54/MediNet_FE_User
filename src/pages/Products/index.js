@@ -179,6 +179,17 @@ const handleClick = (pageNumber) => {
   setCurrentPage(pageNumber);
   window.scrollTo({ top: 0, behavior: 'smooth' });
 };
+// This function should be called whenever you perform a filter operation
+const handleFilter = (filterCriteria) => {
+  // Reset the current page
+  setCurrentPage(1);
+
+  // Perform the filter operation (this is just a placeholder, replace it with your actual filter logic)
+  const filteredProducts = products.filter(product => product.criteria === filterCriteria);
+
+  // Update the products state
+  setProducts(filteredProducts);
+};
 //hover dropdown
 const [isHovered, setIsHovered] = useState(Array(categoryParents.length).fill(false));
 const [isHoveredCategory, setIsHoveredCategory] = useState(null);
@@ -311,7 +322,7 @@ const [isHoveredCategory, setIsHoveredCategory] = useState(null);
           </a>
           <ul style={{ 
   display: isHovered[index] ? 'block' : 'none',
-  backgroundColor: 'white' 
+  backgroundColor: '#f9fafa' 
 }}>
   {categoryParent.categories.map((category) => (
     <li 
@@ -331,7 +342,7 @@ const [isHoveredCategory, setIsHoveredCategory] = useState(null);
     {isHoveredCategory === category.id && (
       <ul style={{ 
         display: 'block',
-        backgroundColor: 'white' 
+        backgroundColor: '#f9fafa' 
       }}>
         {category.categoryChilds.map((child) => (
           <li style={{ 
