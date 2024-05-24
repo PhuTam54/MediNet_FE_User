@@ -24,7 +24,7 @@ function CoursesDetail({ products }) {
 
   useEffect(() => {
     const fetchProduct = async () => {
-      const response = await axios.get(`https://localhost:7121/api/v1/Courses/id?id=${id}`);
+      const response = await axios.get(`https://medinetprj.azurewebsites.net/api/v1/Courses/id?id=${id}`);
       setProduct(response.data);
     };
 
@@ -35,7 +35,7 @@ function CoursesDetail({ products }) {
   useEffect(() => {
     const fetchFeedback = async () => {
       try {
-        const response = await axios.get(`https://localhost:7121/api/v1/Feedbacks/productId?productId=${id}`);
+        const response = await axios.get(`https://medinetprj.azurewebsites.net/api/v1/Feedbacks/productId?productId=${id}`);
         setFeedback(response.data);
       } catch (error) {
        
@@ -68,7 +68,7 @@ function CoursesDetail({ products }) {
         courseId: product.id,
         employeeId: userId,
     };
-    axios.post('https://localhost:7121/api/v1/Enrollments', cartItem)
+    axios.post('https://medinetprj.azurewebsites.net/api/v1/Enrollments', cartItem)
       .then(() => {
         toast.success('Product added to cart');
       })
@@ -89,7 +89,7 @@ function CoursesDetail({ products }) {
   };
   // const deleteFeedback = async (feedbackId) => {
   //   try {
-  //     await del(`https://localhost:7121/api/v1/Feedbacks/id?id=${feedbackId}`);
+  //     await del(`https://medinetprj.azurewebsites.net/api/v1/Feedbacks/id?id=${feedbackId}`);
   //     toast.success('Feedback deleted successfully');
   //     window.location.reload();
   //   } catch (error) {
@@ -114,7 +114,7 @@ function CoursesDetail({ products }) {
     };
 
     try {
-      await post('https://localhost:7121/api/v1/Feedbacks', feedbackData, {
+      await post('https://medinetprj.azurewebsites.net/api/v1/Feedbacks', feedbackData, {
         headers: {
           'Content-Type': 'multipart/form-data' // Đảm bảo đúng loại nội dung cho việc tải lên tệp
         }
@@ -198,7 +198,7 @@ function CoursesDetail({ products }) {
                       <img
                         className="img-fluid"
                         // src={product.imageSrc}
-                        src="https://localhost:7121/images/courses/fb6e6f4e-fd93-42c6-aeef-7370d426c2d7.jpg"
+                        src="https://medinetprj.azurewebsites.net/images/courses/fb6e6f4e-fd93-42c6-aeef-7370d426c2d7.jpg"
                         alt="product-img"
                       />
                     </div>

@@ -47,13 +47,13 @@ function Checkout() {
   const fetchData = async () => {
     const userId = getTokenData();
     try {
-      const cartResponse = await axios.get(`https://localhost:7121/api/v1/Carts/userid?userid=${userId}`);
+      const cartResponse = await axios.get(`https://medinetprj.azurewebsites.net/api/v1/Carts/userid?userid=${userId}`);
       const cartData = cartResponse.data;
       setData(cartData);
 
       const uniqueProductIds = [...new Set(cartData.map(item => item.productId))];
       const productPromises = uniqueProductIds.map(async productId => {
-        const productResponse = await axios.get(`https://localhost:7121/api/v1/Products/id?id=${productId}`);
+        const productResponse = await axios.get(`https://medinetprj.azurewebsites.net/api/v1/Products/id?id=${productId}`);
         return productResponse.data;
       });
       const productsData = await Promise.all(productPromises);
@@ -134,7 +134,7 @@ function Checkout() {
       localStorage.setItem('checkoutInfo', JSON.stringify(checkoutInfo));
 
       // Gửi yêu cầu POST đến API để lưu đơn hàng
-      const orderResponse = await axios.post('https://localhost:7121/api/v1/Orders', orderPayload);
+      const orderResponse = await axios.post('https://medinetprj.azurewebsites.net/api/v1/Orders', orderPayload);
       const orderId = orderResponse.data + ''; // Lấy mã đơn hàng
       localStorage.setItem('orderId', orderId);
       
@@ -167,7 +167,7 @@ function Checkout() {
       console.log(orderId)
 
       // Gửi dữ liệu thanh toán PayPal
-      const paymentResponse = await axios.post('https://localhost:7121/api/v1/Payments/PayPal', paymentPayload);
+      const paymentResponse = await axios.post('https://medinetprj.azurewebsites.net/api/v1/Payments/PayPal', paymentPayload);
 
       // Chuyển hướng sang PayPal để thanh toán
       window.location.href = paymentResponse.data;
@@ -191,7 +191,7 @@ function Checkout() {
         createdDate: new Date().toISOString(),
         // Các thông tin khác nếu cần
       };
-      const paymentResponse = await axios.post('https://localhost:7121/api/v1/Payments/VNPay', vnpayPayload);
+      const paymentResponse = await axios.post('https://medinetprj.azurewebsites.net/api/v1/Payments/VNPay', vnpayPayload);
 
       // Sau khi nhận được phản hồi từ VNPay, xử lý dữ liệu phản hồi và chuyển hướng tới trang thanh toán VNPay
       // Ví dụ:
@@ -218,7 +218,7 @@ function Checkout() {
       };
 
       // Gửi yêu cầu thanh toán tới MoMo
-      const paymentResponse = await axios.post('https://localhost:7121/api/v1/Payments/MoMo', momoPayload);
+      const paymentResponse = await axios.post('https://medinetprj.azurewebsites.net/api/v1/Payments/MoMo', momoPayload);
 
       // Sau khi nhận được phản hồi từ MoMo, xử lý dữ liệu phản hồi và chuyển hướng tới ứng dụng MoMo để thanh toán
       // Ví dụ:

@@ -47,7 +47,7 @@ console.log(userId);
             const userId = getTokenData();
             if (userId) {
                 localStorage.setItem('userId', userId);
-                axios.get(`https://localhost:7121/api/v1/Courses/employeeId?employeeId=${userId}`)
+                axios.get(`https://medinetprj.azurewebsites.net/api/v1/Courses/employeeId?employeeId=${userId}`)
                     .then(response => {
                         setOrders(response.data);
                     })
@@ -102,7 +102,7 @@ console.log(userId);
   const handleDelete = (id) => {
     const confirmDelete = window.confirm("Are you sure you want to delete this course?");
     if (confirmDelete) {
-        axios.delete(`https://localhost:7121/api/v1/Courses/id?id=${id}`)
+        axios.delete(`https://medinetprj.azurewebsites.net/api/v1/Courses/id?id=${id}`)
             .then(response => {
                 setOrders(orders.filter(order => order.id !== id));
                 toast.success('Course deleted successfully');
@@ -179,7 +179,7 @@ console.log(userId);
                                             <td style={{ padding: '0.75rem', verticalAlign: 'top', borderTop: '1px solid #dee2e6', textAlign: "center" }}><img style={ {width: 100}}
                                               className="img-fluid"
                                               // src={course.imagesCourse}
-                                              src="https://localhost:7121/images/courses/fb6e6f4e-fd93-42c6-aeef-7370d426c2d7.jpg"
+                                              src="https://medinetprj.azurewebsites.net/images/courses/fb6e6f4e-fd93-42c6-aeef-7370d426c2d7.jpg"
                                               alt=""
                                             /></td>
                                             <td style={{ padding: '0.75rem', verticalAlign: 'top', borderTop: '1px solid #dee2e6', textAlign: "center" }}>${order.price}</td>
@@ -224,7 +224,7 @@ console.log(userId);
                             <div style={{ flex: 1,  alignItems: 'center' }}>
                                 <img
                                     style={{ width: '100%', height: 'auto', borderRadius: 8 }}
-                                    src="https://localhost:7121/images/courses/fb6e6f4e-fd93-42c6-aeef-7370d426c2d7.jpg"
+                                    src="https://medinetprj.azurewebsites.net/images/courses/fb6e6f4e-fd93-42c6-aeef-7370d426c2d7.jpg"
                                     alt={selectedOrder.title}
                                 />
                               

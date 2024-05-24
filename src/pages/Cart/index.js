@@ -24,12 +24,12 @@ function Cart() {
   const fetchData = async () => {
     const userId = getUserId();
     try {
-      const cartResponse = await axios.get(`https://localhost:7121/api/v1/Carts/userid?userid=${userId}`);
+      const cartResponse = await axios.get(`https://medinetprj.azurewebsites.net/api/v1/Carts/userid?userid=${userId}`);
       const cartData = cartResponse.data;
 
       const productIds = cartData.map(item => item.productId);
       const productPromises = productIds.map(productId =>
-        axios.get(`https://localhost:7121/api/v1/Products/id?id=${productId}`)
+        axios.get(`https://medinetprj.azurewebsites.net/api/v1/Products/id?id=${productId}`)
       );
       const productsData = await Promise.all(productPromises);
       setProductsInfo(productsData.map(response => response.data));
@@ -67,7 +67,7 @@ function Cart() {
         qtyCart: newQuantity
       };
 
-      await axios.put(`https://localhost:7121/api/v1/Carts/id?id=${cartItem.id}`, requestData);
+      await axios.put(`https://medinetprj.azurewebsites.net/api/v1/Carts/id?id=${cartItem.id}`, requestData);
       fetchData();
     } catch (error) {
       console.error("Error updating quantity:", error);
@@ -76,7 +76,7 @@ function Cart() {
 
   const handleRemoveItem = async (id) => {
     try {
-      await axios.delete(`https://localhost:7121/api/v1/Carts/id?id=${id}`);
+      await axios.delete(`https://medinetprj.azurewebsites.net/api/v1/Carts/id?id=${id}`);
       fetchData();
     } catch (error) {
       console.error("Error removing item:", error);
@@ -136,7 +136,7 @@ function Cart() {
                         <th className="product-price">Price</th>
                         <th className="product-quantity">Quantity</th>
                         <th className="product-subtotal">Total</th>
-                        {/* <th className="product-subtotal">Clinic</th> */}
+                        <th className="product-subtotal">Clinic</th>
                       </tr>
                     </thead>
                     <tbody>
@@ -180,11 +180,11 @@ function Cart() {
                               <span className="Price-currencySymbol">$</span>{item.subTotal}
                             </span>
                           </td>
-                          {/* <td className="product-subtotal" data-title="Total">
+                          <td className="product-subtotal" data-title="Total">
                             <span className="Price-amount">
                               <span className="Price-currencySymbol"></span>{item.clinic.name}
                             </span>
-                          </td> */}
+                          </td>
                         </tr>
                       ))}
                     </tbody>

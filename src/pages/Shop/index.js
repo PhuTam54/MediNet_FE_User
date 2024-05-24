@@ -22,7 +22,7 @@ import { Link } from 'react-router-dom';
 function Shop() {
   const [products, setProducts] = useState([]);
   useEffect(() => {
-    axios.get('https://localhost:7121/api/v1/Products')
+    axios.get('https://medinetprj.azurewebsites.net/api/v1/Products')
     .then(res => {
       setProducts(res.data)
     })

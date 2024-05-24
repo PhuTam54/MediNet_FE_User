@@ -31,7 +31,7 @@ function Header() {
      // Lưu userRole vào localStorage
       setUserId(userId);
       setUserRole(userRole);
-      fetch(`https://localhost:7121/api/v1/Carts/userid?userid=${userId}`)
+      fetch(`https://medinetprj.azurewebsites.net/api/v1/Carts/userid?userid=${userId}`)
         .then(response => response.json())
         .then(data => {
           let totalProductsInCart = 0;

@@ -26,14 +26,14 @@
   
 
 //   useEffect(() => {
-//     axios.get('https://localhost:7121/api/v1/Products')
+//     axios.get('https://medinetprj.azurewebsites.net/api/v1/Products')
 //     .then(res => {
 //       setProducts(res.data)
 //     })
 //     .catch(err => {
 //         console.log(err)
 //     });
-//     axios.get('https://localhost:7121/api/v1/CategoryChilds')
+//     axios.get('https://medinetprj.azurewebsites.net/api/v1/CategoryChilds')
 //     .then(res => {
 //       setCategoryChilds(res.data)
 //     })
@@ -44,7 +44,7 @@
 // }, []) ;
 // const filterByCategory = (categoryId) => {
 //   axios
-//     .get(`https://localhost:7121/api/v1/Products/categorychild?categorychildId=${categoryId}`)
+//     .get(`https://medinetprj.azurewebsites.net/api/v1/Products/categorychild?categorychildId=${categoryId}`)
 //     .then((response) => {
 //       setProducts(response.data);
 //     })
@@ -323,7 +323,7 @@
 //                 onClick={(e) => {
 //                   e.preventDefault();
 //                   axios
-//                     .get('https://localhost:7121/api/v1/Products')
+//                     .get('https://medinetprj.azurewebsites.net/api/v1/Products')
 //                     .then((response) => {
 //                       setProducts(response.data);
 //                     })
@@ -386,7 +386,7 @@ function Courses() {
   const [currentPage, setCurrentPage] = useState(1);
 
   useEffect(() => {
-    axios.get('https://localhost:7121/api/v1/Courses')
+    axios.get('https://medinetprj.azurewebsites.net/api/v1/Courses')
       .then(res => {
         setCourses(res.data);
         
@@ -514,7 +514,7 @@ function Courses() {
                           <img style={ {width: 190}}
                             className="img-fluid"
                             // src={course.imagesCourse}
-                            src="https://localhost:7121/images/courses/fb6e6f4e-fd93-42c6-aeef-7370d426c2d7.jpg"
+                            src="https://medinetprj.azurewebsites.net/images/courses/fb6e6f4e-fd93-42c6-aeef-7370d426c2d7.jpg"
                             alt=""
                           />
                         </div>
