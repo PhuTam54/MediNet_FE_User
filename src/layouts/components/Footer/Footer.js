@@ -18,7 +18,7 @@ function Footer() {
   const [clinic, setClinic] = useState('');
   const [blogs, setBlogs] = useState([]);
   useEffect(() => {
-    fetch("https://localhost:7121/api/v1/Clinics/id?id=1")
+    fetch("https://medinetprj.azurewebsites.net/api/v1/Clinics/id?id=1")
       .then((response) => response.json())
       .then((data) => {
         setClinic(data);
@@ -156,7 +156,7 @@ function truncate(str, num) {
               {blogs.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt)).slice(0, 3).map((blog) => (
   <li key={blog.id}>
     <a href=''>
-      <Link to={`/blogdetail/${blog.id}`}><img src={`https://medinetprj.azurewebsites.net//${blog.image}`} alt="post-img" /></Link>
+      <Link to={`/blogdetail/${blog.id}`}><img src={blog.imageSrc} alt="post-img" /></Link>
       
     </a>
     <span className="post-date">{new Date(blog.createdAt).toLocaleDateString()}</span>

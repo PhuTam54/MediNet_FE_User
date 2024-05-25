@@ -25,6 +25,8 @@ function ProductDetail({  }) {
   const [modalIsOpen, setModalIsOpen] = useState(false);
 const [selectedImage, setSelectedImage] = useState(null);
 const [currentImageIndex, setCurrentImageIndex] = useState(0);
+const [averageStars, setAverageStars] = useState(0);
+const [totalFeedback, setTotalFeedback] = useState(0);
 
 useEffect(() => {
   axios.get('https://medinetprj.azurewebsites.net/api/v1/Products')
@@ -55,6 +57,11 @@ useEffect(() => {
       try {
         const response = await axios.get(`https://medinetprj.azurewebsites.net/api/v1/Feedbacks/productId?productId=${id}`);
         setFeedback(response.data);
+        setTotalFeedback(response.data.length);
+         // Calculate average star rating
+      const totalStars = response.data.reduce((total, feedback) => total + feedback.vote, 0);
+      const averageStars = totalStars / response.data.length;
+      setAverageStars(averageStars);
       } catch (error) {
 
         console.error('Failed to fetch feedback', error);
@@ -84,7 +91,7 @@ const getTokenData = () => {
   // add to cart
 
 
-  const addToCart = () => {
+ const addToCart = () => {
     if (!selectedClinic) {
       toast.error('Please select a clinic');
       return;
@@ -242,6 +249,15 @@ const nextImage = () => {
 const prevImage = () => {
   setCurrentImageIndex((currentImageIndex - 1 + productDetail[0].imagesSrc.length) % productDetail[0].imagesSrc.length);
 };
+const [clinic, setClinic] = useState('');
+  useEffect(() => {
+    fetch("https://medinetprj.azurewebsites.net/api/v1/Clinics/id?id=1")
+      .then((response) => response.json())
+      .then((data) => {
+        setClinic(data);
+      });
+  
+  }, []);
     return ( 
         <>
   {/* page-title */}
@@ -286,7 +302,7 @@ const prevImage = () => {
 <div className="col-lg-9 content-area">
             <div className="ttm-single-product-details product">
               <div className="ttm-single-product-info clearfix">
-                <div className="onsale">Sale!</div>
+                
                 <div className="product-gallery images">
                   <figure className="ttm-product-gallery__wrapper">
                     <div className="product-gallery__image">
@@ -328,34 +344,16 @@ const prevImage = () => {
                 <div className="summary entry-summary">
                   <h1 className="product_title entry-title">{product.name}</h1>
                   <div className="product-rating clearfix">
-                    <ul className="star-rating clearfix">
-                      <li>
-                        <i className="fa fa-star" />
-                      </li>
-                      <li>
-                        <i className="fa fa-star" />
-                      </li>
-                      <li>
-                        <i className="fa fa-star" />
-                      </li>
-                      <li>
-                        <i className="fa fa-star" />
-                      </li>
-                      <li>
-                        <i className="fa fa-star" />
-                      </li>
-                    </ul>
+                  <div className="star-rating">
+  <span>
+    {renderStars(averageStars)}
+  </span>
+</div>
                     <a href="#reviews" className="review-link" rel="nofollow">
-                      (<span className="count">1</span> customer review)
-                    </a>
+                    (<span className="count">{totalFeedback}</span> customer review{totalFeedback > 1 ? 's' : ''})                    </a>
                   </div>
 <p className="price">
-                    <del>
-                      <span className="product-Price-amount">
-                        <span className="product-Price-currencySymbol">$</span>
-                        70.00
-                      </span>
-                    </del>
+                    
                     <ins>
                       <span className="product-Price-amount">
                         <span className="product-Price-currencySymbol">$</span>
@@ -366,10 +364,7 @@ const prevImage = () => {
                   <div className="product-details__short-description">
   <table style={{ border: '1px solid transparent' }}>
     <tbody>
-      <tr style={{ border: '1px solid transparent' }}>
-        <th style={{ border: '1px solid transparent', verticalAlign: 'top' }}>Description:</th>
-        <td style={{ border: '1px solid transparent', verticalAlign: 'top' }}>{product.description}</td>
-      </tr>
+      
       <tr style={{ border: '1px solid transparent' }}>
 <th style={{ border: '1px solid transparent', verticalAlign: 'top' }}>Category:</th>
         <td style={{ border: '1px solid transparent', verticalAlign: 'top' }}>
@@ -383,6 +378,10 @@ const prevImage = () => {
       <tr style={{ border: '1px solid transparent' }}>
         <th style={{ border: '1px solid transparent', verticalAlign: 'top' }}>Manufacturer:</th>
         <td style={{ border: '1px solid transparent', verticalAlign: 'top' }}>{product.manufacturer}</td>
+      </tr>
+      <tr style={{ border: '1px solid transparent' }}>
+        <th style={{ border: '1px solid transparent', verticalAlign: 'top' }}>Description:</th>
+        <td style={{ border: '1px solid transparent', verticalAlign: 'top' }}>{product.description}</td>
       </tr>
     </tbody>
   </table>
@@ -473,7 +472,7 @@ className="input-text qty text"
   <a href="#">Additional information</a>
 </li>
 <li className="tab" onClick={(event) => {event.preventDefault(); setActiveTab('Reviews');}}>
-  <a href="#">Reviews (1)</a>
+  <a href="#">Reviews ({totalFeedback})</a>
 </li>
       </ul>
       <div className="content-tab ttm-bgcolor-white">
@@ -643,7 +642,7 @@ className="input-text qty text"
   </ul>
 </aside>
             
-            <aside className="widget widget-text">
+<aside className="widget widget-text">
               <div className="ttm_info_widget">
                 <div className="icon">
                   <i className="themifyicon ti-headphone" />
@@ -652,11 +651,11 @@ className="input-text qty text"
                   <h3>Let's Help You!</h3>
                 </div>
                 <div className="content">
-                  14 Tottenham Court Road
+                  {clinic.address}
                   <br />
-                  Bulls Stadium, Califorina <br />
-                  1234, USA <br />
-                  <a href="mailto:info@example.com.com">info@example.com</a>
+                  {clinic.name} <br />
+                  {clinic.phone} <br />
+                  <a href="mailto:info@example.com.com">{clinic.email}</a>
                 </div>
                 <br />
                 <a className="view_more" href="#">

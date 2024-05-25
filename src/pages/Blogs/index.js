@@ -22,7 +22,7 @@ function Blogs() {
       });
   },[]);  
   useEffect(() => {
-    fetch("https://localhost:7121/api/v1/Diseases")
+    fetch("https://medinetprj.azurewebsites.net/api/v1/Diseases")
       .then((response) => response.json())
       .then((data) => {
         setDiseases(data);
@@ -30,7 +30,7 @@ function Blogs() {
   
   }, []);
   useEffect(() => {
-    fetch("https://localhost:7121/api/v1/Employees")
+    fetch("https://medinetprj.azurewebsites.net/api/v1/Employees")
       .then((response) => response.json())
       .then((data) => {
         setDoctors(data);
@@ -65,7 +65,7 @@ const paginate = (pageNumber) => setCurrentPage(pageNumber);
 //
 const [clinic, setClinic] = useState('');
   useEffect(() => {
-    fetch("https://localhost:7121/api/v1/Clinics/id?id=1")
+    fetch("https://medinetprj.azurewebsites.net/api/v1/Clinics/id?id=1")
       .then((response) => response.json())
       .then((data) => {
         setClinic(data);
@@ -75,7 +75,7 @@ const [clinic, setClinic] = useState('');
 //filter disease
 const fetchBlogByDiseases = async (diseaseId) => {
   try {
-    const response = await axios.get(`https://localhost:7121/api/v1/Blogs/diseaseId?diseaseId=${diseaseId}`);
+    const response = await axios.get(`https://medinetprj.azurewebsites.net/api/v1/Blogs/diseaseId?diseaseId=${diseaseId}`);
     setBlogs(response.data);
   } catch (error) {
     console.error('Failed to fetch blogs:', error);
@@ -84,7 +84,7 @@ const fetchBlogByDiseases = async (diseaseId) => {
 // Filter by employee
 const fetchBlogByEmployee = async (employeeId) => {
   try {
-    const response = await axios.get(`https://localhost:7121/api/v1/Blogs/employeeId?employeeId=${employeeId}`);
+    const response = await axios.get(`https://medinetprj.azurewebsites.net/api/v1/Blogs/employeeId?employeeId=${employeeId}`);
     setBlogs(response.data);
   } catch (error) {
     console.error('Failed to fetch blogs:', error);
@@ -155,7 +155,7 @@ const fetchBlogByEmployee = async (employeeId) => {
       <div className="ttm-post-featured" style={{width:'100%', height:'100%'}}>
         <img
           className="img-fluid"
-          src={`https://medinetprj.azurewebsites.net//${blog.image}`}
+          src={blog.imageSrc}
           alt={blog.title}
           style={{width:'100%', height:'500px'}}
         />
@@ -293,7 +293,7 @@ const fetchBlogByEmployee = async (employeeId) => {
                   {blogs.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt)).slice(0, 3).map((blog) => (
   <li key={blog.id}>
     <a href=''>
-      <Link to={`/blogdetail/${blog.id}`}><img src={`https://medinetprj.azurewebsites.net//${blog.image}`} alt="post-img" /></Link>
+      <Link to={`/blogdetail/${blog.id}`}><img  src={blog.imageSrc} alt="post-img" /></Link>
       
     </a>
     <span className="post-date">{new Date(blog.createdAt).toLocaleDateString()}</span>
