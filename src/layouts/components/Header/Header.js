@@ -7,6 +7,7 @@ import React, { useState } from 'react';
 import { useContext } from "react";
 import { UserContext } from "~/context/UserContext";
 import { useEffect } from 'react';
+import axios from "axios";
 
 function Header() {
   const [isLoggedIn,setIsLoggedIn] = useState(!!localStorage.getItem('token'));
@@ -17,6 +18,7 @@ function Header() {
   const [uniqueProductCount, setUniqueProductCount] = useState(0); // Đếm số sản phẩm khác nhau
   const [userId, setUserId] = useState('');
   const [userRole, setUserRole] = useState('');
+  
   useEffect(() => {
     const token = localStorage.getItem('token');
     if (token) {
@@ -59,6 +61,15 @@ function Header() {
     navigate('/');
     toast.success("Logout success!");
   };
+  const [clinic, setClinic] = useState('');
+  useEffect(() => {
+    fetch("https://medinetprj.azurewebsites.net/api/v1/Clinics/id?id=1")
+      .then((response) => response.json())
+      .then((data) => {
+        setClinic(data);
+      });
+  
+  }, []);
 
     return (
       <>
@@ -200,63 +211,30 @@ function Header() {
           <ul className="top-contact text-left">
             <li>
               <i className="themifyicon ti-location-pin" />
-              234 Triumph, Los Angeles, California, US
+              {clinic && clinic.address}
             </li>
             <li>
               <i className="themifyicon ti-timer" />
               Mon - Sat 8.00 - 18.00. Sunday CLOSED
             </li>
+            <li>
+              <i className="themifyicon ti-email" />
+              {clinic && clinic.email}
+            </li>
+            <li>
+              <i className="themifyicon ti-mobile" />
+              {clinic && clinic.phone}
+            </li>
           </ul>
           <div className="topbar-right text-right">
             <div className="ttm-social-links-wrapper list-inline">
-              <ul className="social-icons">
-                <li className="facebook-icon">
-                  <a
-                    href="https://www.facebook.com/preyantechnosys19"
-                    rel="noopener"
-                    aria-label="facebook"
-                    target="_blank"
-                  >
-                    <i className="fa fa-facebook" />
-                  </a>
-                </li>
-                <li className="twitter-icon">
-                  <a
-                    href="https://twitter.com/PreyanTechnosys"
-                    rel="noopener"
-                    aria-label="twitter"
-                    target="_blank"
-                  >
-                    <i className="fa fa-twitter" />
-                  </a>
-                </li>
-                <li className="pinterest-icon">
-                  <a
-                    href="https://in.pinterest.com/preyan_technosys/"
-                    rel="noopener"
-                    aria-label="pinterest"
-                    target="_blank"
-                  >
-                    <i className="fa fa-pinterest-p" />
-                  </a>
-                </li>
-                <li className="linkedin-icon">
-                  <a
-                    href="https://www.linkedin.com/in/preyan-technosys-pvt-ltd/"
-                    rel="noopener"
-                    aria-label="linkedin"
-                    target="_blank"
-                  >
-                    <i className="fa fa-linkedin" />
-                  </a>
-                </li>
-              </ul>
+            
             </div>
             <a
               className="ttm-btn ttm-btn-size-md ttm-btn-shape-square ttm-btn-style-fill ttm-btn-color-skincolor"
               href="#"
             >
-              GET A APPOINTMENT!
+              {clinic && clinic.name}
             </a>
           </div>
         </div>
@@ -370,7 +348,7 @@ function Header() {
                           </ul>
                     </li>
                     )}
-                    <li>
+                    {/* <li>
                       <a href="#">Pages</a>
                       <ul>
                       
@@ -442,33 +420,18 @@ function Header() {
                           <a href="element.html">Elements</a>
                         </li>
                       </ul>
-                    </li>
+                    </li> */}
                     <li>
                           <a href="/shop ">Shop</a>
                           <ul>
-                            <li>
-                              <a href="/shop">Home Shop</a>
-                            </li>
+                           
                             <li>
                               <a href="/products">Products</a>
                             </li>
-                            <li>
-                              <a href="/productdetail">
-                                Single Product Details
-                              </a>
-                            </li>
-                            <li>
-                              <a href="/cart">Cart</a>
-                            </li>
-                            <li>
-                              <a href="/checkout">Checkout</a>
-                            </li>
-                            <li>
-                              <a href="/thankyou">Thankyou</a>
-                            </li>
+                            
                           </ul>
                         </li>
-                    <li>
+                    {/* <li>
                       <a href="#">Services</a>
                       <ul>
                         <li>
@@ -498,23 +461,10 @@ function Header() {
                           </a>
                         </li>
                       </ul>
-                    </li>
+                    </li> */}
                     <li>
-                      <a href="#">Blog</a>
-                      <ul>
-                        <li>
-                          <a href="blog.html">Blog Classic</a>
-                        </li>
-                        <li>
-                          <a href="blog-left-image.html">Blog Left Image</a>
-                        </li>
-                        <li>
-                          <a href="blog-grid-view.html">Blog Grid View</a>
-                        </li>
-                        <li>
-                          <a href="single-blog.html">Blog Single View</a>
-                        </li>
-                      </ul>
+                      <a href="/blogs">Blog</a>
+                      
                     </li>
                                         <li className="header-button pr-0">
                       <div className="container" style={{ textAlign: 'center' }}>
