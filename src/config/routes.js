@@ -5,6 +5,8 @@ const routes = {
     shop: '/shop',
     products: '/products',
     productdetail: '/productdetail/:id',
+    blogs: '/blogs',
+    blogdetail: '/blogdetail/:id', 
     cart: '/cart',
     checkout: '/checkout',
     login: '/login',
