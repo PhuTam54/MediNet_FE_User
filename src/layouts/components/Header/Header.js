@@ -422,6 +422,10 @@ function Header() {
                       </ul>
                     </li> */}
                     <li>
+                          <a href="/doctors ">Doctors</a>
+                          
+                        </li>
+                    <li>
                           <a href="/shop ">Shop</a>
                           <ul>
                            

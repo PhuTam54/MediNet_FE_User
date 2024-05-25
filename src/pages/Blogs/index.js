@@ -10,6 +10,8 @@ function Blogs() {
   const [blogsPerPage] = useState(5);
   const [diseases, setDiseases] = useState([]);
   const [doctors, setDoctors] = useState([]);
+  const [originalBlogs, setOriginalBlogs] = useState([]);
+
  
   
 
@@ -19,6 +21,7 @@ function Blogs() {
       .then((response) => response.json())
       .then((data) => {
         setBlogs(data);
+        setOriginalBlogs(data);
       });
   },[]);  
   useEffect(() => {
@@ -181,6 +184,9 @@ const fetchBlogByEmployee = async (employeeId) => {
             <i className="ti ti-folder" />
             {blog.disease.name}
           </span>
+          <span className="ttm-meta-line comments-link">
+  <i className="fa fa-comment" />  {blog.blogComments ? blog.blogComments.length : 0}  Comments
+</span>
           {/* <span className="ttm-meta-line comments-link">
             <i className="fa fa-comment" /> {blog.comments.length} Comments
           </span> */}
@@ -208,12 +214,15 @@ const fetchBlogByEmployee = async (employeeId) => {
         <div className="ttm-blogbox-desc-footer">
           <div className="ttm-blogbox-footer-readmore">
             <div className="ttm-blogbox-footer-left">
+              <Link to={`/blogdetail/${blog.id}`}>
               <a
                 className="ttm-btn ttm-btn-size-md ttm-btn-shape-square ttm-btn-style-fill ttm-btn-color-black"
                 href={blog.link}
               >
                 READ MORE
               </a>
+              </Link>
+              
             </div>
           </div>
           {/* Add your social share links here */}
@@ -268,6 +277,7 @@ const fetchBlogByEmployee = async (employeeId) => {
                 <aside className="widget widget-categories">
                   <h3 className="widget-title">Diseases</h3>
                   <ul>
+                  <li onClick={() => setBlogs(originalBlogs)}><a href="">All</a></li>
                     {diseases.map((disease) => (
                     <li>
                     <a href="#" onClick={() => fetchBlogByDiseases(disease.id)}>
@@ -280,6 +290,7 @@ const fetchBlogByEmployee = async (employeeId) => {
                 <aside className="widget widget-categories">
                   <h3 className="widget-title">Doctors</h3>
                   <ul>
+                  <li onClick={() => setBlogs(originalBlogs)}><a href="">All</a></li>
                   {doctors.filter(doctor => doctor.role === 4).map((doctor) => (
   <li>
     <a href="#" onClick={() => fetchBlogByEmployee(doctor.id)}>{doctor.full_Name}</a>
@@ -290,7 +301,7 @@ const fetchBlogByEmployee = async (employeeId) => {
                 <aside className="widget widget-recent-post">
                   <h3 className="widget-title">Popular News</h3>
                   <ul className="widget-post ttm-recent-post-list">
-                  {blogs.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt)).slice(0, 3).map((blog) => (
+                  {originalBlogs.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt)).slice(0, 3).map((blog) => (
   <li key={blog.id}>
     <a href=''>
       <Link to={`/blogdetail/${blog.id}`}><img  src={blog.imageSrc} alt="post-img" /></Link>
@@ -387,7 +398,7 @@ const fetchBlogByEmployee = async (employeeId) => {
                 </a>
               </div>
             </aside>
-                <aside className="widget tagcloud-widget">
+                {/* <aside className="widget tagcloud-widget">
                   <h3 className="widget-title">Tags</h3>
                   <div className="tagcloud">
                     <a href="#" className="tag-cloud-link">
@@ -415,7 +426,7 @@ const fetchBlogByEmployee = async (employeeId) => {
                       psychology
                     </a>
                   </div>
-                </aside>
+                </aside> */}
               </div>
             </div>
             {/* row end */}

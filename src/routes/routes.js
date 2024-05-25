@@ -21,6 +21,8 @@ import CoursesDetail from '~/pages/CoursesDetail';
 import MyCourses from '~/pages/MyCourses';
 import Blogs from '~/pages/Blogs';
 import BlogDetail from '~/pages/BlogDetail';
+import Doctors from '~/pages/Doctor';
+import DoctorDetail from '~/pages/DoctorDetail';
 
 
 // Public routes
@@ -31,6 +33,9 @@ export const publicRoutes = [
     { path: config.routes.productdetail, component: ProductDetail},
     { path: config.routes.blogs, component: Blogs},
     { path: config.routes.blogdetail, component: BlogDetail},
+    { path: config.routes.doctors, component: Doctors},
+    { path: config.routes.doctordetail, component: DoctorDetail},
+
 
 
     { path: config.routes.emailthankyou, component: EmailThankyou,layout: LayoutOnly },
