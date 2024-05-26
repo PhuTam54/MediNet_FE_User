@@ -137,7 +137,6 @@ function Courses() {
                           <div className="onsale">Sale!</div>
                           <img style={ {width: 190}}
                             className="img-fluid"
-                            // src={course.imagesCourse}
                             src={course.imagesSrc}
                             alt=""
                           />

@@ -7,6 +7,7 @@ import React, { useState } from 'react';
 import { useContext } from "react";
 import { UserContext } from "~/context/UserContext";
 import { useEffect } from 'react';
+import axios from "axios";
 
 function Header() {
   const [isLoggedIn,setIsLoggedIn] = useState(!!localStorage.getItem('token'));
@@ -17,6 +18,7 @@ function Header() {
   const [uniqueProductCount, setUniqueProductCount] = useState(0); // Đếm số sản phẩm khác nhau
   const [userId, setUserId] = useState('');
   const [userRole, setUserRole] = useState('');
+  
   useEffect(() => {
     const token = localStorage.getItem('token');
     if (token) {
@@ -230,7 +232,7 @@ function Header() {
               className="ttm-btn ttm-btn-size-md ttm-btn-shape-square ttm-btn-style-fill ttm-btn-color-skincolor"
               href="#"
             >
-             {clinic && clinic.name}
+              {clinic && clinic.name}
             </a>
           </div>
         </div>
@@ -344,7 +346,7 @@ function Header() {
                           </ul>
                     </li>
                     )}
-                    <li>
+                    {/* <li>
                       <a href="#">Pages</a>
                       <ul>
                       
@@ -416,33 +418,22 @@ function Header() {
                           <a href="element.html">Elements</a>
                         </li>
                       </ul>
-                    </li>
+                    </li> */}
+                    <li>
+                          <a href="/doctors ">Doctors</a>
+                          
+                        </li>
                     <li>
                           <a href="/shop ">Shop</a>
                           <ul>
-                            <li>
-                              <a href="/shop">Home Shop</a>
-                            </li>
+                           
                             <li>
                               <a href="/products">Products</a>
                             </li>
-                            <li>
-                              <a href="/productdetail">
-                                Single Product Details
-                              </a>
-                            </li>
-                            <li>
-                              <a href="/cart">Cart</a>
-                            </li>
-                            <li>
-                              <a href="/checkout">Checkout</a>
-                            </li>
-                            <li>
-                              <a href="/thankyou">Thankyou</a>
-                            </li>
+                            
                           </ul>
                         </li>
-                    <li>
+                    {/* <li>
                       <a href="#">Services</a>
                       <ul>
                         <li>
@@ -472,9 +463,12 @@ function Header() {
                           </a>
                         </li>
                       </ul>
+                    </li> */}
+                    <li>
+                      <a href="/blogs">Blog</a>
+                      
                     </li>
-                    
-                    <li className="header-button pr-0">
+                                        <li className="header-button pr-0">
                       <div className="container" style={{ textAlign: 'center' }}>
 
                         {isLoggedIn ? (

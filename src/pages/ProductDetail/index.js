@@ -8,6 +8,8 @@ import { post, del } from '~/utils/httpRequest';
 function ProductDetail({  }) {
   const [products, setProducts] = useState([]);
   const [product, setProduct] = useState({});
+  const [productDetail, setProductDetail] = useState([]);
+
   const { id } = useParams();
   const [quantity, setQuantity] = useState(1);
   const [imageFile, setImageFile] = useState(null); 
@@ -19,23 +21,34 @@ function ProductDetail({  }) {
   const [clinics, setClinics] = useState([]);
   const [selectedClinic, setSelectedClinic] = useState('');
   const [relatedProducts, setRelatedProducts] = useState([]);
-  const [averageStars, setAverageStars] = useState(0);
-  const [totalFeedback, setTotalFeedback] = useState(0);
-  useEffect(() => {
-    axios.get('https://medinetprj.azurewebsites.net/api/v1/Products')
-    .then(res => {
-      setProducts(res.data)
-    })
-    .catch(err => {
-        console.log(err)
-    });
-    const fetchProduct = async () => {
-      const response = await axios.get(`https://medinetprj.azurewebsites.net/api/v1/Products/id?id=${id}`);
-      setProduct(response.data);
-    };
+  const [modalIsOpen, setModalIsOpen] = useState(false);
+const [selectedImage, setSelectedImage] = useState(null);
+const [currentImageIndex, setCurrentImageIndex] = useState(0);
+const [averageStars, setAverageStars] = useState(0);
+const [totalFeedback, setTotalFeedback] = useState(0);
 
-    fetchProduct();
-  }, [id]);
+useEffect(() => {
+  axios.get('https://medinetprj.azurewebsites.net/api/v1/Products')
+  .then(res => {
+    setProducts(res.data)
+  })
+  .catch(err => {
+      console.log(err)
+  });
+
+  const fetchProduct = async () => {
+    const response = await axios.get(`https://medinetprj.azurewebsites.net/api/v1/Products/id?id=${id}`);
+    setProduct(response.data);
+  };
+
+  const fetchProductDetails = async () => {
+    const response = await axios.get(`https://medinetprj.azurewebsites.net/api/v1/ProductDetails/productId?productId=${id}`);
+    setProductDetail(response.data);
+  };
+
+  fetchProduct();
+  fetchProductDetails();
+}, [id]);
   const currentProductCategoryChildId = product.categoryChildId;
   //feedback
   useEffect(() => {
@@ -48,6 +61,11 @@ function ProductDetail({  }) {
      const averageStars = totalStars / response.data.length;
      setAverageStars(averageStars);
         setFeedback(response.data);
+        setTotalFeedback(response.data.length);
+         // Calculate average star rating
+      const totalStars = response.data.reduce((total, feedback) => total + feedback.vote, 0);
+      const averageStars = totalStars / response.data.length;
+      setAverageStars(averageStars);
       } catch (error) {
 
         console.error('Failed to fetch feedback', error);
@@ -81,7 +99,7 @@ const getTokenData = () => {
       toast.error('Please select a clinic');
       return;
     }
-    const cartItem = {
+const cartItem = {
       qtyCart: quantity,
       productID: product.id,
       customerID: userId,
@@ -97,12 +115,28 @@ const getTokenData = () => {
   };
   const addToFavorites = async (product) => {
     try {
+      // Fetch the token from local storage
+      const token = localStorage.getItem('token');
+  
+      // Get the current list of favorite products
+      const favoritesResponse = await axios.get(`https://medinetprj.azurewebsites.net/api/v1/FavoriteProducts/customerId?customerId=${userId}`, {
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      });
+  
+      // Check if the product is already in the favorites
+      const isAlreadyFavorited = favoritesResponse.data.some(favProduct => favProduct.productId === product.id);
+  
+      if (isAlreadyFavorited) {
+        toast.error('This product is already in your favorites!');
+        return;
+      }
+  
       const favoriteProduct = {
-        
         customerId: userId, // Assuming userId is defined in your component
         productId: product.id
       };
-      
   
       // Fetch the token from local storage
       const token = localStorage.getItem('token');
@@ -112,13 +146,14 @@ const getTokenData = () => {
           'Authorization': `Bearer ${token}`
         }
       });
+  
       toast.success('Product added to favorites');
-      console.log(response.data);
     } catch (error) {
       console.error(error);
       toast.error('Failed to add product to favorites');
     }
   };
+
 
   // Hàm xử lý khi người dùng chọn hình ảnh
   const handleImageChange = (event) => {
@@ -163,7 +198,7 @@ const getTokenData = () => {
       });
       toast.success('Feedback submitted successfully');
       window.location.reload();
-    } catch (error) {
+} catch (error) {
       console.error('Failed to submit feedback', error);
       toast.error('Failed to submit feedback');
     }
@@ -213,6 +248,34 @@ const [clinic, setClinic] = useState('');
 
   }, []);
 
+  fetchClinics();
+}, [id]);
+// open modal image
+const openModal = (imageSrc) => {
+  setSelectedImage(imageSrc);
+  setModalIsOpen(true);
+};
+
+const closeModal = () => {
+  setModalIsOpen(false);
+};
+//modal image
+const nextImage = () => {
+  setCurrentImageIndex((currentImageIndex + 1) % productDetail[0].imagesSrc.length);
+};
+
+const prevImage = () => {
+  setCurrentImageIndex((currentImageIndex - 1 + productDetail[0].imagesSrc.length) % productDetail[0].imagesSrc.length);
+};
+const [clinic, setClinic] = useState('');
+  useEffect(() => {
+    fetch("https://medinetprj.azurewebsites.net/api/v1/Clinics/id?id=1")
+      .then((response) => response.json())
+      .then((data) => {
+        setClinic(data);
+      });
+  
+  }, []);
     return ( 
         <>
   {/* page-title */}
@@ -254,10 +317,10 @@ const [clinic, setClinic] = useState('');
       <div className="container">
         {/* row */}
         <div className="row">
-          <div className="col-lg-9 content-area">
+<div className="col-lg-9 content-area">
             <div className="ttm-single-product-details product">
               <div className="ttm-single-product-info clearfix">
-                <div className="onsale">Sale!</div>
+                
                 <div className="product-gallery images">
                   <figure className="ttm-product-gallery__wrapper">
                     <div className="product-gallery__image">
@@ -269,38 +332,47 @@ const [clinic, setClinic] = useState('');
                     </div>
                    
                   </figure>
+                  <div className="product-gallery" style={{marginBottom:'200px'}}>
+                  <div className="product-gallery__image" style={{ display: 'flex', justifyContent: 'space-between' }} >
+    {productDetail && productDetail[0] && productDetail[0].imagesSrc && productDetail[0].imagesSrc.slice(0, 3).map((image, index) => (
+        <div style={{ position: 'relative', flex: 1, margin: '3px' }}>
+            <img
+                className="img-fluid"
+                src={image}
+                alt={`product-img-${index + 1}`}
+                style={{ border: '2px solid #e4e8ed', width: '100%', height: '100px', objectFit: 'cover', borderRadius: '10px'}}
+                onClick={() => openModal(image)}
+                key={index}
+            />
+            {index === 2 && productDetail[0].imagesSrc.length > 3 && (
+                <div 
+                    style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', backgroundColor: 'rgba(0,0,0,0.5)', color: 'white', display: 'flex', justifyContent: 'center', alignItems: 'center',borderRadius: '10px' }}
+                    onClick={() => openModal(image)}
+                >
+                    Xem thêm ảnh
+                </div>
+            )}
+        </div>
+    ))}
+</div>
+
+</div>
+
                 </div>
                 <div className="summary entry-summary">
                   <h1 className="product_title entry-title">{product.name}</h1>
                   <div className="product-rating clearfix">
-                    <ul className="star-rating clearfix">
-                      <li>
-                        <i className="fa fa-star" />
-                      </li>
-                      <li>
-                        <i className="fa fa-star" />
-                      </li>
-                      <li>
-                        <i className="fa fa-star" />
-                      </li>
-                      <li>
-                        <i className="fa fa-star" />
-                      </li>
-                      <li>
-                        <i className="fa fa-star" />
-                      </li>
-                    </ul>
+                  <div className="star-rating">
+  <span>
+    {renderStars(averageStars)}
+  </span>
+</div>
                     <a href="#reviews" className="review-link" rel="nofollow">
                       (<span className="count">{totalFeedback}</span> customer review{totalFeedback > 1 ? 's' : ''})                    
                     </a>
                   </div>
-                  <p className="price">
-                    <del>
-                      <span className="product-Price-amount">
-                        <span className="product-Price-currencySymbol">$</span>
-                        70.00
-                      </span>
-                    </del>
+<p className="price">
+                    
                     <ins>
                       <span className="product-Price-amount">
                         <span className="product-Price-currencySymbol">$</span>
@@ -311,10 +383,7 @@ const [clinic, setClinic] = useState('');
                   <div className="product-details__short-description">
   <table style={{ border: '1px solid transparent' }}>
     <tbody>
-      <tr style={{ border: '1px solid transparent' }}>
-        <th style={{ border: '1px solid transparent', verticalAlign: 'top' }}>Description:</th>
-        <td style={{ border: '1px solid transparent', verticalAlign: 'top' }}>{product.description}</td>
-      </tr>
+      
       <tr style={{ border: '1px solid transparent' }}>
 <th style={{ border: '1px solid transparent', verticalAlign: 'top' }}>Category:</th>
         <td style={{ border: '1px solid transparent', verticalAlign: 'top' }}>
@@ -328,6 +397,10 @@ const [clinic, setClinic] = useState('');
       <tr style={{ border: '1px solid transparent' }}>
         <th style={{ border: '1px solid transparent', verticalAlign: 'top' }}>Manufacturer:</th>
         <td style={{ border: '1px solid transparent', verticalAlign: 'top' }}>{product.manufacturer}</td>
+      </tr>
+      <tr style={{ border: '1px solid transparent' }}>
+        <th style={{ border: '1px solid transparent', verticalAlign: 'top' }}>Description:</th>
+        <td style={{ border: '1px solid transparent', verticalAlign: 'top' }}>{product.description}</td>
       </tr>
     </tbody>
   </table>
@@ -366,7 +439,7 @@ const [clinic, setClinic] = useState('');
                         <input
                           type="number"
                           id="quantity_5c357ca137d75"
-                          className="input-text qty text"
+className="input-text qty text"
                           step={1}
                           min={1}
                           max={50}
@@ -443,7 +516,7 @@ const [clinic, setClinic] = useState('');
         <h2>Usage Instructions</h2>
         <p> {detail.usageInstructions}</p>
         <h2>Side Effects</h2>
-        <p>{detail.sideEffects}</p>
+<p>{detail.sideEffects}</p>
         <h2>Precautions</h2>
         <p> {detail.precautions}</p>
         <h2>Storage</h2>
@@ -513,7 +586,7 @@ const [clinic, setClinic] = useState('');
               <ul style={{ listStyle: "none", padding: 0, display: "flex" }}>
                 {Array.from({length: Math.ceil(feedback.length / feedbackPerPage)}, (_, i) => i + 1).map((number) => (
                   <li key={number} className="page-item">
-                    <a onClick={() => paginate(number)} href="#!" className="page-link" style={{ textDecoration: "none", color: "#000", padding: "5px 10px", border: "1px solid #ccc" }}>
+<a onClick={() => paginate(number)} href="#!" className="page-link" style={{ textDecoration: "none", color: "#000", padding: "5px 10px", border: "1px solid #ccc" }}>
                       {number}
                     </a>
                   </li>
@@ -577,7 +650,7 @@ const [clinic, setClinic] = useState('');
   <h3 className="widget-title">Related Products</h3>
   <ul className="product-list-widget">
   {products
-    .filter(product => product.categoryChildId === currentProductCategoryChildId && product.id !== Number(id))
+.filter(product => product.categoryChildId === currentProductCategoryChildId && product.id !== Number(id))
     .slice(0, 3)
     .map(product => (
       <li>
@@ -598,7 +671,7 @@ const [clinic, setClinic] = useState('');
   </ul>
 </aside>
             
-            <aside className="widget widget-text">
+<aside className="widget widget-text">
               <div className="ttm_info_widget">
                 <div className="icon">
                   <i className="themifyicon ti-headphone" />
@@ -627,6 +700,27 @@ const [clinic, setClinic] = useState('');
     {/* sidebar end */}
   </div>
   {/*site-main end*/}
+  {modalIsOpen && (
+  <div className="modal" tabIndex="-1" role="dialog" style={{ display: modalIsOpen ? 'block' : 'none', backgroundColor: 'rgba(0, 0, 0, 0.5)', position: 'fixed', top: '0px', left: 0, right: 0, bottom: '', zIndex: 1000000, display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+
+    <div style={{width: '60%', height: '100%', padding: 30, paddingLeft: 70, paddingRight: 70, display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center'}} className="modal-content" onClick={(e) => e.stopPropagation()}>
+      <button className="close-button" onClick={closeModal} style={{ position: 'absolute', top: 10, right: 10, background: 'none', border: 'none', cursor: 'pointer', color: "black", padding: 10 }}>
+        <i style={{ fontSize: 18}} className="fa-solid fa-xmark"></i>
+      </button>
+
+      <h5 style={{paddingBottom:'50px'}}>{product.name}</h5>
+     
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+  <button onClick={prevImage} style={{backgroundColor:"#01d6a3", borderRadius: '50%'}}><i className="ti ti-arrow-left" /></button>
+  <img src={productDetail[0].imagesSrc[currentImageIndex]} alt="Selected" style={{ maxWidth: '100%', maxHeight: '100%', objectFit: 'contain', border: '2px solid #e4e8ed',borderRadius: '10px',margin: '3px'  }} />
+  <button onClick={nextImage} style={{backgroundColor:"#01d6a3", borderRadius: '50%'}}><i className="ti ti-arrow-right" /></button>
+</div>
+    </div>
+    
+
+  </div>
+)}
+
 </>
 
      );

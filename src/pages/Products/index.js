@@ -15,6 +15,7 @@ function useQuery() {
   return new URLSearchParams(useLocation().search);
 }
 function Products() {
+  const [clinic, setClinic] = useState('');
   const [productsBuyQty, setProductsBuyQty] = useState(0);
   const [products, setProducts] = useState([]);
   const [categoryParents, setCategoryParents] = useState([]);
@@ -33,7 +34,7 @@ const query = useQuery();
 
 useEffect(() => {
   const categoryChildId = query.get("categoryChild");
-  axios.get(`https://localhost:7121/api/v1/Products/categoryChildId?categoryChildId=${categoryChildId}`)
+  axios.get(`https://medinetprj.azurewebsites.net/api/v1/Products/categoryChildId?categoryChildId=${categoryChildId}`)
     .then(response => {
       setProducts(response.data);
     })
@@ -62,7 +63,7 @@ useEffect(() => {
 
   useEffect(() => {
     axios
-  .get('https://localhost:7121/api/v1/Products')
+  .get('https://medinetprj.azurewebsites.net/api/v1/Products')
   .then((response) => {
     setProducts(response.data);
     const manufacturers = [...new Set(response.data.map(product => product.manufacturer))];
@@ -72,7 +73,7 @@ useEffect(() => {
     console.error('Error fetching data:', error);
   });
   axios
-  .get('https://localhost:7121/api/v1/Products/buyQty')
+  .get('https://medinetprj.azurewebsites.net/api/v1/Products/buyQty')
   .then((response) => {
     setProductsBuyQty(response.data);
     
@@ -81,7 +82,7 @@ useEffect(() => {
   .catch((error) => {
     console.error('Error fetching data:', error);
   });
-    axios.get('https://localhost:7121/api/v1/CategoryParents')
+    axios.get('https://medinetprj.azurewebsites.net/api/v1/CategoryParents')
     .then(res => {
       setCategoryParents(res.data)
     })
@@ -92,7 +93,7 @@ useEffect(() => {
 }, []) ;
 const filterByCategoryParent = (categoryParentId) => {
   axios
-    .get(`https://localhost:7121/api/v1/Products/categoryParentId?categoryParentId=${categoryParentId}`)
+    .get(`https://medinetprj.azurewebsites.net/api/v1/Products/categoryParentId?categoryParentId=${categoryParentId}`)
     .then((response) => {
       setProducts(response.data);
     })
@@ -102,7 +103,7 @@ const filterByCategoryParent = (categoryParentId) => {
 };
 const filterByCategory = (categoryId) => {
   axios
-    .get(`https://localhost:7121/api/v1/Products/categoryId?categoryId=${categoryId}`)
+    .get(`https://medinetprj.azurewebsites.net/api/v1/Products/categoryId?categoryId=${categoryId}`)
     .then((response) => {
       setProducts(response.data);
     })
@@ -112,7 +113,7 @@ const filterByCategory = (categoryId) => {
 };
 const filterByCategoryChild = (categoryChildId) => {
   axios
-    .get(`https://localhost:7121/api/v1/Products/categoryChildId?categoryChildId=${categoryChildId}`)
+    .get(`https://medinetprj.azurewebsites.net/api/v1/Products/categoryChildId?categoryChildId=${categoryChildId}`)
     .then((response) => {
       setProducts(response.data);
     })
@@ -183,6 +184,14 @@ const handleClick = (pageNumber) => {
 const [isHovered, setIsHovered] = useState(Array(categoryParents.length).fill(false));
 const [isHoveredCategory, setIsHoveredCategory] = useState(null);
 //
+useEffect(() => {
+  fetch("https://medinetprj.azurewebsites.net/api/v1/Clinics/id?id=1")
+    .then((response) => response.json())
+    .then((data) => {
+      setClinic(data);
+    });
+
+}, []);
 
 
     return (  
@@ -257,7 +266,7 @@ const [isHoveredCategory, setIsHoveredCategory] = useState(null);
     onClick={(e) => {
       e.preventDefault();
       axios
-        .get('https://localhost:7121/api/v1/Products')
+        .get('https://medinetprj.azurewebsites.net/api/v1/Products')
         .then((response) => {
           setProducts(response.data);
         })
@@ -381,23 +390,7 @@ const [isHoveredCategory, setIsHoveredCategory] = useState(null);
                     <div className="ttm-product-box">
                       {/* ttm-product-box-inner */}
                       <div className="ttm-product-box-inner">
-                        <div className="ttm-shop-icon">
-                          <div className="product-btn">
-                            <a href="#" className="add-to-cart-btn">
-                              <i className="ti ti-shopping-cart" />
-                            </a>
-                          </div>
-                          <div className="product-btn">
-                            <a href="#" className="search-btn">
-                              <i className="ti ti-search" />
-                            </a>
-                          </div>
-                          <div className="product-btn">
-                            <a href="#" className="wishlist-btn">
-                              <i className="ti ti-heart" />
-                            </a>
-                          </div>
-                        </div>
+                        
                         <div className="ttm-product-image-box">
                           
                           <img
@@ -585,11 +578,11 @@ const [isHoveredCategory, setIsHoveredCategory] = useState(null);
                   <h3>Let's Help You!</h3>
                 </div>
                 <div className="content">
-                  14 Tottenham Court Road
+                  {clinic.address}
                   <br />
-                  Bulls Stadium, Califorina <br />
-                  1234, USA <br />
-                  <a href="mailto:info@example.com.com">info@example.com</a>
+                  {clinic.name} <br />
+                  {clinic.phone} <br />
+                  <a href="mailto:info@example.com.com">{clinic.email}</a>
                 </div>
                 <br />
                 <a className="view_more" href="#">

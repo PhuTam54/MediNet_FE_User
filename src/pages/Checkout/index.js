@@ -183,7 +183,6 @@ function Checkout() {
         name: billingFirstName,
         amount: totalAmount,
       };
-
       const paymentResponse = await axios.post('https://medinetprj.azurewebsites.net/api/v1/Payments/PayPal', paymentPayload, {
         headers: {
           'Authorization': `Bearer ${token}`
