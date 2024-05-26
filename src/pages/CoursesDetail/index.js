@@ -30,20 +30,7 @@ function CoursesDetail({ products }) {
     fetchProduct();
   }, [id]);
 
-  useEffect(() => {
-    const fetchFeedback = async () => {
-      try {
-        const response = await axios.get(`https://medinetprj.azurewebsites.net/api/v1/Feedbacks/productId?productId=${id}`);
-        setFeedback(response.data);
-      } catch (error) {
-       
-        console.error('Failed to fetch feedback', error);
-      }
-    };
 
-    fetchFeedback();
-  }, [id]);
-  
   const getTokenData = () => {
     const token = localStorage.getItem('token');
     if (token) {
@@ -247,16 +234,11 @@ function CoursesDetail({ products }) {
                     </a>
                   </div>
                   <p className="price">
-                    <del>
-                      <span className="product-Price-amount">
-                        <span className="product-Price-currencySymbol">$</span>
-                        70.00
-                      </span>
-                    </del>
+                   
                     <ins>
-                      <span className="product-Price-amount">
+                      <span className="product-Price-amount" style={{color:"black", fontSize: 18}}>
                         <span className="product-Price-currencySymbol">$</span>
-                        {product.price}.00
+                        {product.price}
                       </span>
                     </ins>
                   </p>
@@ -333,116 +315,7 @@ function CoursesDetail({ products }) {
                   {/* content-inner */}
                 
                   {/* content-inner end*/}
-                  {/* content-inner */}
-                  <div className="content-inner">
-                    <div id="reviews" className="woocommerce-Reviews">
-                   
-                      <div id="comments">
-                        
-                        <ol className="commentlist">
-                          {currentFeedback.map((item, index) => (
-                            <li  key={index} className="review">
-                              <div className="comment_container">
-                                {/* You can use product image here */}
-                                <img
-                                  className="avatar"
-                                  src={comment1}
-                                  alt="comment-img"
-                                />
-                                <div className="comment-text">
-                                  <div className="star-rating">
-                                    <span>
-                                     {renderStars(item.vote)}
-                                     
-                                    </span>
-                                  </div>
-                                  <p className="meta">
-                                    <strong className="eview__author">
-                                      {item.customer.username}
-                                    </strong>
-                                    <span style={{margin:"0 7px"}} className="review__dash">–</span>
-                                    <time style={{fontSize: 13}}
-                                      className="woocommerce-review__published-date"
-                                      dateTime={new Date().toISOString()}
-                                    >
-                                      {/* You can format date as needed */}
-                                      {new Date().toDateString()}
-                                    </time>
-                                  </p>
-                                  <div className="description">
-                                    <p>
-                                      {item.description}
-                                    </p>
-                                  </div>
-                                
-                                    <img style={{width: "100px"}}
-                                      src={item.imagesSrc}
-                                      alt="feedback-img"
-                                    />
-                               
-                                </div>
-                              </div>
-                               {/* <button onClick={() => deleteFeedback(item.id)}>Delete Feedback</button> */}
-                            </li>
-                          ))}
-                        </ol>
-                      </div>
-                      <div className="ttm-pagination text-center" style={{ display: "flex", justifyContent: "center" }}>
-
-                        <ul style={{ listStyle: "none", padding: 0, display: "flex" }}>
-                          {Array.from({length: Math.ceil(feedback.length / feedbackPerPage)}, (_, i) => i + 1).map((number) => (
-                            <li key={number} className="page-item">
-                              <a onClick={() => paginate(number)} href="#!" className="page-link" style={{ textDecoration: "none", color: "#000", padding: "5px 10px", border: "1px solid #ccc" }}>
-                                {number}
-                              </a>
-                            </li>
-                          ))}
-                        </ul>
-                      </div>
-                      <div id="review_form_wrapper">
-                        <div className="comment-respond">
-                          <span style={{fontSize: 25}} className="comment-reply-title">
-                            Add a review
-                            
-                          </span>
-                          <form encType="multipart/form-data" style={{  margin: "auto" }}>
-                            <div style={{ display: "flex", alignItems: "center", marginBottom: "20px" }}>
-                              <div style={{ flex: "1", marginRight: "20px" }}>
-                                <label htmlFor="vote" style={{ display: "block" }}>Vote:</label>
-                                <div>
-                        {[...Array(5)].map((_, index) => (
-                          <span
-
-                            key={index}
-                            onClick={() => setVote(index + 1)}
-                            style={{
-                              fontSize: "30px",
-                              cursor: 'pointer',
-                              color: index < vote ? 'gold' : 'lightgray',
-                            }}
-                          >
-                            ★
-                          </span>
-                        ))}
-                       
-                      </div>
-                              </div>
-                              <div style={{ flex: "1" }}>
-                                <label htmlFor="image" style={{ display: "block" }}>Image:</label>
-                                <input type="file" id="image" onChange={handleImageChange} style={{ padding: "5px 10px", borderRadius: "5px", border: "1px solid #ccc", width: "calc(100%)" }} />
-                              </div>
-                            </div>
-                            <div style={{ marginBottom: "20px" }}>
-                              <label htmlFor="description">Description:</label>
-                              <textarea type="text" id="description" value={description} onChange={handleDescriptionChange} style={{ padding: "5px 10px", borderRadius: "5px", border: "1px solid #ccc", width: "100%" }} />
-                            </div>
-                            <button type="button" onClick={submitFeedback} style={{ padding: "10px 20px", backgroundColor: "#007bff", color: "#fff", border: "none", borderRadius: "5px", cursor: "pointer" }}>Submit Feedback</button>
-                          </form>
-
-                        </div>
-                      </div>
-                    </div>
-                  </div>
+                 
                 </div>
               </div>
             </div>

@@ -183,6 +183,7 @@ function Checkout() {
         name: billingFirstName,
         amount: totalAmount,
       };
+
       const paymentResponse = await axios.post('https://medinetprj.azurewebsites.net/api/v1/Payments/PayPal', paymentPayload, {
         headers: {
           'Authorization': `Bearer ${token}`
@@ -251,31 +252,7 @@ function Checkout() {
     return re.test(phone);
   };
 
-  if (!userId || !isAllowedToCheckout(userRole)) {
-    return (
-      <div className="ttm-page-title-row">
-        <div className="container">
-          <div className="row">
-            <div className="col-md-12">
-              <div className="title-box ttm-textcolor-white">
-                <div className="page-title-heading">
-                  <h1 className="title">Unauthorized</h1>
-                </div>
-                <div className="breadcrumb-wrapper">
-                  <span>
-                    <a title="Homepage" href="/">
-                      <i className="ti ti-home"></i> Home
-                    </a>
-                  </span>
-                  <span>Unauthorized</span>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    );
-  }
+
 
   return (
     <>
@@ -589,4 +566,3 @@ function Checkout() {
 }
 
 export default Checkout;
-
