@@ -3,7 +3,7 @@ import { toast } from 'react-toastify';
 import axios from 'axios';
 
 function SignUp() {
-  const url = "https://localhost:7121/api/v1/LoginRegister/Register";
+  const url = "https://medinetprj.azurewebsites.net/api/v1/LoginRegister/Register";
   const [data, setData] = useState({
     userName: "",
     email: "",

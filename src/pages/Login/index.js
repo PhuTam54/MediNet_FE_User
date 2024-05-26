@@ -32,7 +32,7 @@ function Login() {
         password
       });
       loginContext(email,response.data.token);
-      // localStorage.setItem('token', response.data.token);
+      localStorage.setItem('token', response.data.token);
       console.log('Login successful!', response.data.token);
       navigate("/");
       toast.success("Login successful!");

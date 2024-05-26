@@ -25,13 +25,12 @@ function Header() {
       const tokenObject = JSON.parse(decodedToken);
       const userId = tokenObject.userId;
       const userRole = tokenObject.userRole;
-
       localStorage.setItem('userId', userId); // Lưu userId vào localStorage
       localStorage.setItem('userRole', userRole);
      // Lưu userRole vào localStorage
       setUserId(userId);
       setUserRole(userRole);
-      fetch(`https://localhost:7121/api/v1/Carts/userid?userid=${userId}`)
+      fetch(`https://medinetprj.azurewebsites.net/api/v1/Carts/userid?userid=${userId}`)
         .then(response => response.json())
         .then(data => {
           let totalProductsInCart = 0;
@@ -59,7 +58,15 @@ function Header() {
     navigate('/');
     toast.success("Logout success!");
   };
+  const [clinic, setClinic] = useState('');
+  useEffect(() => {
+    fetch("https://medinetprj.azurewebsites.net/api/v1/Clinics/id?id=1")
+      .then((response) => response.json())
+      .then((data) => {
+        setClinic(data);
+      });
 
+  }, []);
     return (
       <>
       
@@ -200,63 +207,30 @@ function Header() {
           <ul className="top-contact text-left">
             <li>
               <i className="themifyicon ti-location-pin" />
-              234 Triumph, Los Angeles, California, US
+              {clinic && clinic.address}
             </li>
             <li>
               <i className="themifyicon ti-timer" />
               Mon - Sat 8.00 - 18.00. Sunday CLOSED
             </li>
+            <li>
+              <i className="themifyicon ti-email" />
+              {clinic && clinic.email}
+            </li>
+            <li>
+              <i className="themifyicon ti-mobile" />
+              {clinic && clinic.phone}
+            </li>
           </ul>
           <div className="topbar-right text-right">
             <div className="ttm-social-links-wrapper list-inline">
-              <ul className="social-icons">
-                <li className="facebook-icon">
-                  <a
-                    href="https://www.facebook.com/preyantechnosys19"
-                    rel="noopener"
-                    aria-label="facebook"
-                    target="_blank"
-                  >
-                    <i className="fa fa-facebook" />
-                  </a>
-                </li>
-                <li className="twitter-icon">
-                  <a
-                    href="https://twitter.com/PreyanTechnosys"
-                    rel="noopener"
-                    aria-label="twitter"
-                    target="_blank"
-                  >
-                    <i className="fa fa-twitter" />
-                  </a>
-                </li>
-                <li className="pinterest-icon">
-                  <a
-                    href="https://in.pinterest.com/preyan_technosys/"
-                    rel="noopener"
-                    aria-label="pinterest"
-                    target="_blank"
-                  >
-                    <i className="fa fa-pinterest-p" />
-                  </a>
-                </li>
-                <li className="linkedin-icon">
-                  <a
-                    href="https://www.linkedin.com/in/preyan-technosys-pvt-ltd/"
-                    rel="noopener"
-                    aria-label="linkedin"
-                    target="_blank"
-                  >
-                    <i className="fa fa-linkedin" />
-                  </a>
-                </li>
-              </ul>
+            
             </div>
             <a
               className="ttm-btn ttm-btn-size-md ttm-btn-shape-square ttm-btn-style-fill ttm-btn-color-skincolor"
               href="#"
             >
-              GET A APPOINTMENT!
+             {clinic && clinic.name}
             </a>
           </div>
         </div>
@@ -499,24 +473,8 @@ function Header() {
                         </li>
                       </ul>
                     </li>
-                    <li>
-                      <a href="#">Blog</a>
-                      <ul>
-                        <li>
-                          <a href="blog.html">Blog Classic</a>
-                        </li>
-                        <li>
-                          <a href="blog-left-image.html">Blog Left Image</a>
-                        </li>
-                        <li>
-                          <a href="blog-grid-view.html">Blog Grid View</a>
-                        </li>
-                        <li>
-                          <a href="single-blog.html">Blog Single View</a>
-                        </li>
-                      </ul>
-                    </li>
-                                        <li className="header-button pr-0">
+                    
+                    <li className="header-button pr-0">
                       <div className="container" style={{ textAlign: 'center' }}>
 
                         {isLoggedIn ? (
@@ -537,6 +495,9 @@ function Header() {
                           <li>
                               <div className="vanh_hover">
                                 <a style={{fontSize: 15, color: "black"}} href="/profile">My Profile</a>
+                              </div>
+                              <div className="vanh_hover">
+                                <a style={{fontSize: 15, color: "black"}} href="/blogs">Blog</a>
                               </div>
                               <div className="vanh_hover">
                                 <a style={{fontSize: 15, color: "black"}} href="/myOrder">My Order</a>

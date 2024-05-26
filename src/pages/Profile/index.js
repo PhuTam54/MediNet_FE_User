@@ -7,8 +7,7 @@ const getTokenData = () => {
     const tokenData = token.split('.')[1];
     const decodedToken = atob(tokenData);
     const tokenObject = JSON.parse(decodedToken);
-    const userId = tokenObject.userId; // Lấy userId từ token
-    return userId;
+    return tokenObject;
   }
   return null;
 };
@@ -17,10 +16,19 @@ function MyProfile() {
   const [user, setUser] = useState(null);
 
   useEffect(() => {
-    const userId = getTokenData();
-    if (userId) {
+    const tokenData = getTokenData();
+    if (tokenData) {
+      const { userId, userRole } = tokenData;
       const token = localStorage.getItem('token');
-      fetch(`https://localhost:7121/api/v1/Customers/id?id=${userId}`, {
+   
+      let apiUrl = '';
+      if (userRole === 'Employee') {
+        apiUrl = `https://medinetprj.azurewebsites.net/api/v1/Employees/id?id=${userId}`;
+      } else if (userRole === 'Customer') {
+        apiUrl = `https://medinetprj.azurewebsites.net/api/v1/Customers/id?id=${userId}`;
+      }
+
+      fetch(apiUrl, {
         headers: {
           'Authorization': `Bearer ${token}`
         }
@@ -76,7 +84,7 @@ function MyProfile() {
                       <div className="col-lg-5 col-md-12">
                         <div className="ttm-featured-wrapper">
                           <div className="featured-thumbnail">
-                            <img className="img-fluid" src={blog3} alt="image" />
+                            <img className="img-fluid" src={user.imageSrc} alt="image" />
                           </div>
                         </div>
                       </div>
