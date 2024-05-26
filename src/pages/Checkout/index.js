@@ -42,7 +42,7 @@ function Checkout() {
 
 
   const { userId, userRole, token } = getTokenData();
-console.log(userRole);
+
   useEffect(() => {
     if (userId && isAllowedToCheckout(userRole)) {
       fetchData();
@@ -129,6 +129,7 @@ console.log(userRole);
         cartIds: [...cartIds]
       };
 
+
       const checkoutInfo = {
         orderInfo: orderPayload,
         productsInfo: data.map((item, index) => ({
@@ -159,12 +160,19 @@ console.log(userRole);
         await payWithVNPay(orderId, billingFirstName, totalAmount);
       } else if (paymentMethod === "Momo") {
         await payWithMoMo(orderId, billingFirstName, totalAmount);
+      } else if (paymentMethod === "COD") {
+         payWithCod();
       }
+      
     } catch (error) {
       console.error("Error during checkout:", error);
       toast.error("Failed to checkout!", { position: toast.POSITION.TOP_CENTER });
     }
   };
+
+  const payWithCod =  () => {
+    window.location.href = "/thankyou";
+   }
 
   const payWithPayPal = async (orderId, billingFirstName, totalAmount) => {
     try {
@@ -195,7 +203,7 @@ console.log(userRole);
         orderId: orderId,
         description: 'Order movie ticket',
         fullName: billingFirstName,
-        amount: totalAmount * 23000,
+        amount: totalAmount ,
         createdDate: new Date().toISOString(),
       };
 
@@ -501,6 +509,18 @@ console.log(userRole);
                     <div id="payment" className="checkout-payment">
                       <ul className="payment_methods">
                         <li className="payment_method_ppec_paypal" style={{ marginBottom: "20px", display: "flex", justifyContent: 'space-between' }}>
+                          {/* COD */}
+                          <label style={{ display: "flex", alignItems: "center", cursor: "pointer", color: "#01d6a3", fontSize: 18  }}>
+                          
+                            <input style={{width: "20px", height: "20px", marginRight: "10px"}}
+                              type="radio"
+                              name="paymentMethod"
+                              value="COD"
+                              checked={paymentMethod === "COD"}
+                              onChange={() => handlePaymentMethodChange("COD")}
+                            />
+                            <strong> COD</strong> <img src={vnpay} alt="COD" style={{ marginLeft: "10px", width: 70, borderRadius: 10 }} />
+                          </label>
                           {/* PayPal */}
                           <label style={{ display: "flex", alignItems: "center", cursor: "pointer", color: "#01d6a3", fontSize: 18 }}>
                             <input style={{width: "20px", height: "20px", marginRight: "10px"}}

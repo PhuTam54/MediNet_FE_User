@@ -19,7 +19,8 @@ function ProductDetail({  }) {
   const [clinics, setClinics] = useState([]);
   const [selectedClinic, setSelectedClinic] = useState('');
   const [relatedProducts, setRelatedProducts] = useState([]);
-
+  const [averageStars, setAverageStars] = useState(0);
+  const [totalFeedback, setTotalFeedback] = useState(0);
   useEffect(() => {
     axios.get('https://medinetprj.azurewebsites.net/api/v1/Products')
     .then(res => {
@@ -41,6 +42,11 @@ function ProductDetail({  }) {
     const fetchFeedback = async () => {
       try {
         const response = await axios.get(`https://medinetprj.azurewebsites.net/api/v1/Feedbacks/productId?productId=${id}`);
+        setTotalFeedback(response.data.length);
+        // Calculate average star rating
+     const totalStars = response.data.reduce((total, feedback) => total + feedback.vote, 0);
+     const averageStars = totalStars / response.data.length;
+     setAverageStars(averageStars);
         setFeedback(response.data);
       } catch (error) {
 
@@ -196,6 +202,17 @@ useEffect(() => {
   fetchClinics();
 }, [id]);
 
+
+const [clinic, setClinic] = useState('');
+  useEffect(() => {
+    fetch("https://medinetprj.azurewebsites.net/api/v1/Clinics/id?id=1")
+      .then((response) => response.json())
+      .then((data) => {
+        setClinic(data);
+      });
+
+  }, []);
+
     return ( 
         <>
   {/* page-title */}
@@ -274,7 +291,7 @@ useEffect(() => {
                       </li>
                     </ul>
                     <a href="#reviews" className="review-link" rel="nofollow">
-                      (<span className="count">1</span> customer review)
+                      (<span className="count">{totalFeedback}</span> customer review{totalFeedback > 1 ? 's' : ''})                    
                     </a>
                   </div>
                   <p className="price">
@@ -401,7 +418,7 @@ useEffect(() => {
   <a href="#">Additional information</a>
 </li>
 <li className="tab" onClick={(event) => {event.preventDefault(); setActiveTab('Reviews');}}>
-  <a href="#">Reviews (1)</a>
+<a href="#">Reviews ({totalFeedback})</a>
 </li>
       </ul>
       <div className="content-tab ttm-bgcolor-white">
@@ -590,11 +607,11 @@ useEffect(() => {
                   <h3>Let's Help You!</h3>
                 </div>
                 <div className="content">
-                  14 Tottenham Court Road
+                {clinic.address}
                   <br />
-                  Bulls Stadium, Califorina <br />
-                  1234, USA <br />
-                  <a href="mailto:info@example.com.com">info@example.com</a>
+                  {clinic.name} <br />
+                  {clinic.phone} <br />
+                  <a href="mailto:info@example.com.com">{clinic.email}</a>
                 </div>
                 <br />
                 <a className="view_more" href="#">
