@@ -12,10 +12,26 @@ import client3 from "~/assets/images/client/client-03.png";
 import blog1 from "~/assets/images/blog/01.jpg"
 import blog2 from "~/assets/images/blog/02.jpg"
 import blog3 from "~/assets/images/blog/03.jpg"
+import { useState, useEffect } from "react";
+import { Link } from "react-router-dom";
+import React from 'react';
+import axios from 'axios'; // Import axios
 
 
 
 function Home() {
+
+  const [blogs, setBlogs] = useState([]);
+  
+
+  useEffect(() => {
+    fetch("https://medinetprj.azurewebsites.net/api/v1/Blogs")
+      .then((response) => response.json())
+      .then((data) => {
+        setBlogs(data);
+    
+      });
+  },[]);  
   
     return(
       <>
@@ -1342,50 +1358,61 @@ function Home() {
                 data-dots="false"
                 data-auto="false"
               >
+                
                 {/* featured-imagebox-post */}
+                {blogs.map((blog) => {
+      let createdAt = new Date(blog.createdAt);
+      let day = createdAt.getDate();
+      let month = createdAt.toLocaleString('default', { month: 'short' });
+      let year = createdAt.getFullYear();
+
+      return (
                 <div className="featured-imagebox featured-imagebox-post ttm-box-view-top-image">
                   <div className="ttm-post-featured-outer">
                     <div className="ttm-post-format-icon">
                       <i className="ti ti-pencil" />
                     </div>
                     <div className="ttm-post-thumbnail featured-thumbnail">
-                      <img className="img-fluid" src={blog1} alt="" />
+                      <img className="img-fluid" src={blog.imageSrc}
+          alt={blog.title}
+          style={{width:'100%', height:'500px'}}/>
                     </div>
                     <div className="ttm-box-post-date">
                       <span className="ttm-entry-date">
-                        <time
-                          className="entry-date"
-                          dateTime="2019-01-16T07:07:55+00:00"
-                        >
-                          16
-                          <span className="entry-month">
-                            Jan<span className="entry-year">2019</span>
-                          </span>
-                        </time>
+                      <time className="entry-date">
+            {day}<span className="entry-month">{month}<span className="entry-year">{year}</span></span>
+          </time> 
                       </span>
                     </div>
                   </div>
                   <div className="featured-content featured-content-post box-shadow">
                     <div className="post-meta">
-                      <span className="ttm-meta-line comments-link">
-                        <i className="fa fa-comment" /> 3 Comments
-                      </span>
-                      <span className="ttm-meta-line byline">
-                        <i className="fa fa-user" /> Alex
-                      </span>
+                    <span className="ttm-meta-line byline">
+            <i className="ti ti-user" />
+            {blog.employee.full_Name}
+          </span>
+          <span className="ttm-meta-line cat-links">
+            <i className="ti ti-folder" />
+            {blog.disease.name}
+          </span>
+          <span className="ttm-meta-line comments-link">
+  <i className="fa fa-comment" />  {blog.blogComments ? blog.blogComments.length : 0}  Comments
+</span>
                     </div>
                     <div className="post-title featured-title">
                       <h5>
+                        <Link to={`/blogdetail/${blog.id}`}>
                         <a href="single-blog.html">
-                          How much aspirin to take for stroke
+                          {blog.title}
                         </a>
+                        </Link>
                       </h5>
                     </div>
                     <div className="post-desc featured-desc">
                       <p>
-                        Lorem Ipsum is simply dummy text of the printing and
-                        typesetting industry. Lorem Ipsum has been the industry's...
+                        {blog.content.substring(0, 100) + "..."}
                       </p>
+                      <Link to={`/blogdetail/${blog.id}`}>
                       <a
                         className="ttm-btn ttm-btn-size-sm ttm-icon-btn-right ttm-btn-color-skincolor btn-inline mb-15"
                         href="#"
@@ -1393,120 +1420,14 @@ function Home() {
                         READ MORE
                         <i className="ti ti-arrow-right" />
                       </a>
+                      </Link>
                     </div>
                   </div>
                 </div>
+               );
+              })}
                 {/* featured-imagebox-post end */}
-                {/* featured-imagebox-post */}
-                <div className="featured-imagebox featured-imagebox-post ttm-box-view-top-image">
-                  <div className="ttm-post-featured-outer">
-                    <div className="ttm-post-format-icon">
-                      <i className="ti ti-pencil" />
-                    </div>
-                    <div className="ttm-post-thumbnail featured-thumbnail">
-                      <img className="img-fluid" src={blog2} alt="" />
-                    </div>
-                    <div className="ttm-box-post-date">
-                      <span className="ttm-entry-date">
-                        <time
-                          className="entry-date"
-                          dateTime="2019-01-16T07:07:55+00:00"
-                        >
-                          20
-                          <span className="entry-month">
-                            Jan<span className="entry-year">2019</span>
-                          </span>
-                        </time>
-                      </span>
-                    </div>
-                  </div>
-                  <div className="featured-content featured-content-post box-shadow">
-                    <div className="post-meta">
-                      <span className="ttm-meta-line comments-link">
-                        <i className="fa fa-comment" /> 3 Comments
-                      </span>
-                      <span className="ttm-meta-line byline">
-                        <i className="fa fa-user" /> Alex
-                      </span>
-                    </div>
-                    <div className="post-title featured-title">
-                      <h5>
-                        <a href="single-blog.html">
-                          Implant Surgical equipment technology
-                        </a>
-                      </h5>
-                    </div>
-                    <div className="post-desc featured-desc">
-                      <p>
-                        Lorem Ipsum is simply dummy text of the printing and
-                        typesetting industry. Lorem Ipsum has been the industry's...
-                      </p>
-                      <a
-                        className="ttm-btn ttm-btn-size-sm ttm-icon-btn-right ttm-btn-color-skincolor btn-inline mb-15"
-                        href="#"
-                      >
-                        READ MORE
-                        <i className="ti ti-arrow-right" />
-                      </a>
-                    </div>
-                  </div>
-                </div>
-                {/* featured-imagebox-post end */}
-                {/* featured-imagebox-post */}
-                <div className="featured-imagebox featured-imagebox-post ttm-box-view-top-image">
-                  <div className="ttm-post-featured-outer">
-                    <div className="ttm-post-format-icon">
-                      <i className="ti ti-pencil" />
-                    </div>
-                    <div className="ttm-post-thumbnail featured-thumbnail">
-                      <img className="img-fluid" src={blog3} alt="" />
-                    </div>
-                    <div className="ttm-box-post-date">
-                      <span className="ttm-entry-date">
-                        <time
-                          className="entry-date"
-                          dateTime="2019-01-16T07:07:55+00:00"
-                        >
-                          24
-                          <span className="entry-month">
-                            Jan<span className="entry-year">2019</span>
-                          </span>
-                        </time>
-                      </span>
-                    </div>
-                  </div>
-                  <div className="featured-content featured-content-post box-shadow">
-                    <div className="post-meta">
-                      <span className="ttm-meta-line comments-link">
-                        <i className="fa fa-comment" /> 3 Comments
-                      </span>
-                      <span className="ttm-meta-line byline">
-                        <i className="fa fa-user" /> Alex
-                      </span>
-                    </div>
-                    <div className="post-title featured-title">
-                      <h5>
-                        <a href="single-blog.html">
-                          The Benefits of Middle-Age Fitness
-                        </a>
-                      </h5>
-                    </div>
-                    <div className="post-desc featured-desc">
-                      <p>
-                        Lorem Ipsum is simply dummy text of the printing and
-                        typesetting industry. Lorem Ipsum has been the industry's...
-                      </p>
-                      <a
-                        className="ttm-btn ttm-btn-size-sm ttm-icon-btn-right ttm-btn-color-skincolor btn-inline mb-15"
-                        href="#"
-                      >
-                        READ MORE
-                        <i className="ti ti-arrow-right" />
-                      </a>
-                    </div>
-                  </div>
-                </div>
-                {/* featured-imagebox-post end*/}
+                
               </div>
             </div>
             {/* row end*/}

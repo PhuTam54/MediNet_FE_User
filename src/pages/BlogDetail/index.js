@@ -181,19 +181,16 @@ const [clinic, setClinic] = useState('');
                 <div className="post-meta">
                   <span className="ttm-meta-line byline">
                     <i className="ti ti-user" />
-                    Alex
+                    {blog.employee && blog.employee.full_Name}
                   </span>
                   <span className="ttm-meta-line cat-links">
-                    <i className="ti ti-folder" />
-                    Cardiac, Medical
-                  </span>
-                  <span className="ttm-meta-line comments-link">
-                    <i className="fa fa-comment" /> 3 Comments
-                  </span>
-                  <span className="ttm-meta-line tags-links">
-                    <i className="fa fa-tag" />
-                    doctor, pain
-                  </span>
+  <i className="ti ti-folder" />
+  {blog.disease ? blog.disease.name : ''}
+</span>
+<span className="ttm-meta-line comments-link">
+  <i className="fa fa-comment" />  {blog.blogComments ? blog.blogComments.length : 0}  Comments
+</span>
+                  
                 </div>
                 <div className="entry-content">
                 <p>

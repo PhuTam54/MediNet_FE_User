@@ -196,23 +196,7 @@ useEffect(() => {
               <div className="ttm-product-box">
                 {/* ttm-product-box-inner */}
                 <div className="ttm-product-box-inner">
-                  <div className="ttm-shop-icon">
-                    <div className="product-btn">
-                      <a href="#" className="add-to-cart-btn">
-                        <i className="ti ti-shopping-cart" />
-                      </a>
-                    </div>
-                    <div className="product-btn">
-                      <a href="#" className="search-btn">
-                        <i className="ti ti-search" />
-                      </a>
-                    </div>
-                    <div className="product-btn">
-                      <a href="#" className="wishlist-btn">
-                        <i className="ti ti-heart" />
-                      </a>
-                    </div>
-                  </div>
+                  
                   <div className="ttm-product-image-box">
                     
                     <img
@@ -229,7 +213,7 @@ useEffect(() => {
                       <h2>{truncate(product.name, 20)}</h2>
                     </Link>
                   </a>
-                  <div className="star-ratings">
+                  {/* <div className="star-ratings">
                     <ul className="rating">
                       <li>
                         <i className="fa fa-star" />
@@ -247,14 +231,9 @@ useEffect(() => {
                         <i className="fa fa-star" />
                       </li>
                     </ul>
-                  </div>
+                  </div> */}
                   <span className="price">
-                    <del>
-                      <span className="product-Price-amount">
-                        <span className="product-Price-currencySymbol">$</span>
-                        20.00
-                      </span>
-                    </del>
+                    
                     <ins>
                       <span className="product-Price-amount">
                         <span className="product-Price-currencySymbol">$</span>
@@ -456,6 +435,9 @@ useEffect(() => {
             <i className="ti ti-folder" />
             {blog.disease.name}
           </span>
+          <span className="ttm-meta-line comments-link">
+  <i className="fa fa-comment" />  {blog.blogComments ? blog.blogComments.length : 0}  Comments
+</span>
                 </div>
                 <div className="post-desc featured-desc">
                   <p>

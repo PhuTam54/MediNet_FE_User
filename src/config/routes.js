@@ -7,6 +7,8 @@ const routes = {
     productdetail: '/productdetail/:id',
     blogs: '/blogs',
     blogdetail: '/blogdetail/:id', 
+    doctors: '/doctors',
+    doctordetail: '/doctordetail/:id',
     cart: '/cart',
     checkout: '/checkout',
     login: '/login',
