@@ -273,7 +273,9 @@ function MyOrder() {
                                         <th style={{textAlign: "center"}}>Products</th>
                                         <th style={{textAlign: "center"}}>Thumbnail</th>
                                         <th style={{textAlign: "center"}}>Quantity</th>
+                                        <th style={{textAlign: "center"}}>Payment</th>
                                         <th style={{textAlign: "center"}}>Total</th>
+                                        
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -283,11 +285,13 @@ function MyOrder() {
                                             <td style={{textAlign: "center"}}>{product.product.name}</td>
                                             <td style={{textAlign: "center"}}><img style={{width: 50}} src={product.product.imageSrc} alt={product.product.name}/></td>
                                             <td style={{textAlign: "center"}}>{product.quantity}</td>
-                                            <td style={{textAlign: "center"}}>{product.subtotal}.00</td>
+                                            <td style={{textAlign: "center"}}>{selectedOrder.payment_method}</td>
+                                            <td style={{textAlign: "center"}}>${product.priceSale}.00</td>
+                                           
                                         </tr>
                                     ))}
                                     <tr>
-                                        <td colSpan="4"><strong>Total</strong></td>
+                                        <td colSpan="5"><strong>Total</strong></td>
                                         <td style={{textAlign: "center"}}> <strong> {selectedOrder.totalAmount}.00</strong></td>
                                     </tr>
                                 </tbody>

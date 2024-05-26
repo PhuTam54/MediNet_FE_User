@@ -10,7 +10,6 @@ import { useParams } from 'react-router-dom';
 import { toast } from "react-toastify"
 import { post, del } from '~/utils/httpRequest'; 
 
-
 function CoursesDetail({ products }) {
   const [product, setProduct] = useState({});
   const { id } = useParams();
@@ -21,7 +20,7 @@ function CoursesDetail({ products }) {
   const [feedback, setFeedback] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [feedbackPerPage] = useState(2);
-
+  const [isRegistered, setIsRegistered] = useState(false); 
   useEffect(() => {
     const fetchProduct = async () => {
       const response = await axios.get(`https://medinetprj.azurewebsites.net/api/v1/Courses/id?id=${id}`);
@@ -30,7 +29,6 @@ function CoursesDetail({ products }) {
 
     fetchProduct();
   }, [id]);
-
 
   useEffect(() => {
     const fetchFeedback = async () => {
@@ -63,18 +61,38 @@ function CoursesDetail({ products }) {
     localStorage.setItem('userId', userId);
   }
 
+  useEffect(() => {
+    const checkIfRegistered = async () => {
+      try {
+        const userId = localStorage.getItem('userId');
+        const response = await axios.get(`https://medinetprj.azurewebsites.net/api/v1/Employees/id?id=${userId}`);
+        const enrolledCourses = response.data.courses; // Giả sử API trả về danh sách các khóa học mà người dùng đã đăng ký
+        const isAlreadyEnrolled = enrolledCourses.some(course => course.id === id); // Kiểm tra xem khóa học này có trong danh sách đã đăng ký hay không
+        setIsRegistered(isAlreadyEnrolled);
+      } catch (error) {
+        console.error('Failed to check enrollment status', error);
+      }
+    };
+
+    checkIfRegistered();
+  }, [id]);
+
   const addToCart = () => {
+    if (isRegistered) {
+      toast.error('You have already registered for this course.');
+      return;
+    }
+
     const cartItem = {
-        courseId: product.id,
-        employeeId: userId,
+      courseId: product.id,
+      employeeId: userId,
     };
     axios.post('https://medinetprj.azurewebsites.net/api/v1/Enrollments', cartItem)
       .then(() => {
-        toast.success('Product added to cart');
+        toast.success('Successfully registered for the course');
       })
       .catch(error => console.error(error));
   };
-
 
   
 
@@ -138,7 +156,6 @@ function CoursesDetail({ products }) {
     return stars;
   };
 
-
   const indexOfLastFeedback = currentPage * feedbackPerPage;
   const indexOfFirstFeedback = indexOfLastFeedback - feedbackPerPage;
   const currentFeedback = feedback.slice(indexOfFirstFeedback, indexOfLastFeedback);
@@ -147,7 +164,6 @@ function CoursesDetail({ products }) {
 
     return ( 
         <>
-
 
   {/* page-title */}
   <div className="ttm-page-title-row">
@@ -197,8 +213,7 @@ function CoursesDetail({ products }) {
                     <div className="product-gallery__image">
                       <img
                         className="img-fluid"
-                        // src={product.imageSrc}
-                        src="https://medinetprj.azurewebsites.net/images/courses/fb6e6f4e-fd93-42c6-aeef-7370d426c2d7.jpg"
+                        src={product.imagesSrc}
                         alt="product-img"
                       />
                     </div>
@@ -206,7 +221,9 @@ function CoursesDetail({ products }) {
                   </figure>
                 </div>
                 <div className="summary entry-summary">
-                  <h1 className="product_title entry-title">{product.title}</h1>
+                <h1 className="product_title entry-title">
+                    {product.title}
+                  </h1>
                   <div className="product-rating clearfix">
                     <ul className="star-rating clearfix">
                       <li>
@@ -314,32 +331,14 @@ function CoursesDetail({ products }) {
                   </div>
                   {/* content-inner end*/}
                   {/* content-inner */}
-                  <div className="content-inner">
-                    <h2>Additional information</h2>
-                    <table className="shop_attributes">
-                      <tbody>
-                        <tr>
-                          <th>Dimensions</th>
-                          <td className="product_dimensions">6 × 4 × 1 in</td>
-                        </tr>
-                        <tr>
-                          <th>color</th>
-                          <td>
-                            <p>Blue</p>
-                          </td>
-                        </tr>
-                      </tbody>
-                    </table>
-                  </div>
+                
                   {/* content-inner end*/}
                   {/* content-inner */}
                   <div className="content-inner">
                     <div id="reviews" className="woocommerce-Reviews">
                    
                       <div id="comments">
-                        <h2 className="woocommerce-Reviews-title">
-                          Review for <span>{product.name}</span>
-                        </h2>
+                        
                         <ol className="commentlist">
                           {currentFeedback.map((item, index) => (
                             <li  key={index} className="review">
@@ -410,14 +409,23 @@ function CoursesDetail({ products }) {
                             <div style={{ display: "flex", alignItems: "center", marginBottom: "20px" }}>
                               <div style={{ flex: "1", marginRight: "20px" }}>
                                 <label htmlFor="vote" style={{ display: "block" }}>Vote:</label>
-                                <select id="vote" value={vote} onChange={handleVoteChange} style={{ padding: "11px 10px", borderRadius: "5px", border: "1px solid #ccc", width: "100%" }}>
-                                  <option value="">Rate…</option>
-                                  <option value={5}>Perfect</option>
-                                  <option value={4}>Good</option>
-                                  <option value={3}>Average</option>
-                                  <option value={2}>Not that bad</option>
-                                  <option value={1}>Very poor</option>
-                                </select>
+                                <div>
+                        {[...Array(5)].map((_, index) => (
+                          <span
+
+                            key={index}
+                            onClick={() => setVote(index + 1)}
+                            style={{
+                              fontSize: "30px",
+                              cursor: 'pointer',
+                              color: index < vote ? 'gold' : 'lightgray',
+                            }}
+                          >
+                            ★
+                          </span>
+                        ))}
+                       
+                      </div>
                               </div>
                               <div style={{ flex: "1" }}>
                                 <label htmlFor="image" style={{ display: "block" }}>Image:</label>

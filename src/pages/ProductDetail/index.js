@@ -1,4 +1,3 @@
-// code ddax cos chon clinic va so luong
 import comment1 from "~/assets/images/blog/blog-comment-01.jpg"
 import { Link, useLocation } from 'react-router-dom';
 import React, { useState, useEffect } from 'react';
@@ -56,6 +55,11 @@ useEffect(() => {
     const fetchFeedback = async () => {
       try {
         const response = await axios.get(`https://medinetprj.azurewebsites.net/api/v1/Feedbacks/productId?productId=${id}`);
+        setTotalFeedback(response.data.length);
+        // Calculate average star rating
+     const totalStars = response.data.reduce((total, feedback) => total + feedback.vote, 0);
+     const averageStars = totalStars / response.data.length;
+     setAverageStars(averageStars);
         setFeedback(response.data);
         setTotalFeedback(response.data.length);
          // Calculate average star rating
@@ -90,8 +94,7 @@ const getTokenData = () => {
   }
   // add to cart
 
-
- const addToCart = () => {
+  const addToCart = () => {
     if (!selectedClinic) {
       toast.error('Please select a clinic');
       return;
@@ -134,6 +137,9 @@ const cartItem = {
         customerId: userId, // Assuming userId is defined in your component
         productId: product.id
       };
+  
+      // Fetch the token from local storage
+      const token = localStorage.getItem('token');
   
       const response = await axios.post('https://medinetprj.azurewebsites.net/api/v1/FavoriteProducts', favoriteProduct, {
         headers: {
@@ -209,7 +215,6 @@ const cartItem = {
     return stars;
   };
 
-
   const indexOfLastFeedback = currentPage * feedbackPerPage;
   const indexOfFirstFeedback = indexOfLastFeedback - feedbackPerPage;
   const currentFeedback = feedback.slice(indexOfFirstFeedback, indexOfLastFeedback);
@@ -217,7 +222,6 @@ const cartItem = {
   const paginate = (pageNumber) => setCurrentPage(pageNumber);
 // tab thong tin
 const [activeTab, setActiveTab] = useState('Description');
-
 
 useEffect(() => {
   // Fetch clinics
@@ -229,6 +233,20 @@ useEffect(() => {
       console.error('Failed to fetch clinics', error);
     }
   };
+
+  fetchClinics();
+}, [id]);
+
+
+const [clinic, setClinic] = useState('');
+  useEffect(() => {
+    fetch("https://medinetprj.azurewebsites.net/api/v1/Clinics/id?id=1")
+      .then((response) => response.json())
+      .then((data) => {
+        setClinic(data);
+      });
+
+  }, []);
 
   fetchClinics();
 }, [id]);
@@ -350,7 +368,8 @@ const [clinic, setClinic] = useState('');
   </span>
 </div>
                     <a href="#reviews" className="review-link" rel="nofollow">
-                    (<span className="count">{totalFeedback}</span> customer review{totalFeedback > 1 ? 's' : ''})                    </a>
+                      (<span className="count">{totalFeedback}</span> customer review{totalFeedback > 1 ? 's' : ''})                    
+                    </a>
                   </div>
 <p className="price">
                     
@@ -472,7 +491,7 @@ className="input-text qty text"
   <a href="#">Additional information</a>
 </li>
 <li className="tab" onClick={(event) => {event.preventDefault(); setActiveTab('Reviews');}}>
-  <a href="#">Reviews ({totalFeedback})</a>
+<a href="#">Reviews ({totalFeedback})</a>
 </li>
       </ul>
       <div className="content-tab ttm-bgcolor-white">
@@ -584,14 +603,24 @@ className="input-text qty text"
                   <div style={{ display: "flex", alignItems: "center", marginBottom: "20px" }}>
                     <div style={{ flex: "1", marginRight: "20px" }}>
                       <label htmlFor="vote" style={{ display: "block" }}>Vote:</label>
-                      <select id="vote" value={vote} onChange={handleVoteChange} style={{ padding: "11px 10px", borderRadius: "5px", border: "1px solid #ccc", width: "100%" }}>
-                        <option value="">Rate…</option>
-                        <option value={5}>Perfect</option>
-                        <option value={4}>Good</option>
-                        <option value={3}>Average</option>
-                        <option value={2}>Not that bad</option>
-                        <option value={1}>Very poor</option>
-                      </select>
+                      <div>
+                        {[...Array(5)].map((_, index) => (
+                          <span
+
+                            key={index}
+                            onClick={() => setVote(index + 1)}
+                            style={{
+                              fontSize: "30px",
+                              cursor: 'pointer',
+                              color: index < vote ? 'gold' : 'lightgray',
+                            }}
+                          >
+                            ★
+                          </span>
+                        ))}
+                       
+                      </div>
+
                     </div>
                     <div style={{ flex: "1" }}>
                       <label htmlFor="image" style={{ display: "block" }}>Image:</label>
@@ -651,7 +680,7 @@ className="input-text qty text"
                   <h3>Let's Help You!</h3>
                 </div>
                 <div className="content">
-                  {clinic.address}
+                {clinic.address}
                   <br />
                   {clinic.name} <br />
                   {clinic.phone} <br />

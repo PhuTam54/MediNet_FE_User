@@ -1,10 +1,28 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { Link } from 'react-router-dom';
 import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import paypal from '~/assets/images/paypal.png';
 import momo from '~/assets/images/MoMo_Logo.png';
 import vnpay from '~/assets/images/Vnpay.png';
+
+const getTokenData = () => {
+  const token = localStorage.getItem('token');
+  if (token) {
+    const tokenData = token.split('.')[1];
+    const decodedToken = atob(tokenData);
+    const tokenObject = JSON.parse(decodedToken);
+    const userId = tokenObject.userId;
+    const userRole = tokenObject.userRole;
+    return { userId, userRole, token };
+  }
+  return null;
+};
+
+const isAllowedToCheckout = (userRole) => {
+  const allowedRoles = ['Customer', 'Admin'];
+  return allowedRoles.includes(userRole);
+};
 
 function Checkout() {
   const [productsInfo, setProductsInfo] = useState([]);
@@ -20,40 +38,36 @@ function Checkout() {
     billingCountry: '',
     billingDistrict: ''
   });
+  const [paymentMethod, setPaymentMethod] = useState("");
 
-  const getTokenData = () => {
-    const token = localStorage.getItem('token');
-    if (token) {
-      const tokenData = token.split('.')[1];
-      const decodedToken = atob(tokenData);
-      const tokenObject = JSON.parse(decodedToken);
-      const userId = tokenObject.userId; // Lấy userId từ token
-      const orderId = tokenObject.orderId;
-      return userId;
-    }
-    return null;
-  };
-  const orderId = getTokenData();
-  localStorage.setItem('orderId', orderId);
-  
-  const [paymentMethod, setPaymentMethod] = useState(""); 
 
- 
+  const { userId, userRole, token } = getTokenData();
 
   useEffect(() => {
-    fetchData();
-  }, []);
+    if (userId && isAllowedToCheckout(userRole)) {
+      fetchData();
+    } else {
+      toast.error("You are not authorized to access this page", { position: toast.POSITION.TOP_CENTER });
+    }
+  }, [userId, userRole]);
 
   const fetchData = async () => {
-    const userId = getTokenData();
     try {
-      const cartResponse = await axios.get(`https://medinetprj.azurewebsites.net/api/v1/Carts/userid?userid=${userId}`);
+      const cartResponse = await axios.get(`https://medinetprj.azurewebsites.net/api/v1/Carts/userid?userid=${userId}`, {
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      });
       const cartData = cartResponse.data;
       setData(cartData);
 
       const uniqueProductIds = [...new Set(cartData.map(item => item.productId))];
       const productPromises = uniqueProductIds.map(async productId => {
-        const productResponse = await axios.get(`https://medinetprj.azurewebsites.net/api/v1/Products/id?id=${productId}`);
+        const productResponse = await axios.get(`https://medinetprj.azurewebsites.net/api/v1/Products/id?id=${productId}`, {
+          headers: {
+            'Authorization': `Bearer ${token}`
+          }
+        });
         return productResponse.data;
       });
       const productsData = await Promise.all(productPromises);
@@ -76,7 +90,7 @@ function Checkout() {
   };
 
   const handleCheckout = async () => {
-    const {billingCountry,billingDistrict, billingFirstName, billingEmail, billingPhone, billingAddress1, billingCity, billingPostcode } = billingInfo;
+    const { billingCountry, billingDistrict, billingFirstName, billingEmail, billingPhone, billingAddress1, billingCity, billingPostcode } = billingInfo;
     if (
       !billingFirstName.trim() ||
       !billingEmail.trim() ||
@@ -86,29 +100,25 @@ function Checkout() {
       !billingPostcode.trim() ||
       !billingCountry.trim() ||
       !billingDistrict.trim() ||
-!validateEmail(billingEmail.trim()) || // Kiểm tra định dạng email
+      !validateEmail(billingEmail.trim()) || // Kiểm tra định dạng email
       !validatePhone(billingPhone.trim()) // Kiểm tra định dạng số điện thoại
     ) {
       toast.error("Please fill in all required fields correctly!", { position: toast.POSITION.TOP_CENTER });
       return;
     }
 
-    var cartIds = [];
-    data.forEach((item, index) => {
-      cartIds.push(item.id);
-    });
+    const cartIds = data.map(item => item.id);
 
     try {
-      const userId = getTokenData();
       const orderPayload = {
         name: billingFirstName,
         email: billingEmail,
         tel: billingPhone,
         address: billingAddress1,
         totalAmount: totalPrice.toFixed(2),
-        zip_Code:billingPostcode,
-        district:billingCity,
-        city:billingCity,
+        zip_Code: billingPostcode,
+        district: billingDistrict,
+        city: billingCity,
         country: "Vietnam",
         description: "order product success",
         shipping_method: "Standard", // or any other shipping method
@@ -119,7 +129,7 @@ function Checkout() {
         cartIds: [...cartIds]
       };
 
-      
+
       const checkoutInfo = {
         orderInfo: orderPayload,
         productsInfo: data.map((item, index) => ({
@@ -133,27 +143,36 @@ function Checkout() {
       };
       localStorage.setItem('checkoutInfo', JSON.stringify(checkoutInfo));
 
-      // Gửi yêu cầu POST đến API để lưu đơn hàng
-      const orderResponse = await axios.post('https://medinetprj.azurewebsites.net/api/v1/Orders', orderPayload);
+      const orderResponse = await axios.post('https://medinetprj.azurewebsites.net/api/v1/Orders', orderPayload, {
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      });
       const orderId = orderResponse.data + ''; // Lấy mã đơn hàng
       localStorage.setItem('orderId', orderId);
       
       const totalAmount = totalPrice; // Chuyển đổi số tiền sang USD
       localStorage.setItem('totalAmount', totalAmount);
 
-      // Gọi API dựa vào phương thức thanh toán được chọn
       if (paymentMethod === "PayPal") {
         await payWithPayPal(orderId, billingFirstName, totalAmount);
       } else if (paymentMethod === "VNPay") {
         await payWithVNPay(orderId, billingFirstName, totalAmount);
       } else if (paymentMethod === "Momo") {
         await payWithMoMo(orderId, billingFirstName, totalAmount);
+      } else if (paymentMethod === "COD") {
+         payWithCod();
       }
+      
     } catch (error) {
       console.error("Error during checkout:", error);
       toast.error("Failed to checkout!", { position: toast.POSITION.TOP_CENTER });
     }
   };
+
+  const payWithCod =  () => {
+    window.location.href = "/thankyou";
+   }
 
   const payWithPayPal = async (orderId, billingFirstName, totalAmount) => {
     try {
@@ -164,12 +183,11 @@ function Checkout() {
         name: billingFirstName,
         amount: totalAmount,
       };
-      console.log(orderId)
-
-      // Gửi dữ liệu thanh toán PayPal
-      const paymentResponse = await axios.post('https://medinetprj.azurewebsites.net/api/v1/Payments/PayPal', paymentPayload);
-
-      // Chuyển hướng sang PayPal để thanh toán
+      const paymentResponse = await axios.post('https://medinetprj.azurewebsites.net/api/v1/Payments/PayPal', paymentPayload, {
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      });
       window.location.href = paymentResponse.data;
       toast.success("Go To PayPal!", { position: toast.POSITION.TOP_CENTER });
     } catch (error) {
@@ -180,22 +198,19 @@ function Checkout() {
 
   const payWithVNPay = async (orderId, billingFirstName, totalAmount) => {
     try {
-      // Tạo payload cho VNPay
       const vnpayPayload = {
-        // Thông tin đơn hàng
         orderId: orderId,
-      
         description: 'Order movie ticket',
         fullName: billingFirstName,
-        amount: totalAmount,
+        amount: totalAmount ,
         createdDate: new Date().toISOString(),
-        // Các thông tin khác nếu cần
       };
-      const paymentResponse = await axios.post('https://medinetprj.azurewebsites.net/api/v1/Payments/VNPay', vnpayPayload);
 
-      // Sau khi nhận được phản hồi từ VNPay, xử lý dữ liệu phản hồi và chuyển hướng tới trang thanh toán VNPay
-      // Ví dụ:
-      // window.location.href = paymentResponse.data.redirectUrl;
+      const paymentResponse = await axios.post('https://medinetprj.azurewebsites.net/api/v1/Payments/VNPay', vnpayPayload, {
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      });
       window.location.href = paymentResponse.data;
       toast.success("Redirecting to VNPay!", { position: toast.POSITION.TOP_CENTER });
     } catch (error) {
@@ -206,22 +221,18 @@ function Checkout() {
 
   const payWithMoMo = async (orderId, billingFirstName, totalAmount) => {
     try {
-      // Tạo payload cho MoMo
       const momoPayload = {
-        // Thông tin đơn hàng
         orderId: orderId,
-     
         orderInfo: 'Order movie ticket',
         fullName: billingFirstName,
         amount: totalAmount * 23000,
-        // Các thông tin khác nếu cần
       };
 
-      // Gửi yêu cầu thanh toán tới MoMo
-      const paymentResponse = await axios.post('https://medinetprj.azurewebsites.net/api/v1/Payments/MoMo', momoPayload);
-
-      // Sau khi nhận được phản hồi từ MoMo, xử lý dữ liệu phản hồi và chuyển hướng tới ứng dụng MoMo để thanh toán
-      // Ví dụ:
+      const paymentResponse = await axios.post('https://medinetprj.azurewebsites.net/api/v1/Payments/MoMo', momoPayload, {
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      });
       window.location.href = paymentResponse.data;
       toast.success("Redirecting to MoMo!", { position: toast.POSITION.TOP_CENTER });
     } catch (error) {
@@ -235,11 +246,37 @@ function Checkout() {
     return re.test(email);
   };
 
-  // Hàm kiểm tra định dạng số điện thoại
   const validatePhone = (phone) => {
     const re = /^\d{10,}$/;
     return re.test(phone);
   };
+
+  if (!userId || !isAllowedToCheckout(userRole)) {
+    return (
+      <div className="ttm-page-title-row">
+        <div className="container">
+          <div className="row">
+            <div className="col-md-12">
+              <div className="title-box ttm-textcolor-white">
+                <div className="page-title-heading">
+                  <h1 className="title">Unauthorized</h1>
+                </div>
+                <div className="breadcrumb-wrapper">
+                  <span>
+                    <a title="Homepage" href="/">
+                      <i className="ti ti-home"></i> Home
+                    </a>
+                  </span>
+                  <span>Unauthorized</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <>
       <div className="ttm-page-title-row">
@@ -366,7 +403,7 @@ function Checkout() {
                         <span className="form-row">
                           <label>Country&nbsp;<abbr className="required" title="required">*</abbr></label>
                           <input
-type="text"
+                            type="text"
                             className="input-text"
                             name="billingCountry"
                             value={billingInfo.billingCountry}
@@ -422,6 +459,7 @@ type="text"
                           <th className="product-price">Price</th>
                           <th className="product-quantity">Quantity</th>
                           <th className="product-subtotal">Total</th>
+                          <th className="product-subtotal">Clinic</th>
                         </tr>
                       </thead>
                       <tbody>
@@ -455,6 +493,11 @@ type="text"
                                 <span className="Price-currencySymbol">$</span>{item.subTotal}
                               </span>
                             </td>
+                            <td className="product-subtotal" data-title="Total">
+                              <span className="Price-amount">
+                                <span className="Price-currencySymbol">{item.clinic.name}</span>
+                              </span>
+                            </td>
                           </tr>
                         ))}
                       </tbody>
@@ -463,64 +506,76 @@ type="text"
                       <strong>Total:</strong> ${totalPrice.toFixed(2)}
                     </div>
                     <div id="payment" className="checkout-payment">
-  <ul className="payment_methods">
-    <li className="payment_method_ppec_paypal" style={{ marginBottom: "20px", display: "flex", justifyContent: 'space-between' }}>
-      {/* PayPal */}
-      <label style={{ display: "flex", alignItems: "center", cursor: "pointer", color: "#01d6a3", fontSize: 18 }}>
-        <input style={{width: "20px", height: "20px", marginRight: "10px"}}
-          type="radio"
-          name="paymentMethod"
-          value="PayPal"
-          checked={paymentMethod === "PayPal"}
-          onChange={() => handlePaymentMethodChange("PayPal")}
-        />
-          <strong> PayPal</strong> <img src={paypal} alt="PayPal" style={{ marginLeft: "10px", width: 70, height: 65, borderRadius: 10 }} />
-      </label>
-       {/* MoMo */}
-       <label style={{ display: "flex", alignItems: "center", cursor: "pointer", color: "#01d6a3", fontSize: 18  }}>
-      
-      <input style={{width: "20px", height: "20px", marginRight: "10px"}}
-        type="radio"
-        name="paymentMethod"
-        value="Momo"
-        checked={paymentMethod === "Momo"}
-        onChange={() => handlePaymentMethodChange("Momo")}
-      />
-      <strong> MoMo</strong> <img src={momo} alt="PayPal" style={{ marginLeft: "10px", width: 70, borderRadius: 10 }} />
-      </label>
-      {/* VNPay */}
-      <label style={{ display: "flex", alignItems: "center", cursor: "pointer", color: "#01d6a3", fontSize: 18  }}>
-       
-        <input style={{width: "20px", height: "20px", marginRight: "10px"}}
-          type="radio"
-          name="paymentMethod"
-          value="VNPay"
-          checked={paymentMethod === "VNPay"}
-          onChange={() => handlePaymentMethodChange("VNPay")}
-        />
-        <strong> VNPay</strong> <img src={vnpay} alt="PayPal" style={{ marginLeft: "10px", width: 70, borderRadius: 10 }} />
-      </label>
-     
-    </li>
-    <div className="payment_box">
-        <p>Pay via PayPal, MoMo, VNPay; You can pay with your credit card if you don’t have a PayPal, MoMo, VNPay account.</p>
-      </div>
-  </ul>
-  <div className="form-row place-order">
-    <button
-      type="button"
-      className="btn btn-primary"
-      name="checkout_place_order"
-      id="place_order"
-      value="Place order"
-      data-value="Place order"
-      onClick={handleCheckout}
-      style={{ width: "100%", marginTop: "20px" }}
-    >
-      Continue to payment
-    </button>
-  </div>
-</div>
+                      <ul className="payment_methods">
+                        <li className="payment_method_ppec_paypal" style={{ marginBottom: "20px", display: "flex", justifyContent: 'space-between' }}>
+                          {/* COD */}
+                          <label style={{ display: "flex", alignItems: "center", cursor: "pointer", color: "#01d6a3", fontSize: 18  }}>
+                          
+                            <input style={{width: "20px", height: "20px", marginRight: "10px"}}
+                              type="radio"
+                              name="paymentMethod"
+                              value="COD"
+                              checked={paymentMethod === "COD"}
+                              onChange={() => handlePaymentMethodChange("COD")}
+                            />
+                            <strong> COD</strong> <img src={vnpay} alt="COD" style={{ marginLeft: "10px", width: 70, borderRadius: 10 }} />
+                          </label>
+                          {/* PayPal */}
+                          <label style={{ display: "flex", alignItems: "center", cursor: "pointer", color: "#01d6a3", fontSize: 18 }}>
+                            <input style={{width: "20px", height: "20px", marginRight: "10px"}}
+                              type="radio"
+                              name="paymentMethod"
+                              value="PayPal"
+                              checked={paymentMethod === "PayPal"}
+                              onChange={() => handlePaymentMethodChange("PayPal")}
+                            />
+                              <strong> PayPal</strong> <img src={paypal} alt="PayPal" style={{ marginLeft: "10px", width: 70, height: 65, borderRadius: 10 }} />
+                          </label>
+                          {/* MoMo */}
+                          <label style={{ display: "flex", alignItems: "center", cursor: "pointer", color: "#01d6a3", fontSize: 18  }}>
+                          
+                          <input style={{width: "20px", height: "20px", marginRight: "10px"}}
+                            type="radio"
+                            name="paymentMethod"
+                            value="Momo"
+                            checked={paymentMethod === "Momo"}
+                            onChange={() => handlePaymentMethodChange("Momo")}
+                          />
+                          <strong> MoMo</strong> <img src={momo} alt="PayPal" style={{ marginLeft: "10px", width: 70, borderRadius: 10 }} />
+                          </label>
+                          {/* VNPay */}
+                          <label style={{ display: "flex", alignItems: "center", cursor: "pointer", color: "#01d6a3", fontSize: 18  }}>
+                          
+                            <input style={{width: "20px", height: "20px", marginRight: "10px"}}
+                              type="radio"
+                              name="paymentMethod"
+                              value="VNPay"
+                              checked={paymentMethod === "VNPay"}
+                              onChange={() => handlePaymentMethodChange("VNPay")}
+                            />
+                            <strong> VNPay</strong> <img src={vnpay} alt="PayPal" style={{ marginLeft: "10px", width: 70, borderRadius: 10 }} />
+                          </label>
+                        
+                        </li>
+                        <div className="payment_box">
+                            <p>Pay via PayPal, MoMo, VNPay; You can pay with your credit card if you don’t have a PayPal, MoMo, VNPay account.</p>
+                          </div>
+                      </ul>
+                      <div className="form-row place-order">
+                        <button
+                          type="button"
+                          className="btn btn-primary"
+                          name="checkout_place_order"
+                          id="place_order"
+                          value="Place order"
+                          data-value="Place order"
+                          onClick={handleCheckout}
+                          style={{ width: "100%", marginTop: "20px" }}
+                        >
+                          Continue to payment
+                        </button>
+                      </div>
+                    </div>
 
                   </div>
                 </form>
@@ -534,3 +589,4 @@ type="text"
 }
 
 export default Checkout;
+

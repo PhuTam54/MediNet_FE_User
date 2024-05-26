@@ -14,12 +14,17 @@ function MyCourses() {
     const [filterStatus, setFilterStatus] = useState(null);
     const [cancelConfirmation, setCancelConfirmation] = useState(false);
     const [cancelOrderId, setCancelOrderId] = useState(null);
-    const [viewOrder, setViewOrder] = useState(false); // State cho việc xem đơn hàng
+    const [viewOrder, setViewOrder] = useState(false);
+    const [userRole, setUserRole] = useState(null);
 
     useEffect(() => {
         const token = localStorage.getItem('token');
         if (token) {
             setIsLoggedIn(true);
+            const tokenData = getTokenData();
+            if (tokenData) {
+                setUserRole(tokenData.userRole);
+            }
         } else {
             setIsLoggedIn(false);
         }
@@ -31,20 +36,19 @@ function MyCourses() {
             const tokenData = token.split('.')[1];
             const decodedToken = atob(tokenData);
             const tokenObject = JSON.parse(decodedToken);
-            const userId = tokenObject.userId; // Lấy userId từ token
-            return userId;
+            return tokenObject;
         }
         return null;
     };
 
-    const userId = getTokenData();
+    const userId = getTokenData()?.userId;
     if (userId) {
         localStorage.setItem('userId', userId);
     }
-console.log(userId);
+
     useEffect(() => {
         if (isLoggedIn) {
-            const userId = getTokenData();
+            const userId = getTokenData()?.userId;
             if (userId) {
                 localStorage.setItem('userId', userId);
                 axios.get(`https://medinetprj.azurewebsites.net/api/v1/Courses/employeeId?employeeId=${userId}`)
@@ -59,20 +63,18 @@ console.log(userId);
         }
     }, [isLoggedIn]);
 
-  
-
     const openModal = (order) => {
         setSelectedOrder(order);
         setModalOpen(true);
-        setCancelConfirmation(false); // Ẩn xác nhận hủy khi mở modal
-        setViewOrder(true); // Khi mở modal, đặt state xem đơn hàng thành true
+        setCancelConfirmation(false);
+        setViewOrder(true);
     };
 
     const closeModal = () => {
         setSelectedOrder(null);
         setModalOpen(false);
         setCancelConfirmation(false);
-        setViewOrder(false); // Khi đóng modal, đặt state xem đơn hàng thành false
+        setViewOrder(false);
     };
 
     const indexOfLastOrder = currentPage * ordersPerPage;
@@ -90,30 +92,34 @@ console.log(userId);
         e.preventDefault();
         setCurrentPage(pageNumber);
     };
+
     const handleModalClick = (e) => {
-      // Kiểm tra xem phần tử được nhấn có phải là modal content hay không
-      if (e.target.classList.contains('modal-content')) {
-          return; // Nếu là modal content, không làm gì cả
-      } else {
-          closeModal(); // Nếu không phải, đóng modal
-      }
-  };
+        if (e.target.classList.contains('modal-content')) {
+            return;
+        } else {
+            closeModal();
+        }
+    };
 
-  const handleDelete = (id) => {
-    const confirmDelete = window.confirm("Are you sure you want to delete this course?");
-    if (confirmDelete) {
-        axios.delete(`https://medinetprj.azurewebsites.net/api/v1/Courses/id?id=${id}`)
-            .then(response => {
-                setOrders(orders.filter(order => order.id !== id));
-                toast.success('Course deleted successfully');
-            })
-            .catch(error => {
-                toast.error('Failed to delete course');
-                console.error('Error deleting course:', error);
-            });
-    }
-};
-
+    const handleDelete = (id) => {
+        if (userRole === 'Employee') {
+            
+            const confirmDelete = window.confirm("Are you sure you want to delete this course?");
+            if (confirmDelete) {
+                axios.delete(`https://medinetprj.azurewebsites.net/api/v1/Courses/id?id=${id}`)
+                    .then(response => {
+                        setOrders(orders.filter(order => order.id !== id));
+                        toast.success('Course deleted successfully');
+                    })
+                    .catch(error => {
+                        toast.error('Failed to delete course');
+                        console.error('Error deleting course:', error);
+                    });
+            }
+        } else {
+            toast.error('You do not have permission to delete courses.');
+        }
+    };
 
 
     return (
@@ -178,8 +184,7 @@ console.log(userId);
                                             <td style={{ padding: '0.75rem', verticalAlign: 'top', borderTop: '1px solid #dee2e6', textAlign: "center" }}>{order.title}</td>
                                             <td style={{ padding: '0.75rem', verticalAlign: 'top', borderTop: '1px solid #dee2e6', textAlign: "center" }}><img style={ {width: 100}}
                                               className="img-fluid"
-                                              // src={course.imagesCourse}
-                                              src="https://medinetprj.azurewebsites.net/images/courses/fb6e6f4e-fd93-42c6-aeef-7370d426c2d7.jpg"
+                                              src={order.imagesSrc}
                                               alt=""
                                             /></td>
                                             <td style={{ padding: '0.75rem', verticalAlign: 'top', borderTop: '1px solid #dee2e6', textAlign: "center" }}>${order.price}</td>
@@ -213,7 +218,7 @@ console.log(userId);
 
             {selectedOrder && (
                 <div className={`modal ${modalOpen ? 'show' : ''}`} onClick={handleModalClick} tabIndex="-1" role="dialog" style={{ display: modalOpen ? 'block' : 'none', backgroundColor: 'rgba(0, 0, 0, 0.5)', position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, zIndex: 999, display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-                    <div style={{ width: 1000, padding: 30, display: 'flex', backgroundColor: '#fff', borderRadius: 8, position: 'relative' }} className="modal-content" onClick={(e) => e.stopPropagation()}>
+                    <div style={{  padding: 30,maxWidth: 800, display: 'flex', backgroundColor: '#fff', borderRadius: 8, position: 'relative' }} className="modal-content" onClick={(e) => e.stopPropagation()}>
                         <button className="close-button" onClick={closeModal} style={{ position: 'absolute', top: 10, right: 10, background: 'none', border: 'none', cursor: 'pointer', color: "black", padding: 10 }}>
                             <i style={{ fontSize: 18 }} className="fa-solid fa-xmark"></i>
                         </button>
@@ -224,7 +229,7 @@ console.log(userId);
                             <div style={{ flex: 1,  alignItems: 'center' }}>
                                 <img
                                     style={{ width: '100%', height: 'auto', borderRadius: 8 }}
-                                    src="https://medinetprj.azurewebsites.net/images/courses/fb6e6f4e-fd93-42c6-aeef-7370d426c2d7.jpg"
+                                    src={selectedOrder.imagesSrc}
                                     alt={selectedOrder.title}
                                 />
                               

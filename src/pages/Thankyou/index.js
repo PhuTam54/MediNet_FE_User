@@ -72,6 +72,7 @@ function Thankyou() {
                 <th style={{padding: '0.75rem', verticalAlign: 'top', borderTop: '1px solid #dee2e6'}}>Image</th>
                 <th style={{padding: '0.75rem', verticalAlign: 'top', borderTop: '1px solid #dee2e6'}}>Quantity</th>
                 <th style={{padding: '0.75rem', verticalAlign: 'top', borderTop: '1px solid #dee2e6'}}>Price</th>
+                <th style={{padding: '0.75rem', verticalAlign: 'top', borderTop: '1px solid #dee2e6'}}>Payment</th>
                 <th style={{padding: '0.75rem', verticalAlign: 'top', borderTop: '1px solid #dee2e6'}}>Total</th>
               </tr>
             </thead>
@@ -83,12 +84,13 @@ function Thankyou() {
                 <td style={{padding: '0.75rem', verticalAlign: 'top', borderTop: '1px solid #dee2e6'}}><img src={product.imageSrc} alt={product.name} style={{width: '50px', height: '50px'}} /></td>
                 <td style={{padding: '0.75rem', verticalAlign: 'top', borderTop: '1px solid #dee2e6'}}>{product.qtyCart}</td>
                 <td style={{padding: '0.75rem', verticalAlign: 'top', borderTop: '1px solid #dee2e6'}}>${product.price}</td>
+                <td style={{padding: '0.75rem', verticalAlign: 'top', borderTop: '1px solid #dee2e6'}}>{checkoutInfo.orderInfo.payment_method}</td>
                 <td style={{padding: '0.75rem', verticalAlign: 'top', borderTop: '1px solid #dee2e6'}}>${product.subTotal}</td>
               </tr>
             ))}
 
               <tr>
-                <td colSpan="5" style={{padding: '0.75rem', verticalAlign: 'top', borderTop: '1px solid #dee2e6'}}>Total</td>
+                <td colSpan="6" style={{padding: '0.75rem', verticalAlign: 'top', borderTop: '1px solid #dee2e6'}}>Total</td>
                 <td style={{padding: '0.75rem', verticalAlign: 'top', borderTop: '1px solid #dee2e6'}}>${totalAmount}</td>
               </tr>
             </tbody>

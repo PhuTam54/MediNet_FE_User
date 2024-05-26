@@ -23,6 +23,7 @@ function Cart() {
 
   const fetchData = async () => {
     const userId = getUserId();
+    console.log(userId);
     try {
       const cartResponse = await axios.get(`https://medinetprj.azurewebsites.net/api/v1/Carts/userid?userid=${userId}`);
       const cartData = cartResponse.data;

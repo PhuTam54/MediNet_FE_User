@@ -27,7 +27,6 @@ function Header() {
       const tokenObject = JSON.parse(decodedToken);
       const userId = tokenObject.userId;
       const userRole = tokenObject.userRole;
-
       localStorage.setItem('userId', userId); // Lưu userId vào localStorage
       localStorage.setItem('userRole', userRole);
      // Lưu userRole vào localStorage
@@ -68,9 +67,8 @@ function Header() {
       .then((data) => {
         setClinic(data);
       });
-  
-  }, []);
 
+  }, []);
     return (
       <>
       
@@ -491,6 +489,9 @@ function Header() {
                           <li>
                               <div className="vanh_hover">
                                 <a style={{fontSize: 15, color: "black"}} href="/profile">My Profile</a>
+                              </div>
+                              <div className="vanh_hover">
+                                <a style={{fontSize: 15, color: "black"}} href="/blogs">Blog</a>
                               </div>
                               <div className="vanh_hover">
                                 <a style={{fontSize: 15, color: "black"}} href="/myOrder">My Order</a>
