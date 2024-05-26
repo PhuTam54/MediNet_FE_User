@@ -62,10 +62,6 @@ useEffect(() => {
      setAverageStars(averageStars);
         setFeedback(response.data);
         setTotalFeedback(response.data.length);
-         // Calculate average star rating
-      const totalStars = response.data.reduce((total, feedback) => total + feedback.vote, 0);
-      const averageStars = totalStars / response.data.length;
-      setAverageStars(averageStars);
       } catch (error) {
 
         console.error('Failed to fetch feedback', error);
@@ -137,9 +133,6 @@ const cartItem = {
         customerId: userId, // Assuming userId is defined in your component
         productId: product.id
       };
-  
-      // Fetch the token from local storage
-      const token = localStorage.getItem('token');
   
       const response = await axios.post('https://medinetprj.azurewebsites.net/api/v1/FavoriteProducts', favoriteProduct, {
         headers: {
@@ -248,8 +241,7 @@ const [clinic, setClinic] = useState('');
 
   }, []);
 
-  fetchClinics();
-}, [id]);
+
 // open modal image
 const openModal = (imageSrc) => {
   setSelectedImage(imageSrc);
@@ -267,15 +259,7 @@ const nextImage = () => {
 const prevImage = () => {
   setCurrentImageIndex((currentImageIndex - 1 + productDetail[0].imagesSrc.length) % productDetail[0].imagesSrc.length);
 };
-const [clinic, setClinic] = useState('');
-  useEffect(() => {
-    fetch("https://medinetprj.azurewebsites.net/api/v1/Clinics/id?id=1")
-      .then((response) => response.json())
-      .then((data) => {
-        setClinic(data);
-      });
-  
-  }, []);
+
     return ( 
         <>
   {/* page-title */}

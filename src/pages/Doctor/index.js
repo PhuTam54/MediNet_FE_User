@@ -7,7 +7,7 @@ function Doctors() {
 
 
     useEffect(() => {
-        axios.get('https://localhost:7121/api/v1/Employees')
+        axios.get('https://medinetprj.azurewebsites.net/api/v1/Employees')
         .then(response => {
             const doctors = response.data.filter(doctor => doctor.role === 4);
       setDoctors(doctors);

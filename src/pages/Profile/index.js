@@ -168,7 +168,7 @@ function MyProfile() {
   Array.isArray(favoriteProducts) && favoriteProducts.map(product => (
     <tr key={product.id}>
       <td style={{ padding: '0.75rem', verticalAlign: 'top', borderTop: '1px solid #dee2e6', textAlign: "center" }}>{product.product.id}</td>
-      <td style={{ padding: '0.75rem', verticalAlign: 'top', borderTop: '1px solid #dee2e6', textAlign: "center" }}><img src={`https://localhost:7121/${product.product.image}`} alt={product.product.name}  style={{ width: '100px', height: '100px' }} /></td>
+      <td style={{ padding: '0.75rem', verticalAlign: 'top', borderTop: '1px solid #dee2e6', textAlign: "center" }}><img src={`https://medinetprj.azurewebsites.net/${product.product.image}`} alt={product.product.name}  style={{ width: '100px', height: '100px' }} /></td>
       <td style={{ padding: '0.75rem', verticalAlign: 'top', borderTop: '1px solid #dee2e6', textAlign: "center" }}><Link to={`/productdetail/${product.id}`}>{product.product.name}</Link></td>                
       <td style={{ padding: '0.75rem', verticalAlign: 'top', borderTop: '1px solid #dee2e6', textAlign: "center" }}>{product.product.description}</td>
       <td style={{ padding: '0.75rem', verticalAlign: 'top', borderTop: '1px solid #dee2e6', textAlign: "center" }}>{product.product.price}.00$</td>
