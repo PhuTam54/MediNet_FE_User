@@ -490,9 +490,7 @@ function Header() {
                               <div className="vanh_hover">
                                 <a style={{fontSize: 15, color: "black"}} href="/profile">My Profile</a>
                               </div>
-                              <div className="vanh_hover">
-                                <a style={{fontSize: 15, color: "black"}} href="/blogs">Blog</a>
-                              </div>
+                             
                               <div className="vanh_hover">
                                 <a style={{fontSize: 15, color: "black"}} href="/myOrder">My Order</a>
                               </div>
