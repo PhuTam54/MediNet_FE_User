@@ -722,9 +722,22 @@ className="input-text qty text"
 
       <h5 style={{paddingBottom:'50px'}}>{product.name}</h5>
      
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+      <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
   <button onClick={prevImage} style={{backgroundColor:"#01d6a3", borderRadius: '50%'}}><i className="ti ti-arrow-left" /></button>
-  <img src={productDetail[0].imagesSrc[currentImageIndex]} alt="Selected" style={{ maxWidth: '100%', maxHeight: '100%', objectFit: 'contain', border: '2px solid #e4e8ed',borderRadius: '10px',margin: '3px'  }} />
+  <div style={{ width: '500px', height: '500px', display: 'flex', justifyContent: 'center', alignItems: 'center', overflow: 'hidden' }}>
+    <img
+      src={productDetail[0].imagesSrc[currentImageIndex]}
+      alt="Selected"
+      style={{
+        maxWidth: '100%',
+        maxHeight: '100%',
+        objectFit: 'contain',
+        border: '2px solid #e4e8ed',
+        borderRadius: '10px',
+        margin: '3px'
+      }}
+    />
+  </div>
   <button onClick={nextImage} style={{backgroundColor:"#01d6a3", borderRadius: '50%'}}><i className="ti ti-arrow-right" /></button>
 </div>
     </div>

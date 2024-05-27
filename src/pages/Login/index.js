@@ -102,7 +102,7 @@ function Login() {
                       <label htmlFor="bal2" style={{color: "black"}}>remember password</label>
                     </div>
                     <div>
-                      <a href="/forgetpassword" className="forget-pass">
+                      <a href="/forgotpassword" className="forget-pass">
                         Forget Password
                       </a>
                     </div>
