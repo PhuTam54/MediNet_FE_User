@@ -391,14 +391,18 @@ useEffect(() => {
                       {/* ttm-product-box-inner */}
                       <div className="ttm-product-box-inner">
                         
-                        <div className="ttm-product-image-box">
-                          
-                          <img
-                            className="img-fluid"
-                            src={product.imageSrc}
-                            alt=""
-                          />
-                        </div>
+                      <div className="ttm-product-image-box"  style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+    <img
+        className="img-fluid"
+        src={product.imageSrc}
+        alt=""
+        style={{
+            width: '230px', // Replace with your desired width
+            height: '250px', // Replace with your desired height
+            objectFit: 'cover' // This will ensure that your image covers the whole area without distortion
+        }}
+    />
+</div>
                       </div>
                       {/* ttm-product-box-inner end */}
                       <div className="ttm-product-content">
