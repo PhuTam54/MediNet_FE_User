@@ -163,7 +163,7 @@ useEffect(() => {
           <div className="col-lg-3 col-md-12">
             <a
               className="ttm-btn ttm-btn-size-md ttm-btn-shape-square ttm-btn-style-border ttm-btn-color-white mb-30 mt-45 res-991-mt-0 float-right"
-              href="#"
+              href="/products"
             >
               MORE PRODUCTS
             </a>
@@ -389,7 +389,7 @@ useEffect(() => {
             data-auto="false"
           >
             {/* featured-imagebox-post */}
-            {blogs.slice(0,4).map((blog, index) => {
+            {blogs.slice(0,3).map((blog, index) => {
               let createdAt = new Date(blog.createdAt);
               let day = createdAt.getDate();
               let month = createdAt.toLocaleString('default', { month: 'short' });

@@ -1329,7 +1329,7 @@ function Home() {
               <div className="col-lg-3 col-md-12">
                 <a
                   className="ttm-btn ttm-btn-size-md ttm-btn-shape-square ttm-btn-style-border ttm-btn-color-black mb-30 mt-45 res-991-mt-0 float-right"
-                  href="#"
+                  href="/blogs"
                 >
                   MORE ARTICLES
                 </a>
