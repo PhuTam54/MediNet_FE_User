@@ -52,7 +52,7 @@ function MyOrder() {
                         setOrders(response.data);
                     })
                     .catch(error => {
-                        toast.error('Failed to fetch orders');
+                        toast.warning('Failed to fetch orders');
                         console.error('Error fetching orders:', error);
                     });
             }
@@ -127,7 +127,7 @@ function MyOrder() {
                   
                 })
                 .catch(error => {
-                    toast.error('Failed to cancel order');
+                    toast.warning('Failed to cancel order');
                     console.error('Error cancelling order:', error);
                 });
         } else {

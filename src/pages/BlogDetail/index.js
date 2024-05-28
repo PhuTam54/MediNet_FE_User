@@ -92,7 +92,7 @@ const submitComment = async () => {
     window.location.reload();
   } catch (error) {
     console.error('Failed to submit comment', error);
-    toast.error('Failed to submit comment');
+    toast.warning('Failed to submit comment');
   }
 };
 const [clinic, setClinic] = useState('');

@@ -56,7 +56,7 @@ function MyCourses() {
                         setOrders(response.data);
                     })
                     .catch(error => {
-                        toast.error('Failed to fetch orders');
+                        toast.warning('Failed to fetch orders');
                         console.error('Error fetching orders:', error);
                     });
             }
@@ -112,12 +112,12 @@ function MyCourses() {
                         toast.success('Course deleted successfully');
                     })
                     .catch(error => {
-                        toast.error('Failed to delete course');
+                        toast.warning('Failed to delete course');
                         console.error('Error deleting course:', error);
                     });
             }
         } else {
-            toast.error('You do not have permission to delete courses.');
+            toast.warning('You do not have permission to delete courses.');
         }
     };
 

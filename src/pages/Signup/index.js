@@ -53,11 +53,11 @@ function SignUp() {
         })
         .catch((error) => {
           console.error("Registration error: ", error.response.data);
-          toast.error("An error occurred during sign up. Please try again.");
+          toast.warning("An error occurred during sign up. Please try again.");
         });
     } else {
       setErrors(validationErrors);
-      toast.error("Please fill in the required fields correctly.");
+      toast.warning("Please fill in the required fields correctly.");
     }
   }
 

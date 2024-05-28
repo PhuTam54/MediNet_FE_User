@@ -181,7 +181,7 @@ function Checkout() {
         orderType: 'Sandbox',
         orderDescription: 'Order movie ticket',
         name: billingFirstName,
-        amount: totalAmount,
+        amount: totalAmount * 23000,
       };
 
       const paymentResponse = await axios.post('https://medinetprj.azurewebsites.net/api/v1/Payments/PayPal', paymentPayload, {
