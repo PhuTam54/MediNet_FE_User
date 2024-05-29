@@ -66,7 +66,7 @@ function CoursesDetail({ products }) {
 
   const addToCart = () => {
     if (isRegistered) {
-      toast.error('You have already registered for this course.');
+      toast.warning('You have already registered for this course.');
       return;
     }
 
@@ -79,6 +79,7 @@ function CoursesDetail({ products }) {
         toast.success('Successfully registered for the course');
       })
       .catch(error => console.error(error));
+      toast.warning('Failed to register for the course');
   };
 
   
@@ -128,7 +129,7 @@ function CoursesDetail({ products }) {
       window.location.reload();
     } catch (error) {
       console.error('Failed to submit feedback', error);
-      toast.error('Failed to submit feedback');
+      toast.warning('Failed to submit feedback');
     }
   };
   const renderStars = (rating) => {
