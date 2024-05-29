@@ -20,8 +20,9 @@ const routes = {
     profile: '/profile',
     courses: '/courses',
     coursesdetail: '/coursesdetail/:id',
-    mycourses: '/mycourses'
-    
+    mycourses: '/mycourses',
+    aboutus: '/aboutus',
+    clinicdetail: '/clinicdetail/:id',
 
 
 };
