@@ -472,6 +472,10 @@ const closingTime = new Date(clinic.closingHours).toLocaleTimeString([], { hour:
                       <a href="/blogs">Blog</a>
                       
                     </li>
+                    <li>
+                      <a href="/aboutus">About Us</a>
+                      
+                    </li>
                                         <li className="header-button pr-0">
                       <div className="container" style={{ textAlign: 'center' }}>
 
