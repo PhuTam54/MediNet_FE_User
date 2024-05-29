@@ -9,7 +9,7 @@ function ProductDetail({  }) {
   const [products, setProducts] = useState([]);
   const [product, setProduct] = useState({});
   const [productDetail, setProductDetail] = useState([]);
-
+  const [stockQuantity, setStockQuantity] = useState(0);
   const { id } = useParams();
   const [quantity, setQuantity] = useState(1);
   const [imageFile, setImageFile] = useState(null); 
@@ -90,25 +90,37 @@ const getTokenData = () => {
   }
   // add to cart
 
-  const addToCart = () => {
-    if (!selectedClinic) {
-      toast.error('Please select a clinic');
-      return;
-    }
-const cartItem = {
-      qtyCart: quantity,
-      productID: product.id,
-      customerID: userId,
-      clinicID: selectedClinic
-    };
-    console.log(cartItem);
 
-    axios.post('https://medinetprj.azurewebsites.net/api/v1/Carts', cartItem)
-      .then(() => {
-        toast.success('Product added to cart');
-      })
-      .catch(error => console.error(error));
+const addToCart = () => {
+  // Kiểm tra xem người dùng đã chọn phòng khám chưa
+  if (!selectedClinic) {
+    toast.error('Please select a clinic');
+    return;
+  }
+
+  // Kiểm tra xem số lượng muốn mua có vượt quá số lượng trong kho không
+  if (quantity > stockQuantity) {
+    toast.error('The quantity exceeds the available stock quantity!');
+    return;
+  }
+
+  const cartItem = {
+    qtyCart: quantity,
+    productID: product.id,
+    customerID: userId,
+    clinicID: selectedClinic
   };
+
+  console.log(cartItem);
+
+  axios.post('https://medinetprj.azurewebsites.net/api/v1/Carts', cartItem)
+    .then(() => {
+      toast.success('Product added to cart');
+    })
+    .catch(error => console.error(error));
+};
+
+
   const addToFavorites = async (product) => {
     try {
       // Fetch the token from local storage
@@ -260,6 +272,22 @@ const prevImage = () => {
   setCurrentImageIndex((currentImageIndex - 1 + productDetail[0].imagesSrc.length) % productDetail[0].imagesSrc.length);
 };
 
+
+const fetchStockQuantity = async (productId, clinicId) => {
+  try {
+    const response = await axios.get(`https://medinetprj.azurewebsites.net/api/v1/InStocks/productIdAndClinicId?productId=${productId}&clinicId=${clinicId}`);
+    setStockQuantity(response.data.stockQuantity);
+  } catch (error) {
+    console.error(error);
+  }
+};
+
+useEffect(() => {
+  if (selectedClinic) {
+    fetchStockQuantity(product.id, selectedClinic);
+  }
+}, [selectedClinic]);
+
     return ( 
         <>
   {/* page-title */}
@@ -390,7 +418,7 @@ const prevImage = () => {
   </table>
 </div>
                   
-<label htmlFor="clinic">Select Clinic:</label>
+<label htmlFor="clinic">Select Clinic: </label>
         <select
           id="clinic"
           value={selectedClinic}
@@ -398,7 +426,7 @@ const prevImage = () => {
         >
           <option value="">Select a clinic</option>
           {clinics.map(clinic => (
-            <option key={clinic.id} value={clinic.id}>{clinic.name}</option>
+            <option key={clinic.id} value={clinic.id}>{clinic.name} - {stockQuantity || '0'} Quantity</option>
           ))}
         </select>
                   <div className="add-to-wishlist yith-wcwl-add-to-wishlist">
@@ -426,7 +454,6 @@ const prevImage = () => {
 className="input-text qty text"
                           step={1}
                           min={1}
-                          max={50}
                           name="quantity"
                           defaultValue={1}
                           title="Qty"
@@ -694,9 +721,22 @@ className="input-text qty text"
 
       <h5 style={{paddingBottom:'50px'}}>{product.name}</h5>
      
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+      <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
   <button onClick={prevImage} style={{backgroundColor:"#01d6a3", borderRadius: '50%'}}><i className="ti ti-arrow-left" /></button>
-  <img src={productDetail[0].imagesSrc[currentImageIndex]} alt="Selected" style={{ maxWidth: '100%', maxHeight: '100%', objectFit: 'contain', border: '2px solid #e4e8ed',borderRadius: '10px',margin: '3px'  }} />
+  <div style={{ width: '500px', height: '500px', display: 'flex', justifyContent: 'center', alignItems: 'center', overflow: 'hidden' }}>
+    <img
+      src={productDetail[0].imagesSrc[currentImageIndex]}
+      alt="Selected"
+      style={{
+        maxWidth: '100%',
+        maxHeight: '100%',
+        objectFit: 'contain',
+        border: '2px solid #e4e8ed',
+        borderRadius: '10px',
+        margin: '3px'
+      }}
+    />
+  </div>
   <button onClick={nextImage} style={{backgroundColor:"#01d6a3", borderRadius: '50%'}}><i className="ti ti-arrow-right" /></button>
 </div>
     </div>

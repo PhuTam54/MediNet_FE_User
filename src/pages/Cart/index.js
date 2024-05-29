@@ -1,13 +1,12 @@
-
-
-
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { Link } from 'react-router-dom';
+import { toast } from 'react-toastify';
 
 function Cart() {
   const [data, setData] = useState([]);
   const [productsInfo, setProductsInfo] = useState([]);
+  const [stockQuantities, setStockQuantities] = useState([]);
   const [totalPrice, setTotalPrice] = useState(0);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
 
@@ -23,7 +22,7 @@ function Cart() {
 
   const fetchData = async () => {
     const userId = getUserId();
-    console.log(userId);
+   
     try {
       const cartResponse = await axios.get(`https://medinetprj.azurewebsites.net/api/v1/Carts/userid?userid=${userId}`);
       const cartData = cartResponse.data;
@@ -34,6 +33,12 @@ function Cart() {
       );
       const productsData = await Promise.all(productPromises);
       setProductsInfo(productsData.map(response => response.data));
+
+      const stockQuantityPromises = cartData.map(item =>
+        axios.get(`https://medinetprj.azurewebsites.net/api/v1/InStocks/productIdAndClinicId?productId=${item.productId}&clinicId=${item.clinic.id}`)
+      );
+      const stockQuantitiesData = await Promise.all(stockQuantityPromises);
+      setStockQuantities(stockQuantitiesData.map(response => response.data.stockQuantity));
 
       const total = cartData.reduce((acc, item) => acc + item.subTotal, 0);
       setTotalPrice(total);
@@ -55,26 +60,33 @@ function Cart() {
     return null;
   };
 
-  const handleQuantityChange = async (productId, newQuantity) => {
-    try {
-      const cartItem = data.find(item => item.productId === productId);
-      if (!cartItem) {
-        console.error("Cart item not found");
-        return;
-      }
-
-      const requestData = {
-        ...cartItem,
-        qtyCart: newQuantity
-      };
-
-      await axios.put(`https://medinetprj.azurewebsites.net/api/v1/Carts/id?id=${cartItem.id}`, requestData);
-      fetchData();
-    } catch (error) {
-      console.error("Error updating quantity:", error);
+const handleQuantityChange = async (productId, newQuantity) => {
+  try {
+    const cartItem = data.find(item => item.productId === productId);
+    if (!cartItem) {
+      console.error("Cart item not found");
+      return;
     }
-  };
 
+    // Kiểm tra số lượng trước khi cập nhật
+    const response = await axios.get(`https://medinetprj.azurewebsites.net/api/v1/InStocks/productIdAndClinicId?productId=${productId}&clinicId=${cartItem.clinicId}`);
+    const stockQuantity = response.data.stockQuantity;
+
+    if (newQuantity > stockQuantity) {
+      toast.error('The quantity exceeds the available stock quantity!');
+      return;
+    }
+
+    const requestData = {
+      ...cartItem,
+      qtyCart: newQuantity
+    };
+
+    await axios.put(`https://medinetprj.azurewebsites.net/api/v1/Carts/id?id=${cartItem.id}`, requestData);
+  } catch (error) {
+    console.error("Error updating quantity:", error);
+  }
+};
   const handleRemoveItem = async (id) => {
     try {
       await axios.delete(`https://medinetprj.azurewebsites.net/api/v1/Carts/id?id=${id}`);
@@ -83,6 +95,8 @@ function Cart() {
       console.error("Error removing item:", error);
     }
   };
+
+  
 
   if (!isLoggedIn) {
     return (
@@ -137,7 +151,8 @@ function Cart() {
                         <th className="product-price">Price</th>
                         <th className="product-quantity">Quantity</th>
                         <th className="product-subtotal">Total</th>
-                        <th className="product-subtotal">Clinic</th>
+                        <th className="product-stock">Stock</th>
+                        <th className="product-clinic">Clinic</th>
                       </tr>
                     </thead>
                     <tbody>
@@ -181,9 +196,14 @@ function Cart() {
                               <span className="Price-currencySymbol">$</span>{item.subTotal}
                             </span>
                           </td>
-                          <td className="product-subtotal" data-title="Total">
-                            <span className="Price-amount">
-                              <span className="Price-currencySymbol"></span>{item.clinic.name}
+                          <td className="product-stock" data-title="Stock">
+                            <span className="stock-amount">
+                              {stockQuantities[index] !== undefined ? stockQuantities[index] : 'Loading...'}
+                            </span>
+                          </td>
+                          <td className="product-clinic" data-title="Clinic">
+                            <span className="clinic-name">
+                              {item.clinic.name}
                             </span>
                           </td>
                         </tr>
@@ -210,10 +230,10 @@ function Cart() {
                             </td>
                           </tr>
                           <tr className="order-total">
-                            <th  style={{color: "black"}}>Total</th>
+                            <th style={{ color: "black" }}>Total</th>
                             <td data-title="Total">
                               <strong>
-                                <span className="Price-amount"  style={{color: "black"}}>
+                                <span className="Price-amount" style={{ color: "black" }}>
                                   <span className="Price-currencySymbol">$</span>{totalPrice.toFixed(2)}
                                 </span>
                               </strong>

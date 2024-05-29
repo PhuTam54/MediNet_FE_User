@@ -25,6 +25,8 @@ import Doctors from '~/pages/Doctor';
 import DoctorDetail from '~/pages/DoctorDetail';
 import AboutUs from '~/pages/AboutUs';
 import ClinicDetail from '~/pages/ClinicDetail';
+import ForgotPassword from '~/pages/ForgotPassword';
+import ResetPassword from '~/pages/ResetPassword';
 
 // Public routes
 export const publicRoutes = [
@@ -41,6 +43,11 @@ export const publicRoutes = [
     { path: config.routes.emailthankyou, component: EmailThankyou,layout: LayoutOnly },
     { path: config.routes.login, component: Login, layout: LayoutOnly},
     { path: config.routes.signup, component: SignUp, layout: LayoutOnly},
+    { path: config.routes.forgotpasswrod, component: ForgotPassword, layout: LayoutOnly},
+    { path: config.routes.resetpasswrod, component: ResetPassword, layout: LayoutOnly},
+
+
+
 ];
 
 // Private routes

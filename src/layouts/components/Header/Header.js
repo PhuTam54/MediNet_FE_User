@@ -18,6 +18,8 @@ function Header() {
   const [uniqueProductCount, setUniqueProductCount] = useState(0); // Đếm số sản phẩm khác nhau
   const [userId, setUserId] = useState('');
   const [userRole, setUserRole] = useState('');
+
+  
   
   useEffect(() => {
     const token = localStorage.getItem('token');
@@ -69,6 +71,8 @@ function Header() {
       });
 
   }, []);
+  const openingTime = new Date(clinic.openingHours).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false });
+const closingTime = new Date(clinic.closingHours).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false }); 
     return (
       <>
       
@@ -212,9 +216,9 @@ function Header() {
               {clinic && clinic.address}
             </li>
             <li>
-              <i className="themifyicon ti-timer" />
-              Mon - Sat 8.00 - 18.00. Sunday CLOSED
-            </li>
+  <i className="themifyicon ti-timer" />
+  Mon - Sat {openingTime} - {closingTime}. Sunday CLOSED
+</li>
             <li>
               <i className="themifyicon ti-email" />
               {clinic && clinic.email}

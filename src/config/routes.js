@@ -13,7 +13,8 @@ const routes = {
     checkout: '/checkout',
     login: '/login',
     signup: '/signup',
-    
+    forgotpasswrod: '/forgotpassword',
+    resetpasswrod: '/resetpassword',
     thankyou: 'thankyou',
     emailthankyou: '/emailthankyou',
     myOrder: '/myOrder',

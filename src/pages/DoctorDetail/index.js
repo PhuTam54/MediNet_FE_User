@@ -13,13 +13,13 @@ function DoctorDetail() {
     const [courses, setCourses] = useState([]);
 
     useEffect(() => {
-        axios.get(`https://medinetprj.azurewebsites.netapi/v1/Employees/id?id=${id}`)
+        axios.get(`https://medinetprj.azurewebsites.net/api/v1/Employees/id?id=${id}`)
         .then(response => {
             setDoctor(response.data);
         })
     }, [id]);
      useEffect(() => {
-        axios.get(`https://medinetprj.azurewebsites.netapi/v1/Blogs/employeeId?employeeId=${id}`)
+        axios.get(`https://medinetprj.azurewebsites.net/api/v1/Blogs/employeeId?employeeId=${id}`)
         .then(response => {
             setBlogs(response.data);
         })
@@ -241,81 +241,7 @@ function DoctorDetail() {
             
           </div>
         </div>
-        <div className="row" style={{marginTop:'100px'}}>
-          {/* post-slide */}
-          <div
-            className="post-slide owl-carousel owl-theme owl-loaded"
-            data-item={2}
-            data-nav="true"
-            data-dots="false"
-            data-auto="false"
-          >
-            <h2>Courses of {doctor.full_Name}</h2>
-            <h1>Đưa thông tin khóa học vào đây </h1>
-            {/* featured-imagebox-post */}
-            {blogs.slice(0,4).map((blog, index) => {
-              let createdAt = new Date(blog.createdAt);
-              let day = createdAt.getDate();
-              let month = createdAt.toLocaleString('default', { month: 'short' });
-              let year = createdAt.getFullYear();
-        
-              return (
-            <div className="featured-imagebox featured-imagebox-post ttm-box-view-left-image row box-shadow">
-              <div className="col-lg-5 col-md-12 ttm-featured-img-left">
-                <div className="ttm-post-thumbnail featured-thumbnail" style={{width:'100%', height:'100%'}}>
-                  <img
-                    className="img-fluid"
-                    src={blog.imageSrc}
-                    alt="image"
-                    style={{width:'100%', height:'300px'}}
-                  />
-                  <div className="ttm-box-post-date">
-                    <span className="ttm-entry-date">
-                    <time className="entry-date">
-            {day}<span className="entry-month">{month}<span className="entry-year">{year}</span></span>
-          </time>  
-                    </span>
-                  </div>
-                </div>
-              </div>
-              <div className="col-lg-7 col-md-12 featured-content featured-content-post">
-                <div className="post-title featured-title">
-                  <h5>
-                    <a href="single-blog.html">
-                      <Link to={`/blogdetail/${blog.id}`}>
-                      {truncate(blog.title, 50)}
-                      </Link>
-                    </a>
-                  </h5>
-                </div>
-                <div className="post-meta">
-                  {/* <span className="ttm-meta-line comments-link">
-                    <i className="fa fa-comment" /> 3 Comments
-                  </span> */}
-                  <span className="ttm-meta-line byline">
-                    <i className="fa fa-user" /> {blog.employee.full_Name}
-                  </span>
-                  <span className="ttm-meta-line cat-links">
-            <i className="ti ti-folder" />
-            {blog.disease.name}
-          </span>
-          <span className="ttm-meta-line comments-link">
-  <i className="fa fa-comment" />  {blog.blogComments ? blog.blogComments.length : 0}  Comments
-</span>
-                </div>
-                <div className="post-desc featured-desc">
-                  <p>
-                    {truncate(blog.content, 150)}
-                  </p>
-                </div>
-              </div>
-            </div>
-);
-})}
-            {/* featured-imagebox-post end*/}
-            
-          </div>
-        </div>
+       
         </div>
       </div>
     </section>
