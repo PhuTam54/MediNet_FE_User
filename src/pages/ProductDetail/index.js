@@ -454,7 +454,6 @@ useEffect(() => {
 className="input-text qty text"
                           step={1}
                           min={1}
-                          max={50}
                           name="quantity"
                           defaultValue={1}
                           title="Qty"
