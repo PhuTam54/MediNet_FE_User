@@ -7,7 +7,7 @@ function AboutUs() {
 
     useEffect(() => {
       // Fetch the clinic data from the API
-      axios.get('https://medinetprj.azurewebsites.net/api/v1/Clinics')
+      axios.get('https://medinetaptech.azurewebsites.net/api/v1/Clinics')
         .then(response => {
           setClinics(response.data);
         })

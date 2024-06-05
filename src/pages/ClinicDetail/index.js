@@ -13,7 +13,7 @@ function ClinicDetail({}) {
 
   useEffect(() => {
     const fetchClinic = async () => {
-      const response = await axios.get(`https://medinetprj.azurewebsites.net/api/v1/Clinics/id?id=${id}`);
+      const response = await axios.get(`https://medinetaptech.azurewebsites.net/api/v1/Clinics/id?id=${id}`);
       setClinic(response.data);
     };
 
