@@ -23,9 +23,10 @@ import Blogs from '~/pages/Blogs';
 import BlogDetail from '~/pages/BlogDetail';
 import Doctors from '~/pages/Doctor';
 import DoctorDetail from '~/pages/DoctorDetail';
+import AboutUs from '~/pages/AboutUs';
+import ClinicDetail from '~/pages/ClinicDetail';
 import ForgotPassword from '~/pages/ForgotPassword';
 import ResetPassword from '~/pages/ResetPassword';
-
 
 // Public routes
 export const publicRoutes = [
@@ -37,9 +38,8 @@ export const publicRoutes = [
     { path: config.routes.blogdetail, component: BlogDetail},
     { path: config.routes.doctors, component: Doctors},
     { path: config.routes.doctordetail, component: DoctorDetail},
-
-
-
+    { path: config.routes.aboutus, component: AboutUs},
+    { path: config.routes.clinicdetail, component: ClinicDetail},
     { path: config.routes.emailthankyou, component: EmailThankyou,layout: LayoutOnly },
     { path: config.routes.login, component: Login, layout: LayoutOnly},
     { path: config.routes.signup, component: SignUp, layout: LayoutOnly},
