@@ -100,13 +100,13 @@ function MyCourses() {
             closeModal();
         }
     };
-
+    
     const handleDelete = (id) => {
         if (userRole === 'Employee') {
             
             const confirmDelete = window.confirm("Are you sure you want to delete this course?");
             if (confirmDelete) {
-                axios.delete(`https://medinetaptech.azurewebsites.net/api/v1/Courses/id?id=${id}`)
+                axios.delete(`https://medinetaptech.azurewebsites.net/api/v1/Enrollments/id?id=${id}`)
                     .then(response => {
                         setOrders(orders.filter(order => order.id !== id));
                         toast.success('Course deleted successfully');
