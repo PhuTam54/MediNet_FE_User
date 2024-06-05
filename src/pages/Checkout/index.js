@@ -5,6 +5,7 @@ import 'react-toastify/dist/ReactToastify.css';
 import paypal from '~/assets/images/paypal.png';
 import momo from '~/assets/images/MoMo_Logo.png';
 import vnpay from '~/assets/images/Vnpay.png';
+import cod from '~/assets/images/cod.jpg';
 
 const getTokenData = () => {
   const token = localStorage.getItem('token');
@@ -53,7 +54,7 @@ function Checkout() {
 
   const fetchData = async () => {
     try {
-      const cartResponse = await axios.get(`https://medinetprj.azurewebsites.net/api/v1/Carts/userid?userid=${userId}`, {
+      const cartResponse = await axios.get(`https://medinetaptech.azurewebsites.net/api/v1/Carts/userid?userid=${userId}`, {
         headers: {
           'Authorization': `Bearer ${token}`
         }
@@ -63,7 +64,7 @@ function Checkout() {
 
       const uniqueProductIds = [...new Set(cartData.map(item => item.productId))];
       const productPromises = uniqueProductIds.map(async productId => {
-        const productResponse = await axios.get(`https://medinetprj.azurewebsites.net/api/v1/Products/id?id=${productId}`, {
+        const productResponse = await axios.get(`https://medinetaptech.azurewebsites.net/api/v1/Products/id?id=${productId}`, {
           headers: {
             'Authorization': `Bearer ${token}`
           }
@@ -143,7 +144,7 @@ function Checkout() {
       };
       localStorage.setItem('checkoutInfo', JSON.stringify(checkoutInfo));
 
-      const orderResponse = await axios.post('https://medinetprj.azurewebsites.net/api/v1/Orders', orderPayload, {
+      const orderResponse = await axios.post('https://medinetaptech.azurewebsites.net/api/v1/Orders', orderPayload, {
         headers: {
           'Authorization': `Bearer ${token}`
         }
@@ -184,7 +185,7 @@ function Checkout() {
         amount: totalAmount * 23000,
       };
 
-      const paymentResponse = await axios.post('https://medinetprj.azurewebsites.net/api/v1/Payments/PayPal', paymentPayload, {
+      const paymentResponse = await axios.post('https://medinetaptech.azurewebsites.net/api/v1/Payments/PayPal', paymentPayload, {
         headers: {
           'Authorization': `Bearer ${token}`
         }
@@ -207,7 +208,7 @@ function Checkout() {
         createdDate: new Date().toISOString(),
       };
 
-      const paymentResponse = await axios.post('https://medinetprj.azurewebsites.net/api/v1/Payments/VNPay', vnpayPayload, {
+      const paymentResponse = await axios.post('https://medinetaptech.azurewebsites.net/api/v1/Payments/VNPay', vnpayPayload, {
         headers: {
           'Authorization': `Bearer ${token}`
         }
@@ -229,7 +230,7 @@ function Checkout() {
         amount: totalAmount * 23000,
       };
 
-      const paymentResponse = await axios.post('https://medinetprj.azurewebsites.net/api/v1/Payments/MoMo', momoPayload, {
+      const paymentResponse = await axios.post('https://medinetaptech.azurewebsites.net/api/v1/Payments/MoMo', momoPayload, {
         headers: {
           'Authorization': `Bearer ${token}`
         }
@@ -495,7 +496,7 @@ function Checkout() {
                               checked={paymentMethod === "COD"}
                               onChange={() => handlePaymentMethodChange("COD")}
                             />
-                            <strong> COD</strong> <img src={vnpay} alt="COD" style={{ marginLeft: "10px", width: 70, borderRadius: 10 }} />
+                            <strong> COD</strong> <img src={cod} alt="COD" style={{ marginLeft: "10px", width: 70, borderRadius: 10 }} />
                           </label>
                           {/* PayPal */}
                           <label style={{ display: "flex", alignItems: "center", cursor: "pointer", color: "#01d6a3", fontSize: 18 }}>

@@ -34,7 +34,7 @@ function Header() {
      // Lưu userRole vào localStorage
       setUserId(userId);
       setUserRole(userRole);
-      fetch(`https://medinetprj.azurewebsites.net/api/v1/Carts/userid?userid=${userId}`)
+      fetch(`https://medinetaptech.azurewebsites.net/api/v1/Carts/userid?userid=${userId}`)
         .then(response => response.json())
         .then(data => {
           let totalProductsInCart = 0;
@@ -64,7 +64,7 @@ function Header() {
   };
   const [clinic, setClinic] = useState('');
   useEffect(() => {
-    fetch("https://medinetprj.azurewebsites.net/api/v1/Clinics/id?id=1")
+    fetch("https://medinetaptech.azurewebsites.net/api/v1/Clinics/id?id=1")
       .then((response) => response.json())
       .then((data) => {
         setClinic(data);

@@ -28,7 +28,7 @@ const [averageStars, setAverageStars] = useState(0);
 const [totalFeedback, setTotalFeedback] = useState(0);
 
 useEffect(() => {
-  axios.get('https://medinetprj.azurewebsites.net/api/v1/Products')
+  axios.get('https://medinetaptech.azurewebsites.net/api/v1/Products')
   .then(res => {
     setProducts(res.data)
   })
@@ -37,12 +37,12 @@ useEffect(() => {
   });
 
   const fetchProduct = async () => {
-    const response = await axios.get(`https://medinetprj.azurewebsites.net/api/v1/Products/id?id=${id}`);
+    const response = await axios.get(`https://medinetaptech.azurewebsites.net/api/v1/Products/id?id=${id}`);
     setProduct(response.data);
   };
 
   const fetchProductDetails = async () => {
-    const response = await axios.get(`https://medinetprj.azurewebsites.net/api/v1/ProductDetails/productId?productId=${id}`);
+    const response = await axios.get(`https://medinetaptech.azurewebsites.net/api/v1/ProductDetails/productId?productId=${id}`);
     setProductDetail(response.data);
   };
 
@@ -54,7 +54,7 @@ useEffect(() => {
   useEffect(() => {
     const fetchFeedback = async () => {
       try {
-        const response = await axios.get(`https://medinetprj.azurewebsites.net/api/v1/Feedbacks/productId?productId=${id}`);
+        const response = await axios.get(`https://medinetaptech.azurewebsites.net/api/v1/Feedbacks/productId?productId=${id}`);
         setTotalFeedback(response.data.length);
         // Calculate average star rating
      const totalStars = response.data.reduce((total, feedback) => total + feedback.vote, 0);
@@ -113,7 +113,7 @@ const addToCart = () => {
 
   console.log(cartItem);
 
-  axios.post('https://medinetprj.azurewebsites.net/api/v1/Carts', cartItem)
+  axios.post('https://medinetaptech.azurewebsites.net/api/v1/Carts', cartItem)
     .then(() => {
       toast.success('Product added to cart');
     })
@@ -127,7 +127,7 @@ const addToCart = () => {
       const token = localStorage.getItem('token');
   
       // Get the current list of favorite products
-      const favoritesResponse = await axios.get(`https://medinetprj.azurewebsites.net/api/v1/FavoriteProducts/customerId?customerId=${userId}`, {
+      const favoritesResponse = await axios.get(`https://medinetaptech.azurewebsites.net/api/v1/FavoriteProducts/customerId?customerId=${userId}`, {
         headers: {
           'Authorization': `Bearer ${token}`
         }
@@ -146,7 +146,7 @@ const addToCart = () => {
         productId: product.id
       };
   
-      const response = await axios.post('https://medinetprj.azurewebsites.net/api/v1/FavoriteProducts', favoriteProduct, {
+      const response = await axios.post('https://medinetaptech.azurewebsites.net/api/v1/FavoriteProducts', favoriteProduct, {
         headers: {
           'Authorization': `Bearer ${token}`
         }
@@ -171,7 +171,7 @@ const addToCart = () => {
   };
   // const deleteFeedback = async (feedbackId) => {
   //   try {
-  //     await del(`https://medinetprj.azurewebsites.net/api/v1/Feedbacks/id?id=${feedbackId}`);
+  //     await del(`https://medinetaptech.azurewebsites.net/api/v1/Feedbacks/id?id=${feedbackId}`);
 //     toast.success('Feedback deleted successfully');
   //     window.location.reload();
   //   } catch (error) {
@@ -196,7 +196,7 @@ const addToCart = () => {
     };
 
     try {
-      await post('https://medinetprj.azurewebsites.net/api/v1/Feedbacks', feedbackData, {
+      await post('https://medinetaptech.azurewebsites.net/api/v1/Feedbacks', feedbackData, {
         headers: {
           'Content-Type': 'multipart/form-data' // Đảm bảo đúng loại nội dung cho việc tải lên tệp
         }
@@ -232,7 +232,7 @@ useEffect(() => {
   // Fetch clinics
   const fetchClinics = async () => {
     try {
-      const response = await axios.get(`https://medinetprj.azurewebsites.net/api/v1/Clinics/productId?productId=${id}`);
+      const response = await axios.get(`https://medinetaptech.azurewebsites.net/api/v1/Clinics/productId?productId=${id}`);
       setClinics(response.data);
     } catch (error) {
       console.error('Failed to fetch clinics', error);
@@ -245,7 +245,7 @@ useEffect(() => {
 
 const [clinic, setClinic] = useState('');
   useEffect(() => {
-    fetch("https://medinetprj.azurewebsites.net/api/v1/Clinics/id?id=1")
+    fetch("https://medinetaptech.azurewebsites.net/api/v1/Clinics/id?id=1")
       .then((response) => response.json())
       .then((data) => {
         setClinic(data);
@@ -275,7 +275,7 @@ const prevImage = () => {
 
 const fetchStockQuantity = async (productId, clinicId) => {
   try {
-    const response = await axios.get(`https://medinetprj.azurewebsites.net/api/v1/InStocks/productIdAndClinicId?productId=${productId}&clinicId=${clinicId}`);
+    const response = await axios.get(`https://medinetaptech.azurewebsites.net/api/v1/InStocks/productIdAndClinicId?productId=${productId}&clinicId=${clinicId}`);
     setStockQuantity(response.data.stockQuantity);
   } catch (error) {
     console.error(error);

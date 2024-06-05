@@ -23,7 +23,7 @@ function CoursesDetail({ products }) {
   const [isRegistered, setIsRegistered] = useState(false); 
   useEffect(() => {
     const fetchProduct = async () => {
-      const response = await axios.get(`https://medinetprj.azurewebsites.net/api/v1/Courses/id?id=${id}`);
+      const response = await axios.get(`https://medinetaptech.azurewebsites.net/api/v1/Courses/id?id=${id}`);
       setProduct(response.data);
     };
 
@@ -52,7 +52,7 @@ function CoursesDetail({ products }) {
     const checkIfRegistered = async () => {
       try {
         const userId = localStorage.getItem('userId');
-        const response = await axios.get(`https://medinetprj.azurewebsites.net/api/v1/Employees/id?id=${userId}`);
+        const response = await axios.get(`https://medinetaptech.azurewebsites.net/api/v1/Employees/id?id=${userId}`);
         const enrolledCourses = response.data.courses; // Giả sử API trả về danh sách các khóa học mà người dùng đã đăng ký
         const isAlreadyEnrolled = enrolledCourses.some(course => course.id === id); // Kiểm tra xem khóa học này có trong danh sách đã đăng ký hay không
         setIsRegistered(isAlreadyEnrolled);
@@ -74,7 +74,7 @@ function CoursesDetail({ products }) {
       courseId: product.id,
       employeeId: userId,
     };
-    axios.post('https://medinetprj.azurewebsites.net/api/v1/Enrollments', cartItem)
+    axios.post('https://medinetaptech.azurewebsites.net/api/v1/Enrollments', cartItem)
       .then(() => {
         toast.success('Successfully registered for the course');
       })
@@ -95,7 +95,7 @@ function CoursesDetail({ products }) {
   };
   // const deleteFeedback = async (feedbackId) => {
   //   try {
-  //     await del(`https://medinetprj.azurewebsites.net/api/v1/Feedbacks/id?id=${feedbackId}`);
+  //     await del(`https://medinetaptech.azurewebsites.net/api/v1/Feedbacks/id?id=${feedbackId}`);
   //     toast.success('Feedback deleted successfully');
   //     window.location.reload();
   //   } catch (error) {
@@ -120,7 +120,7 @@ function CoursesDetail({ products }) {
     };
 
     try {
-      await post('https://medinetprj.azurewebsites.net/api/v1/Feedbacks', feedbackData, {
+      await post('https://medinetaptech.azurewebsites.net/api/v1/Feedbacks', feedbackData, {
         headers: {
           'Content-Type': 'multipart/form-data' // Đảm bảo đúng loại nội dung cho việc tải lên tệp
         }

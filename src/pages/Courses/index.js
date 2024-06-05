@@ -10,7 +10,7 @@ function Courses() {
   const [currentPage, setCurrentPage] = useState(1);
 
   useEffect(() => {
-    axios.get('https://medinetprj.azurewebsites.net/api/v1/Courses')
+    axios.get('https://medinetaptech.azurewebsites.net/api/v1/Courses')
       .then(res => {
         setCourses(res.data);
         

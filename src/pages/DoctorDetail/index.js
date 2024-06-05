@@ -13,19 +13,19 @@ function DoctorDetail() {
     const [courses, setCourses] = useState([]);
 
     useEffect(() => {
-        axios.get(`https://medinetprj.azurewebsites.net/api/v1/Employees/id?id=${id}`)
+        axios.get(`https://medinetaptech.azurewebsites.net/api/v1/Employees/id?id=${id}`)
         .then(response => {
             setDoctor(response.data);
         })
     }, [id]);
      useEffect(() => {
-        axios.get(`https://medinetprj.azurewebsites.net/api/v1/Blogs/employeeId?employeeId=${id}`)
+        axios.get(`https://medinetaptech.azurewebsites.net/api/v1/Blogs/employeeId?employeeId=${id}`)
         .then(response => {
             setBlogs(response.data);
         })
     }, [id]);
     useEffect(() => {
-        axios.get(`https://medinetprj.azurewebsites.net/api/v1/Courses/employeeId?employeeId=${id}`)
+        axios.get(`https://medinetaptech.azurewebsites.net/api/v1/Courses/employeeId?employeeId=${id}`)
         .then(response => {
             setCourses(response.data);
         })
@@ -98,7 +98,7 @@ function DoctorDetail() {
                       <div className="featured-thumbnail">
                         <img
                           className="img-fluid"
-                          src={`https://medinetprj.azurewebsites.net/${doctor.image}`}
+                          src={`https://medinetaptech.azurewebsites.net/${doctor.image}`}
                           alt="image"
                         />
                       </div>

@@ -25,9 +25,9 @@ function MyProfile() {
       const token = localStorage.getItem('token');   
       let apiUrl = '';
       if (userRole === 'Employee') {
-        apiUrl = `https://medinetprj.azurewebsites.net/api/v1/Employees/id?id=${userId}`;
+        apiUrl = `https://medinetaptech.azurewebsites.net/api/v1/Employees/id?id=${userId}`;
       } else if (userRole === 'Customer') {
-        apiUrl = `https://medinetprj.azurewebsites.net/api/v1/Customers/id?id=${userId}`;
+        apiUrl = `https://medinetaptech.azurewebsites.net/api/v1/Customers/id?id=${userId}`;
       }
 
       fetch(apiUrl, {
@@ -39,7 +39,7 @@ function MyProfile() {
         .then(data => {
           setUser(data);
           // After setting the user, fetch the favorite products
-          return fetch(`https://medinetprj.azurewebsites.net/api/v1/FavoriteProducts/customerId?customerId=${userId}`, {
+          return fetch(`https://medinetaptech.azurewebsites.net/api/v1/FavoriteProducts/customerId?customerId=${userId}`, {
             headers: {
               'Authorization': `Bearer ${token}`
             }
@@ -52,7 +52,7 @@ function MyProfile() {
   }, []);
   const removeFavoriteProduct = async (id) => {
     try {
-      await axios.delete(`https://medinetprj.azurewebsites.net/api/v1/FavoriteProducts/id?id=${id}`);
+      await axios.delete(`https://medinetaptech.azurewebsites.net/api/v1/FavoriteProducts/id?id=${id}`);
       setFavoriteProducts(prevProducts => prevProducts.filter(product => product.id !== id));
     } catch (error) {
       console.error("Error removing item:", error);
@@ -168,7 +168,7 @@ function MyProfile() {
   Array.isArray(favoriteProducts) && favoriteProducts.map(product => (
     <tr key={product.id}>
       <td style={{ padding: '0.75rem', verticalAlign: 'top', borderTop: '1px solid #dee2e6', textAlign: "center" }}>{product.product.id}</td>
-      <td style={{ padding: '0.75rem', verticalAlign: 'top', borderTop: '1px solid #dee2e6', textAlign: "center" }}><img src={`https://medinetprj.azurewebsites.net/${product.product.image}`} alt={product.product.name}  style={{ width: '100px', height: '100px' }} /></td>
+      <td style={{ padding: '0.75rem', verticalAlign: 'top', borderTop: '1px solid #dee2e6', textAlign: "center" }}><img src={`https://medinetaptech.azurewebsites.net/${product.product.image}`} alt={product.product.name}  style={{ width: '100px', height: '100px' }} /></td>
       <td style={{ padding: '0.75rem', verticalAlign: 'top', borderTop: '1px solid #dee2e6', textAlign: "center" }}><Link to={`/productdetail/${product.id}`}>{product.product.name}</Link></td>                
       <td style={{ padding: '0.75rem', verticalAlign: 'top', borderTop: '1px solid #dee2e6', textAlign: "center" }}>{product.product.description}</td>
       <td style={{ padding: '0.75rem', verticalAlign: 'top', borderTop: '1px solid #dee2e6', textAlign: "center" }}>{product.product.price}.00$</td>

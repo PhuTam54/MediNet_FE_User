@@ -47,7 +47,7 @@ function MyOrder() {
             const userId = getTokenData();
             if (userId) {
                 localStorage.setItem('userId', userId);
-                axios.get(`https://medinetprj.azurewebsites.net/api/v1/Orders/userId?userId=${userId}`)
+                axios.get(`https://medinetaptech.azurewebsites.net/api/v1/Orders/userId?userId=${userId}`)
                     .then(response => {
                         setOrders(response.data);
                     })
@@ -109,7 +109,7 @@ function MyOrder() {
     const cancelOrder = (orderId) => {
         const token = localStorage.getItem('token');
         if (token) {
-            const apiUrl = `https://medinetprj.azurewebsites.net/api/v1/Orders/id`;
+            const apiUrl = `https://medinetaptech.azurewebsites.net/api/v1/Orders/id`;
             const config = {
                 params: {
                     id: orderId,

@@ -24,18 +24,18 @@ function Cart() {
     const userId = getUserId();
    
     try {
-      const cartResponse = await axios.get(`https://medinetprj.azurewebsites.net/api/v1/Carts/userid?userid=${userId}`);
+      const cartResponse = await axios.get(`https://medinetaptech.azurewebsites.net/api/v1/Carts/userid?userid=${userId}`);
       const cartData = cartResponse.data;
 
       const productIds = cartData.map(item => item.productId);
       const productPromises = productIds.map(productId =>
-        axios.get(`https://medinetprj.azurewebsites.net/api/v1/Products/id?id=${productId}`)
+        axios.get(`https://medinetaptech.azurewebsites.net/api/v1/Products/id?id=${productId}`)
       );
       const productsData = await Promise.all(productPromises);
       setProductsInfo(productsData.map(response => response.data));
 
       const stockQuantityPromises = cartData.map(item =>
-        axios.get(`https://medinetprj.azurewebsites.net/api/v1/InStocks/productIdAndClinicId?productId=${item.productId}&clinicId=${item.clinic.id}`)
+        axios.get(`https://medinetaptech.azurewebsites.net/api/v1/InStocks/productIdAndClinicId?productId=${item.productId}&clinicId=${item.clinic.id}`)
       );
       const stockQuantitiesData = await Promise.all(stockQuantityPromises);
       setStockQuantities(stockQuantitiesData.map(response => response.data.stockQuantity));
@@ -69,7 +69,7 @@ const handleQuantityChange = async (productId, newQuantity) => {
     }
 
     // Kiểm tra số lượng trước khi cập nhật
-    const response = await axios.get(`https://medinetprj.azurewebsites.net/api/v1/InStocks/productIdAndClinicId?productId=${productId}&clinicId=${cartItem.clinicId}`);
+    const response = await axios.get(`https://medinetaptech.azurewebsites.net/api/v1/InStocks/productIdAndClinicId?productId=${productId}&clinicId=${cartItem.clinicId}`);
     const stockQuantity = response.data.stockQuantity;
 
     if (newQuantity > stockQuantity) {
@@ -82,14 +82,14 @@ const handleQuantityChange = async (productId, newQuantity) => {
       qtyCart: newQuantity
     };
 
-    await axios.put(`https://medinetprj.azurewebsites.net/api/v1/Carts/id?id=${cartItem.id}`, requestData);
+    await axios.put(`https://medinetaptech.azurewebsites.net/api/v1/Carts/id?id=${cartItem.id}`, requestData);
   } catch (error) {
     console.error("Error updating quantity:", error);
   }
 };
   const handleRemoveItem = async (id) => {
     try {
-      await axios.delete(`https://medinetprj.azurewebsites.net/api/v1/Carts/id?id=${id}`);
+      await axios.delete(`https://medinetaptech.azurewebsites.net/api/v1/Carts/id?id=${id}`);
       fetchData();
     } catch (error) {
       console.error("Error removing item:", error);

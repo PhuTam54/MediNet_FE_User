@@ -18,7 +18,7 @@ function ResetPassword() {
             toast.error('Passwords do not match.');
             return;
         }
-        const response = await fetch(`https://medinetprj.azurewebsites.net/api/v1/LoginRegister/ResetPwd?email=${encodeURIComponent(email)}&pwd=${password}&confirmpwd=${confirmPassword}`, {
+        const response = await fetch(`https://medinetaptech.azurewebsites.net/api/v1/LoginRegister/ResetPwd?email=${encodeURIComponent(email)}&pwd=${password}&confirmpwd=${confirmPassword}`, {
             method: 'POST',
             headers: {
                 'accept': '*/*'

@@ -51,7 +51,7 @@ function MyCourses() {
             const userId = getTokenData()?.userId;
             if (userId) {
                 localStorage.setItem('userId', userId);
-                axios.get(`https://medinetprj.azurewebsites.net/api/v1/Courses/employeeId?employeeId=${userId}`)
+                axios.get(`https://medinetaptech.azurewebsites.net/api/v1/Courses/employeeId?employeeId=${userId}`)
                     .then(response => {
                         setOrders(response.data);
                     })
@@ -106,7 +106,7 @@ function MyCourses() {
             
             const confirmDelete = window.confirm("Are you sure you want to delete this course?");
             if (confirmDelete) {
-                axios.delete(`https://medinetprj.azurewebsites.net/api/v1/Courses/id?id=${id}`)
+                axios.delete(`https://medinetaptech.azurewebsites.net/api/v1/Courses/id?id=${id}`)
                     .then(response => {
                         setOrders(orders.filter(order => order.id !== id));
                         toast.success('Course deleted successfully');

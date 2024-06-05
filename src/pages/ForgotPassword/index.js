@@ -12,7 +12,7 @@ function ForgotPassword() {
 
 const handleSubmit = async (event) => {
     event.preventDefault();
-    const response = await fetch('https://medinetprj.azurewebsites.net/api/v1/LoginRegister/ForgotPwd?email=' + encodeURIComponent(email), {
+    const response = await fetch('https://medinetaptech.azurewebsites.net/api/v1/LoginRegister/ForgotPwd?email=' + encodeURIComponent(email), {
         method: 'POST',
         headers: {
             'accept': '*/*'

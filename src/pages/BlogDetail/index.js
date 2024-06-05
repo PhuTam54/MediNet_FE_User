@@ -15,7 +15,7 @@ const [comment, setComment] = useState('');
 
 
 useEffect(() => {
-  axios.get('https://medinetprj.azurewebsites.net/api/v1/Blogs')
+  axios.get('https://medinetaptech.azurewebsites.net/api/v1/Blogs')
   .then(res => {
     setBlogs(res.data)
   })
@@ -24,7 +24,7 @@ useEffect(() => {
   });
 
   const fetchProduct = async () => {
-    const response = await axios.get(`https://medinetprj.azurewebsites.net/api/v1/Blogs/id?id=${id}`);
+    const response = await axios.get(`https://medinetaptech.azurewebsites.net/api/v1/Blogs/id?id=${id}`);
     setBlog(response.data);
   };
 
@@ -35,7 +35,7 @@ useEffect(() => {
 }, [id]);
 
 useEffect(() => {
-  fetch(`https://medinetprj.azurewebsites.net/api/v1/BlogComments/blogId?blogId=${id}`)
+  fetch(`https://medinetaptech.azurewebsites.net/api/v1/BlogComments/blogId?blogId=${id}`)
     .then((response) => response.json())
     .then((data) => {
       setComments(data);
@@ -87,7 +87,7 @@ const submitComment = async () => {
   };
 
   try {
-    await post('https://medinetprj.azurewebsites.net/api/v1/BlogComments', commentData);
+    await post('https://medinetaptech.azurewebsites.net/api/v1/BlogComments', commentData);
     toast.success('Comment submitted successfully');
     window.location.reload();
   } catch (error) {
@@ -97,7 +97,7 @@ const submitComment = async () => {
 };
 const [clinic, setClinic] = useState('');
   useEffect(() => {
-    fetch("https://medinetprj.azurewebsites.net/api/v1/Clinics/id?id=1")
+    fetch("https://medinetaptech.azurewebsites.net/api/v1/Clinics/id?id=1")
       .then((response) => response.json())
       .then((data) => {
         setClinic(data);

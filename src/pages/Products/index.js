@@ -34,7 +34,7 @@ const query = useQuery();
 
 useEffect(() => {
   const categoryChildId = query.get("categoryChild");
-  axios.get(`https://medinetprj.azurewebsites.net/api/v1/Products/categoryChildId?categoryChildId=${categoryChildId}`)
+  axios.get(`https://medinetaptech.azurewebsites.net/api/v1/Products/categoryChildId?categoryChildId=${categoryChildId}`)
     .then(response => {
       setProducts(response.data);
     })
@@ -63,7 +63,7 @@ useEffect(() => {
 
   useEffect(() => {
     axios
-  .get('https://medinetprj.azurewebsites.net/api/v1/Products')
+  .get('https://medinetaptech.azurewebsites.net/api/v1/Products')
   .then((response) => {
     setProducts(response.data);
     const manufacturers = [...new Set(response.data.map(product => product.manufacturer))];
@@ -73,7 +73,7 @@ useEffect(() => {
     console.error('Error fetching data:', error);
   });
   axios
-  .get('https://medinetprj.azurewebsites.net/api/v1/Products/buyQty')
+  .get('https://medinetaptech.azurewebsites.net/api/v1/Products/buyQty')
   .then((response) => {
     setProductsBuyQty(response.data);
     
@@ -82,7 +82,7 @@ useEffect(() => {
   .catch((error) => {
     console.error('Error fetching data:', error);
   });
-    axios.get('https://medinetprj.azurewebsites.net/api/v1/CategoryParents')
+    axios.get('https://medinetaptech.azurewebsites.net/api/v1/CategoryParents')
     .then(res => {
       setCategoryParents(res.data)
     })
@@ -93,7 +93,7 @@ useEffect(() => {
 }, []) ;
 const filterByCategoryParent = (categoryParentId) => {
   axios
-    .get(`https://medinetprj.azurewebsites.net/api/v1/Products/categoryParentId?categoryParentId=${categoryParentId}`)
+    .get(`https://medinetaptech.azurewebsites.net/api/v1/Products/categoryParentId?categoryParentId=${categoryParentId}`)
     .then((response) => {
       setProducts(response.data);
     })
@@ -103,7 +103,7 @@ const filterByCategoryParent = (categoryParentId) => {
 };
 const filterByCategory = (categoryId) => {
   axios
-    .get(`https://medinetprj.azurewebsites.net/api/v1/Products/categoryId?categoryId=${categoryId}`)
+    .get(`https://medinetaptech.azurewebsites.net/api/v1/Products/categoryId?categoryId=${categoryId}`)
     .then((response) => {
       setProducts(response.data);
     })
@@ -113,7 +113,7 @@ const filterByCategory = (categoryId) => {
 };
 const filterByCategoryChild = (categoryChildId) => {
   axios
-    .get(`https://medinetprj.azurewebsites.net/api/v1/Products/categoryChildId?categoryChildId=${categoryChildId}`)
+    .get(`https://medinetaptech.azurewebsites.net/api/v1/Products/categoryChildId?categoryChildId=${categoryChildId}`)
     .then((response) => {
       setProducts(response.data);
     })
@@ -185,7 +185,7 @@ const [isHovered, setIsHovered] = useState(Array(categoryParents.length).fill(fa
 const [isHoveredCategory, setIsHoveredCategory] = useState(null);
 //
 useEffect(() => {
-  fetch("https://medinetprj.azurewebsites.net/api/v1/Clinics/id?id=1")
+  fetch("https://medinetaptech.azurewebsites.net/api/v1/Clinics/id?id=1")
     .then((response) => response.json())
     .then((data) => {
       setClinic(data);
@@ -266,7 +266,7 @@ useEffect(() => {
     onClick={(e) => {
       e.preventDefault();
       axios
-        .get('https://medinetprj.azurewebsites.net/api/v1/Products')
+        .get('https://medinetaptech.azurewebsites.net/api/v1/Products')
         .then((response) => {
           setProducts(response.data);
         })

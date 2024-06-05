@@ -25,7 +25,7 @@ function Home() {
   
 
   useEffect(() => {
-    fetch("https://medinetprj.azurewebsites.net/api/v1/Blogs")
+    fetch("https://medinetaptech.azurewebsites.net/api/v1/Blogs")
       .then((response) => response.json())
       .then((data) => {
         setBlogs(data);

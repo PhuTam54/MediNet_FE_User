@@ -17,7 +17,7 @@ function Blogs() {
 
 
   useEffect(() => {
-    fetch("https://medinetprj.azurewebsites.net/api/v1/Blogs")
+    fetch("https://medinetaptech.azurewebsites.net/api/v1/Blogs")
       .then((response) => response.json())
       .then((data) => {
         setBlogs(data);
@@ -25,7 +25,7 @@ function Blogs() {
       });
   },[]);  
   useEffect(() => {
-    fetch("https://medinetprj.azurewebsites.net/api/v1/Diseases")
+    fetch("https://medinetaptech.azurewebsites.net/api/v1/Diseases")
       .then((response) => response.json())
       .then((data) => {
         setDiseases(data);
@@ -33,7 +33,7 @@ function Blogs() {
   
   }, []);
   useEffect(() => {
-    fetch("https://medinetprj.azurewebsites.net/api/v1/Employees")
+    fetch("https://medinetaptech.azurewebsites.net/api/v1/Employees")
       .then((response) => response.json())
       .then((data) => {
         setDoctors(data);
@@ -68,7 +68,7 @@ const paginate = (pageNumber) => setCurrentPage(pageNumber);
 //
 const [clinic, setClinic] = useState('');
   useEffect(() => {
-    fetch("https://medinetprj.azurewebsites.net/api/v1/Clinics/id?id=1")
+    fetch("https://medinetaptech.azurewebsites.net/api/v1/Clinics/id?id=1")
       .then((response) => response.json())
       .then((data) => {
         setClinic(data);
@@ -78,7 +78,7 @@ const [clinic, setClinic] = useState('');
 //filter disease
 const fetchBlogByDiseases = async (diseaseId) => {
   try {
-    const response = await axios.get(`https://medinetprj.azurewebsites.net/api/v1/Blogs/diseaseId?diseaseId=${diseaseId}`);
+    const response = await axios.get(`https://medinetaptech.azurewebsites.net/api/v1/Blogs/diseaseId?diseaseId=${diseaseId}`);
     setBlogs(response.data);
   } catch (error) {
     console.error('Failed to fetch blogs:', error);
@@ -87,7 +87,7 @@ const fetchBlogByDiseases = async (diseaseId) => {
 // Filter by employee
 const fetchBlogByEmployee = async (employeeId) => {
   try {
-    const response = await axios.get(`https://medinetprj.azurewebsites.net/api/v1/Blogs/employeeId?employeeId=${employeeId}`);
+    const response = await axios.get(`https://medinetaptech.azurewebsites.net/api/v1/Blogs/employeeId?employeeId=${employeeId}`);
     setBlogs(response.data);
   } catch (error) {
     console.error('Failed to fetch blogs:', error);

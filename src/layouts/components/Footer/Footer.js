@@ -18,7 +18,7 @@ function Footer() {
   const [clinic, setClinic] = useState('');
   const [blogs, setBlogs] = useState([]);
   useEffect(() => {
-    fetch("https://medinetprj.azurewebsites.net/api/v1/Clinics/id?id=1")
+    fetch("https://medinetaptech.azurewebsites.net/api/v1/Clinics/id?id=1")
       .then((response) => response.json())
       .then((data) => {
         setClinic(data);
@@ -26,7 +26,7 @@ function Footer() {
   
   }, []);
   useEffect(() => {
-    fetch("https://medinetprj.azurewebsites.net/api/v1/Blogs")
+    fetch("https://medinetaptech.azurewebsites.net/api/v1/Blogs")
       .then((response) => response.json())
       .then((data) => {
         setBlogs(data);

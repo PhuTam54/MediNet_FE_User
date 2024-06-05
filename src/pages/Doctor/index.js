@@ -7,7 +7,7 @@ function Doctors() {
 
 
     useEffect(() => {
-        axios.get('https://medinetprj.azurewebsites.net/api/v1/Employees')
+        axios.get('https://medinetaptech.azurewebsites.net/api/v1/Employees')
         .then(response => {
             const doctors = response.data.filter(doctor => doctor.role === 4);
       setDoctors(doctors);
@@ -89,7 +89,7 @@ function Doctors() {
             <div className="featured-thumbnail">
   <img
     className="img-fluid"
-    src={`https://medinetprj.azurewebsites.net/${doctor.image}`}
+    src={`https://medinetaptech.azurewebsites.net/${doctor.image}`}
     alt="image"
     style={{ width: '200px', height: '250px', objectFit: 'cover' }}
   />

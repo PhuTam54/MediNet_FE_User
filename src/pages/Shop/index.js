@@ -23,7 +23,7 @@ function Shop() {
   const [products, setProducts] = useState([]);
   const [blogs, setBlogs] = useState([]);
   useEffect(() => {
-    axios.get('https://medinetprj.azurewebsites.net/api/v1/Products')
+    axios.get('https://medinetaptech.azurewebsites.net/api/v1/Products')
     .then(res => {
       setProducts(res.data)
     })
@@ -32,7 +32,7 @@ function Shop() {
     })
 }, []) ;
 useEffect(() => {
-  fetch("https://medinetprj.azurewebsites.net/api/v1/Blogs")
+  fetch("https://medinetaptech.azurewebsites.net/api/v1/Blogs")
     .then((response) => response.json())
     .then((data) => {
       setBlogs(data);
